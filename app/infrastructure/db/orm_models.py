@@ -6,73 +6,63 @@ from datetime import date, datetime
 from enum import Enum
 from app.domain.enums import TipoAplicacionEnum, BaseTributarioEnum
 
-
 class Base(DeclarativeBase):
     pass
 
+
 class RolesUsuario(Base):
     __tablename__ = "rolesusuario"
+
     usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), primary_key=True)
     rol_id: Mapped[int] = mapped_column(ForeignKey("rol.id"), primary_key=True)
 
+
 class RolMenuItem(Base):
     __tablename__ = "rolmenuitem"
+
     rol_id: Mapped[int] = mapped_column(ForeignKey("rol.id"), primary_key=True)
     menu_item_id: Mapped[int] = mapped_column(ForeignKey("menuitem.id"), primary_key=True)
 
+
 class Usuario(Base):
     __tablename__ = "usuario"
+
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     usuario_email: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     usuario_password: Mapped[str] = mapped_column(String(100), nullable=False)
     nombre: Mapped[str] = mapped_column(String(30), nullable=False)
     apellido: Mapped[str] = mapped_column(String(30), nullable=False)
 
-    roles: Mapped[List["Rol"]] = relationship(
-        secondary="rolesusuario",
-        back_populates="usuarios"
-    )
+    roles: Mapped[List["Rol"]] = relationship(secondary="rolesusuario", back_populates="usuarios")
+    auditorias: Mapped[List["AuditoriaComprobante"]] = relationship(back_populates="usuario")
 
-    auditorias: Mapped[List["AuditoriaComprobante"]] = relationship(
-        back_populates="usuario"
-    )
 
 class Rol(Base):
     __tablename__ = "rol"
+
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     rol_nombre: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
-    es_admin: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    es_admin: Mapped[bool] = mapped_column(nullable=False)
 
-    usuarios: Mapped[List["Usuario"]] = relationship(
-        secondary="rolesusuario",
-        back_populates="roles"
-    )
+    usuarios: Mapped[List["Usuario"]] = relationship(secondary="rolesusuario", back_populates="roles")
+    menuitems: Mapped[List["MenuItem"]] = relationship(secondary="rolmenuitem", back_populates="roles")
 
-    menuitems: Mapped[List["MenuItem"]] = relationship(
-        secondary="rolmenuitem",
-        back_populates="roles"
-    )
 
 class MenuItem(Base):
     __tablename__ = "menuitem"
+
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     path: Mapped[Optional[str]] = mapped_column(String(200))
     parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("menuitem.id"))
 
-    children: Mapped[List["MenuItem"]] = relationship(
-        back_populates="parent"
-    )
-    parent: Mapped[Optional["MenuItem"]] = relationship(
-        back_populates="children",
-        remote_side="MenuItem.id"
-    )
+    parent: Mapped[Optional["MenuItem"]] = relationship(back_populates="children", remote_side="MenuItem.id")
+    children: Mapped[List["MenuItem"]] = relationship(back_populates="parent")
 
-    roles: Mapped[List["Rol"]] = relationship(
-        secondary="rolmenuitem",
-        back_populates="menuitems"
-    )
+    roles: Mapped[List["Rol"]] = relationship(secondary="rolmenuitem", back_populates="menuitems")
+
     
+
 class TipoDoc(Base):
     __tablename__ = "tipodoc"
 
@@ -80,33 +70,27 @@ class TipoDoc(Base):
     tipo_doc_nombre: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
     habilitado: Mapped[bool] = mapped_column(nullable=False)
 
-    comprobantes: Mapped[List["Comprobante"]] = relationship(
-        back_populates="tipo_doc"
-    )
-    clientes: Mapped[List["Cliente"]] = relationship(
-        back_populates="tipo_doc"
-    )
-
+    comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="tipo_doc")
+    clientes: Mapped[List["Cliente"]] = relationship(back_populates="tipo_doc")
+    
 class TipoDom(Base):
     __tablename__ = "tipodom"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     nombre: Mapped[str] = mapped_column(String(30), nullable=False)
 
-    domicilios: Mapped[List["Domicilio"]] = relationship(
-        back_populates="tipo_dom"
-    )
-
+    domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="tipo_dom")
+    
+    
 class TipoTel(Base):
     __tablename__ = "tipotel"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     nombre: Mapped[str] = mapped_column(String(30), nullable=False)
 
-    telefonos: Mapped[List["Telefono"]] = relationship(
-        back_populates="tipo_tel"
-    )
-
+    telefonos: Mapped[List["Telefono"]] = relationship(back_populates="tipo_tel")
+    
+    
 class Pais(Base):
     __tablename__ = "pais"
 
@@ -114,9 +98,8 @@ class Pais(Base):
     codigo: Mapped[str] = mapped_column(String(2), nullable=False, unique=True)
     nombre: Mapped[str] = mapped_column(String(30), nullable=False)
 
-    provincias: Mapped[List["Provincia"]] = relationship(
-        back_populates="pais"
-    )
+    provincias: Mapped[List["Provincia"]] = relationship(back_populates="pais")
+
 
 class Provincia(Base):
     __tablename__ = "provincia"
@@ -125,12 +108,9 @@ class Provincia(Base):
     provincia_nombre: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     pais_id: Mapped[int] = mapped_column(ForeignKey("pais.id"), nullable=False)
 
-    pais: Mapped["Pais"] = relationship(
-        back_populates="provincias"
-    )
-    localidades: Mapped[List["Localidad"]] = relationship(
-        back_populates="provincia"
-    )
+    pais: Mapped["Pais"] = relationship(back_populates="provincias")
+    localidades: Mapped[List["Localidad"]] = relationship(back_populates="provincia")
+
 
 class Localidad(Base):
     __tablename__ = "localidad"
@@ -140,17 +120,10 @@ class Localidad(Base):
     cod_postal: Mapped[str] = mapped_column(String(15), nullable=False)
     provincia_id: Mapped[int] = mapped_column(ForeignKey("provincia.id"), nullable=False)
 
-    provincia: Mapped["Provincia"] = relationship(
-        back_populates="localidades"
-    )
-    domicilios: Mapped[List["Domicilio"]] = relationship(
-        back_populates="localidad"
-    )
+    provincia: Mapped["Provincia"] = relationship(back_populates="localidades")
+    domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="localidad")
+
     
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Integer
-from typing import Optional, List
-from pydantic import EmailStr  # Usado para validación tipada, si lo conservás
 
 class Cliente(Base):
     __tablename__ = "cliente"
@@ -161,7 +134,6 @@ class Cliente(Base):
     razon_social: Mapped[Optional[str]] = mapped_column(String(100))
     cuit: Mapped[Optional[str]] = mapped_column(String(11), unique=True)
     email: Mapped[Optional[str]] = mapped_column(String(100))
-    
 
     tipo_doc_id: Mapped[int] = mapped_column(ForeignKey("tipodoc.id"), nullable=False)
     iva_id: Mapped[int] = mapped_column(ForeignKey("iva.id"), nullable=False)
@@ -174,7 +146,8 @@ class Cliente(Base):
     impuestos: Mapped[List["ClienteImpuesto"]] = relationship(back_populates="cliente")
     movimientos_cc: Mapped[List["CuentaCorriente"]] = relationship(back_populates="cliente")
     operadores: Mapped[List["Operador"]] = relationship(back_populates="cliente")
-
+    
+    
 class Domicilio(Base):
     __tablename__ = "domicilio"
 
@@ -191,7 +164,8 @@ class Domicilio(Base):
     localidad: Mapped["Localidad"] = relationship(back_populates="domicilios")
 
     telefonos: Mapped[List["Telefono"]] = relationship(back_populates="domicilio")
-
+    
+    
 class Telefono(Base):
     __tablename__ = "telefono"
 
@@ -203,7 +177,7 @@ class Telefono(Base):
 
     tipo_tel: Mapped["TipoTel"] = relationship(back_populates="telefonos")
     domicilio: Mapped["Domicilio"] = relationship(back_populates="telefonos")
-
+    
 class Operador(Base):
     __tablename__ = "operador"
 
@@ -211,6 +185,8 @@ class Operador(Base):
     cliente_id: Mapped[int] = mapped_column(ForeignKey("cliente.id"), nullable=False)
 
     cliente: Mapped["Cliente"] = relationship(back_populates="operadores")
+
+
 
 
 class TipoComprobante(Base):
@@ -222,7 +198,6 @@ class TipoComprobante(Base):
     es_fiscal: Mapped[bool] = mapped_column(nullable=False)
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="tipo_comprobante")
-
 
 class Concepto(Base):
     __tablename__ = "concepto"
@@ -242,8 +217,6 @@ class Moneda(Base):
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="moneda")
 
-
-
 class Iva(Base):
     __tablename__ = "iva"
 
@@ -256,8 +229,6 @@ class Iva(Base):
 
     clientes: Mapped[List["Cliente"]] = relationship(back_populates="iva")
     detalles: Mapped[List["ComprobanteDetalle"]] = relationship(back_populates="iva")
-
-
 
 class TipoImpuesto(Base):
     __tablename__ = "tipoimpuesto"
@@ -275,7 +246,8 @@ class TipoImpuesto(Base):
 
     clientes: Mapped[List["ClienteImpuesto"]] = relationship(back_populates="tipo_impuesto")
     comprobantes: Mapped[List["ComprobanteImpuesto"]] = relationship(back_populates="tipo_impuesto")
-
+    
+    
 class Comprobante(Base):
     __tablename__ = "comprobante"
 
@@ -290,7 +262,7 @@ class Comprobante(Base):
     punto_venta: Mapped[int] = mapped_column(nullable=False)
     numero: Mapped[int] = mapped_column(nullable=False, unique=True)
     fecha_emision: Mapped[date] = mapped_column(nullable=False)
-    
+
     doc_nro: Mapped[str] = mapped_column(String(20), nullable=False)
     nombre_cliente: Mapped[str] = mapped_column(String(100), nullable=False)
     cuit_cliente: Mapped[str] = mapped_column(String(20), nullable=False)
@@ -298,6 +270,7 @@ class Comprobante(Base):
     localidad_cliente: Mapped[str] = mapped_column(String(50), nullable=False)
     cod_postal_cliente: Mapped[Optional[str]] = mapped_column(String(10))
     provincia_cliente: Mapped[str] = mapped_column(String(50), nullable=False)
+
     cotizacion_moneda: Mapped[float] = mapped_column(nullable=False)
     total_neto: Mapped[float] = mapped_column(nullable=False)
     total_iva: Mapped[float] = mapped_column(nullable=False)
@@ -316,6 +289,7 @@ class Comprobante(Base):
     registro_cc: Mapped[Optional["CuentaCorriente"]] = relationship(back_populates="comprobante")
     auditorias: Mapped[List["AuditoriaComprobante"]] = relationship(back_populates="comprobante")
 
+
 class ComprobanteDetalle(Base):
     __tablename__ = "comprobantedetalle"
 
@@ -333,6 +307,7 @@ class ComprobanteDetalle(Base):
     comprobante: Mapped["Comprobante"] = relationship(back_populates="detalles")
     iva: Mapped["Iva"] = relationship(back_populates="detalles")
 
+
 class ComprobanteImpuesto(Base):
     __tablename__ = "comprobanteimpuesto"
 
@@ -347,6 +322,7 @@ class ComprobanteImpuesto(Base):
 
     comprobante: Mapped["Comprobante"] = relationship(back_populates="impuestos")
     tipo_impuesto: Mapped["TipoImpuesto"] = relationship(back_populates="comprobantes")
+
     
 class ClienteImpuesto(Base):
     __tablename__ = "clienteimpuesto"
@@ -361,7 +337,7 @@ class ClienteImpuesto(Base):
 
     cliente: Mapped["Cliente"] = relationship(back_populates="impuestos")
     tipo_impuesto: Mapped["TipoImpuesto"] = relationship(back_populates="clientes")
-
+    
 class CuentaCorriente(Base):
     __tablename__ = "cuentacorriente"
 
@@ -373,11 +349,12 @@ class CuentaCorriente(Base):
     tipo: Mapped[str] = mapped_column(String(20), nullable=False)
     descripcion: Mapped[Optional[str]] = mapped_column(String(255))
     importe: Mapped[float] = mapped_column(nullable=False)
-    signo: Mapped[int] = mapped_column(nullable=False)  # 1 = ingreso, -1 = egreso
+    signo: Mapped[int] = mapped_column(nullable=False)
     saldo: Mapped[Optional[float]] = mapped_column()
 
     cliente: Mapped["Cliente"] = relationship(back_populates="movimientos_cc")
     comprobante: Mapped[Optional["Comprobante"]] = relationship(back_populates="registro_cc")
+
 
 class AuditoriaComprobante(Base):
     __tablename__ = "auditoriacomprobante"

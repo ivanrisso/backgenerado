@@ -1,16 +1,13 @@
-from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional
+from pydantic import BaseModel
 
 
-if TYPE_CHECKING:
-    from app.domain.rol import Rol
-
-@dataclass
-class MenuItem:
+class MenuItem(BaseModel):
     id: Optional[int]
     nombre: Optional[str]
     path: Optional[str]
     parent_id: Optional[int]
-    children: List["MenuItem"]
-    parent: Optional["MenuItem"]
-    roles: List["Rol"]
+    
+    class Config:
+        from_attributes = True
+    

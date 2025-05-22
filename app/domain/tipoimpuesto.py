@@ -1,14 +1,8 @@
-from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List
 from app.domain.enums import TipoAplicacionEnum, BaseTributarioEnum
+from pydantic import BaseModel
 
-
-if TYPE_CHECKING:
-    from app.domain.clienteimpuesto import ClienteImpuesto
-    from app.domain.comprobanteimpuesto import ComprobanteImpuesto
-    
-@dataclass
-class TipoImpuesto:
+class TipoImpuesto(BaseModel):
     id: Optional[int]
     codigo_afip: Optional[str]
     nombre: Optional[str]
@@ -19,5 +13,9 @@ class TipoImpuesto:
     editable: Optional[bool]
     obligatorio: Optional[bool]
     activo: Optional[bool]
-    clientes: List["ClienteImpuesto"]
-    comprobantes: List["ComprobanteImpuesto"]
+    
+    class Config:
+        from_attributes = True
+    
+    
+    

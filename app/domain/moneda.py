@@ -1,11 +1,10 @@
-from dataclasses import dataclass
 from typing import Optional, List
-from decimal import Decimal
-from datetime import date, datetime
+from pydantic import BaseModel
 
-@dataclass
-class Moneda:
+class Moneda(BaseModel):
     id: Optional[int]
     codigo: Optional[str]
     descripcion: Optional[str]
-    comprobantes: List["Comprobante"]
+
+    class Config:
+        from_attributes = True

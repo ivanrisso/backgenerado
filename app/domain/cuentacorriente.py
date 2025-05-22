@@ -1,14 +1,8 @@
-from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from datetime import date
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.comprobante import Comprobante
-    from app.domain.cliente import Cliente
-
-
-@dataclass
-class CuentaCorriente:
+class CuentaCorriente(BaseModel):
     id: Optional[int]
     cliente_id: Optional[int]
     comprobante_id: Optional[int]
@@ -18,5 +12,6 @@ class CuentaCorriente:
     importe: Optional[float]
     signo: Optional[int]
     saldo: Optional[float]
-    cliente: Optional["Cliente"]
-    comprobante: Optional["Comprobante"]
+
+    class Config:
+        from_attributes = True

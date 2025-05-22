@@ -1,12 +1,11 @@
 from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.domicilio import Domicilio
-
-
-@dataclass
-class TipoDom:
+class TipoDom(BaseModel):
     id: Optional[int]
     nombre: Optional[str]
-    domicilios: List["Domicilio"]
+    
+    class Config:
+        from_attributes = True
+    

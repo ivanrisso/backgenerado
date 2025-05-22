@@ -1,14 +1,7 @@
-from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
-from decimal import Decimal
+from typing import Optional
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.comprobante import Comprobante
-    from app.domain.iva import Iva
-
-
-@dataclass
-class ComprobanteDetalle:
+class ComprobanteDetalle(BaseModel):
     id: Optional[int]
     comprobante_id: Optional[int]
     iva_id: Optional[int]
@@ -18,5 +11,6 @@ class ComprobanteDetalle:
     importe: Optional[float]
     alicuota_iva: Optional[float]
     importe_iva: Optional[float]
-    comprobante: Optional["Comprobante"]
-    iva: Optional["Iva"]
+    
+    class Config:
+        from_attributes = True

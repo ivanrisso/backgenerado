@@ -1,13 +1,10 @@
-from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.provincia import Provincia
-
-
-@dataclass
-class Pais:
+class Pais(BaseModel):
     id: Optional[int]
     codigo: Optional[str]
     nombre: Optional[str]
-    provincias: List["Provincia"]
+
+    class Config:
+        from_attributes = True

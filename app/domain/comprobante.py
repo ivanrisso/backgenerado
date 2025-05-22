@@ -1,22 +1,8 @@
-from __future__ import annotations
-from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, List
 from datetime import date
-from app.domain.tipocomprobante import TipoComprobante
-from app.domain.concepto import Concepto
-from app.domain.tipodoc import TipoDoc
-from app.domain.moneda import Moneda
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.cliente import Cliente
-    from app.domain.comprobantedetalle import ComprobanteDetalle
-    from app.domain.comprobanteimpuesto import ComprobanteImpuesto
-    from app.domain.cuentacorriente import CuentaCorriente
-    from app.domain.auditoriacomprobante import AuditoriaComprobante
-
-
-@dataclass
-class Comprobante:
+class Comprobante(BaseModel):
     id: Optional[int]
     cliente_id: Optional[int]
     tipo_comprobante_id: Optional[int]
@@ -39,12 +25,6 @@ class Comprobante:
     total_impuestos: Optional[float]
     total: Optional[float]
     observaciones: Optional[str]
-    tipo_comprobante: Optional[TipoComprobante]
-    concepto: Optional[Concepto]
-    tipo_doc: Optional[TipoDoc]
-    moneda: Optional[Moneda]
-    cliente: Optional["Cliente"]
-    detalles: List["ComprobanteDetalle"]
-    impuestos: List["ComprobanteImpuesto"]
-    registro_cc: Optional["CuentaCorriente"]
-    auditorias: List["AuditoriaComprobante"]
+
+    class Config:
+        from_attributes = True

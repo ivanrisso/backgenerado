@@ -1,14 +1,8 @@
-from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
-from datetime import date, datetime
-from app.domain.usuario import Usuario
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
 
-
-if TYPE_CHECKING:
-    from app.domain.comprobante import Comprobante
-
-@dataclass
-class AuditoriaComprobante:
+class AuditoriaComprobante(BaseModel):
     id: Optional[int]
     comprobante_id: Optional[int]
     usuario_id: Optional[int]
@@ -16,5 +10,6 @@ class AuditoriaComprobante:
     detalle: Optional[str]
     ip_origen: Optional[str]
     fecha: Optional[datetime]
-    comprobante: Optional["Comprobante"]
-    usuario: Optional[Usuario]
+
+    class Config:
+        from_attributes = True

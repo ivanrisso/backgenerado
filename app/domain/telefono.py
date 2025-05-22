@@ -1,16 +1,13 @@
-from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.tipotel import TipoTel
-    from app.domain.domicilio import Domicilio
-
-@dataclass
-class Telefono:
+class Telefono(BaseModel):
     id: Optional[int]
     tipo_tel_id: Optional[int]
     prefijo: Optional[str]
     numero: Optional[str]
     domicilio_id: Optional[int]
-    tipo_tel: Optional["TipoTel"]
-    domicilio: Optional["Domicilio"]
+    
+    class Config:
+        from_attributes = True
+    

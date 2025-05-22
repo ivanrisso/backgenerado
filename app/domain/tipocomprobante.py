@@ -1,13 +1,13 @@
-from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.comprobante import Comprobante
-    
-@dataclass
-class TipoComprobante:
+
+class TipoComprobante(BaseModel):
     id: Optional[int]
     codigo: Optional[str]
     descripcion: Optional[str]
     es_fiscal: Optional[bool]
-    comprobantes: List["Comprobante"]
+    
+    class Config:
+        from_attributes = True
+    

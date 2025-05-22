@@ -1,14 +1,10 @@
-from dataclasses import dataclass
-from typing import Optional, List, TYPE_CHECKING
-from app.domain.menuitem import MenuItem
+from typing import Optional
+from pydantic import BaseModel
 
-if TYPE_CHECKING:
-    from app.domain.usuario import Usuario
-
-@dataclass
-class Rol:
+class Rol(BaseModel):
     id: Optional[int]
     rol_nombre: Optional[str]
     es_admin: Optional[bool]
-    usuarios: List["Usuario"]
-    menuitems: List["MenuItem"]
+
+    class Config:
+        from_attributes = True
