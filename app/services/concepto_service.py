@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.concepto_use_case import ConceptoUseCase
 from app.schemas.concepto import ConceptoCreate
-from app.domain.concepto import Concepto
+from app.infrastructure.db.orm_models import Concepto
 
 class ConceptoService:
     def __init__(self, db: AsyncSession):

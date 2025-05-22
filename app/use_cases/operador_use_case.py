@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Operador
 from app.repositories.operador_repository import OperadorRepository
-from app.domain.operador import Operador
 from app.schemas.operador import OperadorCreate
 
 class OperadorUseCase:

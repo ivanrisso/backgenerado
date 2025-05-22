@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import ComprobanteDetalle
 from app.repositories.comprobantedetalle_repository import ComprobanteDetalleRepository
-from app.domain.comprobantedetalle import ComprobanteDetalle
 from app.schemas.comprobante_detalle import ComprobanteDetalleCreate
 
 class ComprobanteDetalleUseCase:

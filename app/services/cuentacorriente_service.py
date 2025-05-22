@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.cuentacorriente_use_case import CuentaCorrienteUseCase
 from app.schemas.cuenta_corriente import CuentaCorrienteCreate
-from app.domain.cuentacorriente import CuentaCorriente
+from app.infrastructure.db.orm_models import CuentaCorriente
 
 class CuentaCorrienteService:
     def __init__(self, db: AsyncSession):

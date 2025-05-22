@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.localidad_use_case import LocalidadUseCase
 from app.schemas.localidad import LocalidadCreate
-from app.domain.localidad import Localidad
+from app.infrastructure.db.orm_models import Localidad
 
 class LocalidadService:
     def __init__(self, db: AsyncSession):

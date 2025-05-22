@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.rol_use_case import RolUseCase
 from app.schemas.rol import RolCreate
-from app.domain.rol import Rol
+from app.infrastructure.db.orm_models import Rol
 
 class RolService:
     def __init__(self, db: AsyncSession):

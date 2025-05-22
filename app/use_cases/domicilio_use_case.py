@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Domicilio
 from app.repositories.domicilio_repository import DomicilioRepository
-from app.domain.domicilio import Domicilio
 from app.schemas.domicilio import DomicilioCreate
 
 class DomicilioUseCase:

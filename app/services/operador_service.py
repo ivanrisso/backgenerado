@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.operador_use_case import OperadorUseCase
 from app.schemas.operador import OperadorCreate
-from app.domain.operador import Operador
+from app.infrastructure.db.orm_models import Operador
 
 class OperadorService:
     def __init__(self, db: AsyncSession):

@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.tipoimpuesto_use_case import TipoImpuestoUseCase
 from app.schemas.tipo_impuesto import TipoImpuestoCreate
-from app.domain.tipoimpuesto import TipoImpuesto
+from app.infrastructure.db.orm_models import TipoImpuesto
 
 class TipoImpuestoService:
     def __init__(self, db: AsyncSession):

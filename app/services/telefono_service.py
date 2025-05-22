@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.telefono_use_case import TelefonoUseCase
 from app.schemas.telefono import TelefonoCreate
-from app.domain.telefono import Telefono
+from app.infrastructure.db.orm_models import Telefono
 
 class TelefonoService:
     def __init__(self, db: AsyncSession):

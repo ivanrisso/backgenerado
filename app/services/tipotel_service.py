@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.tipotel_use_case import TipoTelUseCase
 from app.schemas.tipotel import TipoTelCreate
-from app.domain.tipotel import TipoTel
+from app.infrastructure.db.orm_models import TipoTel
 
 class TipoTelService:
     def __init__(self, db: AsyncSession):

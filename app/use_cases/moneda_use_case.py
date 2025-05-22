@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Moneda
 from app.repositories.moneda_repository import MonedaRepository
-from app.domain.moneda import Moneda
 from app.schemas.moneda import MonedaCreate
 
 class MonedaUseCase:

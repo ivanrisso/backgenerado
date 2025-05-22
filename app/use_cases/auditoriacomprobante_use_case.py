@@ -2,8 +2,8 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import AuditoriaComprobante
 from app.repositories.auditoriacomprobante_repository import AuditoriaComprobanteRepository
-from app.domain.auditoriacomprobante import AuditoriaComprobante
 from app.schemas.auditoria_comprobante import AuditoriaComprobanteCreate
+
 
 class AuditoriaComprobanteUseCase:
     def __init__(self, db: AsyncSession):

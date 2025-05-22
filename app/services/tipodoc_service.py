@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.tipodoc_use_case import TipoDocUseCase
 from app.schemas.tipo_doc import TipoDocCreate
-from app.domain.tipodoc import TipoDoc
+from app.infrastructure.db.orm_models import TipoDoc
 
 class TipoDocService:
     def __init__(self, db: AsyncSession):

@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Iva
 from app.repositories.iva_repository import IvaRepository
-from app.domain.iva import Iva
 from app.schemas.iva import IvaCreate
 
 class IvaUseCase:

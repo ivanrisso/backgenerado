@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.rolmenuitem_use_case import RolMenuItemUseCase
 from app.schemas.rolmenuitem import RolMenuItemCreate
-from app.domain.rolmenuitem import RolMenuItem
+from app.infrastructure.db.orm_models import RolMenuItem
 
 class RolMenuItemService:
     def __init__(self, db: AsyncSession):

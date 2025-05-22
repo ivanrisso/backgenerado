@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import TipoComprobante
 from app.repositories.tipocomprobante_repository import TipoComprobanteRepository
-from app.domain.tipocomprobante import TipoComprobante
 from app.schemas.tipocomprobante import TipoComprobanteCreate
 
 class TipoComprobanteUseCase:

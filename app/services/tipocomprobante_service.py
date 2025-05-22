@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.tipocomprobante_use_case import TipoComprobanteUseCase
 from app.schemas.tipocomprobante import TipoComprobanteCreate
-from app.domain.tipocomprobante import TipoComprobante
+from app.infrastructure.db.orm_models import TipoComprobante
 
 class TipoComprobanteService:
     def __init__(self, db: AsyncSession):

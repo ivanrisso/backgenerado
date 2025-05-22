@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Telefono
 from app.repositories.telefono_repository import TelefonoRepository
-from app.domain.telefono import Telefono
 from app.schemas.telefono import TelefonoCreate
 
 class TelefonoUseCase:

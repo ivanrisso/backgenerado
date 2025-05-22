@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import TipoImpuesto
 from app.repositories.tipoimpuesto_repository import TipoImpuestoRepository
-from app.domain.tipoimpuesto import TipoImpuesto
 from app.schemas.tipo_impuesto import TipoImpuestoCreate
 
 class TipoImpuestoUseCase:

@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.domicilio_use_case import DomicilioUseCase
 from app.schemas.domicilio import DomicilioCreate
-from app.domain.domicilio import Domicilio
+from app.infrastructure.db.orm_models import Domicilio
 
 class DomicilioService:
     def __init__(self, db: AsyncSession):

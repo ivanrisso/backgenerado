@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.comprobantedetalle_use_case import ComprobanteDetalleUseCase
 from app.schemas.comprobante_detalle import ComprobanteDetalleCreate
-from app.domain.comprobantedetalle import ComprobanteDetalle
+from app.infrastructure.db.orm_models import ComprobanteDetalle
 
 class ComprobanteDetalleService:
     def __init__(self, db: AsyncSession):

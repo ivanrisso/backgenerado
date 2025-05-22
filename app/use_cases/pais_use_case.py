@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Pais
 from app.repositories.pais_repository import PaisRepository
-from app.domain.pais import Pais
 from app.schemas.pais import PaisCreate
 
 class PaisUseCase:

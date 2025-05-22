@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import TipoDom
 from app.repositories.tipodom_repository import TipoDomRepository
-from app.domain.tipodom import TipoDom
 from app.schemas.tipodom import TipoDomCreate
 
 class TipoDomUseCase:

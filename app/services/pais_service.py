@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.pais_use_case import PaisUseCase
 from app.schemas.pais import PaisCreate
-from app.domain.pais import Pais
+from app.infrastructure.db.orm_models import Pais
 
 class PaisService:
     def __init__(self, db: AsyncSession):

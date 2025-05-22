@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Rol
 from app.repositories.rol_repository import RolRepository
-from app.domain.rol import Rol
 from app.schemas.rol import RolCreate
 
 class RolUseCase:

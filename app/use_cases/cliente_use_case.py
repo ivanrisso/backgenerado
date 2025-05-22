@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Cliente
 from app.repositories.cliente_repository import ClienteRepository
-from app.domain.cliente import Cliente
 from app.schemas.cliente import ClienteCreate
 
 class ClienteUseCase:

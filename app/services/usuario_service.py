@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.usuario_use_case import UsuarioUseCase
 from app.schemas.usuario import UsuarioCreate
-from app.domain.usuario import Usuario
+from app.infrastructure.db.orm_models import Usuario
 
 class UsuarioService:
     def __init__(self, db: AsyncSession):

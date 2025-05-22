@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Localidad
 from app.repositories.localidad_repository import LocalidadRepository
-from app.domain.localidad import Localidad
 from app.schemas.localidad import LocalidadCreate
 
 class LocalidadUseCase:

@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import TipoTel
 from app.repositories.tipotel_repository import TipoTelRepository
-from app.domain.tipotel import TipoTel
 from app.schemas.tipotel import TipoTelCreate
 
 class TipoTelUseCase:

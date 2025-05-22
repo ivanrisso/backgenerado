@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import MenuItem
 from app.repositories.menuitem_repository import MenuItemRepository
-from app.domain.menuitem import MenuItem
 from app.schemas.menu_item import MenuItemCreate
 
 class MenuItemUseCase:

@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Provincia
 from app.repositories.provincia_repository import ProvinciaRepository
-from app.domain.provincia import Provincia
 from app.schemas.provincia import ProvinciaCreate
 
 class ProvinciaUseCase:

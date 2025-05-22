@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.moneda_use_case import MonedaUseCase
 from app.schemas.moneda import MonedaCreate
-from app.domain.moneda import Moneda
+from app.infrastructure.db.orm_models import Moneda
 
 class MonedaService:
     def __init__(self, db: AsyncSession):

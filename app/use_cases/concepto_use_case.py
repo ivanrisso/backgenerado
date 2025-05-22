@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Concepto
 from app.repositories.concepto_repository import ConceptoRepository
-from app.domain.concepto import Concepto
 from app.schemas.concepto import ConceptoCreate
 
 class ConceptoUseCase:

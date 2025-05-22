@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.iva_use_case import IvaUseCase
 from app.schemas.iva import IvaCreate
-from app.domain.iva import Iva
+from app.infrastructure.db.orm_models import Iva
 
 class IvaService:
     def __init__(self, db: AsyncSession):

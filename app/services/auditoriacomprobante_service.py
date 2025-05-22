@@ -2,7 +2,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.auditoriacomprobante_use_case import AuditoriaComprobanteUseCase
 from app.schemas.auditoria_comprobante import AuditoriaComprobanteCreate
-from app.domain.auditoriacomprobante import AuditoriaComprobante
+from app.infrastructure.db.orm_models import AuditoriaComprobante
+
 
 class AuditoriaComprobanteService:
     def __init__(self, db: AsyncSession):

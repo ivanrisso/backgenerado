@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import RolMenuItem
 from app.repositories.rolmenuitem_repository import RolMenuItemRepository
-from app.domain.rolmenuitem import RolMenuItem
 from app.schemas.rolmenuitem import RolMenuItemCreate
 
 class RolMenuItemUseCase:

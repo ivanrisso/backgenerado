@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.menuitem_use_case import MenuItemUseCase
 from app.schemas.menu_item import MenuItemCreate
-from app.domain.menuitem import MenuItem
+from app.infrastructure.db.orm_models import MenuItem
 
 class MenuItemService:
     def __init__(self, db: AsyncSession):

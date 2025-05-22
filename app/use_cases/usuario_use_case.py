@@ -2,7 +2,6 @@ from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.orm_models import Usuario
 from app.repositories.usuario_repository import UsuarioRepository
-from app.domain.usuario import Usuario
 from app.schemas.usuario import UsuarioCreate
 
 class UsuarioUseCase:

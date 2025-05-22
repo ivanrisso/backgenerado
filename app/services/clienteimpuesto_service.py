@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.clienteimpuesto_use_case import ClienteImpuestoUseCase
 from app.schemas.clienteimpuesto import ClienteImpuestoCreate
-from app.domain.clienteimpuesto import ClienteImpuesto
+from app.infrastructure.db.orm_models import ClienteImpuesto
 
 class ClienteImpuestoService:
     def __init__(self, db: AsyncSession):

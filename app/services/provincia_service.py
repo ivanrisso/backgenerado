@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List
 from app.use_cases.provincia_use_case import ProvinciaUseCase
 from app.schemas.provincia import ProvinciaCreate
-from app.domain.provincia import Provincia
+from app.infrastructure.db.orm_models import Provincia
 
 class ProvinciaService:
     def __init__(self, db: AsyncSession):
