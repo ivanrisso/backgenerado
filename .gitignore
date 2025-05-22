@@ -1,0 +1,43 @@
+# Entorno virtual de Poetry (si está local)
+.venv/
+
+# Archivos Python compilados
+__pycache__/
+*.py[cod]
+*.so
+
+# Archivos temporales
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# Archivos de base de datos temporales
+*.sqlite3
+
+# Archivos del sistema o IDEs
+.vscode/
+.idea/
+*.iml
+
+# Configuraciones locales
+.env
+.env.*
+
+# Archivos de pruebas / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+pytest_cache/
+.cache/
+*.cover
+
+# Archivos de distribución
+dist/
+build/
+*.egg-info/
+
+# Archivos de Jupyter (si usás notebooks)
+.ipynb_checkpoints/
