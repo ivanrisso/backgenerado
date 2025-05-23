@@ -17,3 +17,7 @@ class ClienteUseCase:
     async def create(self, data: ClienteCreate) -> Cliente:
         obj = Cliente(**data.model_dump())
         return await self.repo.create(obj)
+    
+    async def create(self, data: ClienteCreate) -> Cliente:
+        obj = Cliente(**data.model_dump())
+        return await self.repo.create(obj)

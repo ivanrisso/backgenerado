@@ -3,10 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.engine import SessionLocal
 from app.services.clienteimpuesto_service import ClienteImpuestoService
 from app.schemas.clienteimpuesto import ClienteImpuestoCreate, ClienteImpuestoResponse
+from typing import AsyncGenerator
 
 router = APIRouter(prefix="/clienteimpuestos", tags=["ClienteImpuesto"])
 
-async def get_db_session() -> AsyncSession:
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
 

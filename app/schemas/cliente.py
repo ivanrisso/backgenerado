@@ -13,6 +13,15 @@ class ClienteBase(BaseModel):
 class ClienteCreate(ClienteBase):
     pass
 
+class ClienteUpdate(ClienteBase):
+    nombre: str
+    apellido: str
+    razon_social: Optional[str]
+    cuit: Optional[str]
+    email: Optional[EmailStr]
+    tipo_doc_id: int
+    iva_id: int
+
 class ClienteResponse(ClienteBase):
     id: int
 

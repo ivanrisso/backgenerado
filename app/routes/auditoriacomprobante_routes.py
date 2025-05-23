@@ -3,10 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.engine import SessionLocal
 from app.services.auditoriacomprobante_service import AuditoriaComprobanteService
 from app.schemas.auditoria_comprobante import AuditoriaComprobanteCreate, AuditoriaComprobanteResponse
+from typing import AsyncGenerator
 
 router = APIRouter(prefix="/auditoriacomprobantes", tags=["AuditoriaComprobante"])
 
-async def get_db_session() -> AsyncSession:
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
 

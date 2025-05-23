@@ -4,7 +4,7 @@ from typing import Optional, List
 from decimal import Decimal
 from datetime import date, datetime
 from enum import Enum
-from app.domain.enums import TipoAplicacionEnum, BaseTributarioEnum
+from app.domain.entities.enums import TipoAplicacionEnum, BaseTributarioEnum
 
 class Base(DeclarativeBase):
     pass
