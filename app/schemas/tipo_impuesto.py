@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from app.domain.enums import TipoAplicacionEnum, BaseTributarioEnum
+from app.domain.entities.enums import TipoAplicacionEnum, BaseTributarioEnum
 
 class TipoImpuestoBase(BaseModel):
     codigo_afip: str

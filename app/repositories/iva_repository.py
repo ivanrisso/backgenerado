@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.infrastructure.db.orm_models import Iva as IvaModel
-from app.domain.iva import Iva
+from app.domain.entities.iva import Iva
 
 class IvaRepository:
     def __init__(self, db: AsyncSession):
