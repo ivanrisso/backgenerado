@@ -3,13 +3,12 @@ from starlette.middleware.cors import CORSMiddleware
 from app.infrastructure.db.engine import create_db_and_tables
 from app.routes import include_all_routes
 from app.core.middleware import ExceptionHandlingMiddleware
+from app.core.logger import init_logger
 import logging
 
-# Configurar logging global
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
+init_logger()
+logger = logging.getLogger(__name__)
+
 
 app = FastAPI(title="Billing Backend System")
 
@@ -28,6 +27,7 @@ app.add_middleware(
 # Crear tablas al iniciar si no existen
 @app.on_event("startup")
 async def on_startup():
+    logger.info(f"Creando base de datos y DB")
     await create_db_and_tables()
 
 # Registrar todas las rutas

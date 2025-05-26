@@ -51,14 +51,14 @@ async def create(data: ClienteCreate, service: ClienteService = Depends(get_clie
     except ClienteDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
-        raise HTTPException(status_code=422, detail=str(e))  # 👈 agregado
+        raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
         raise HTTPException(status_code=500, detail="Error inesperado")
 
-@router.put("/{id}", response_model=ClienteResponse)
-async def update(id: int, data: ClienteUpdate, service: ClienteService = Depends(get_cliente_service)):
+@router.patch("/{id}", response_model=ClienteResponse)
+async def partial_update(id: int, data: ClienteUpdate, service: ClienteService = Depends(get_cliente_service)):
     try:
         return await service.update(id, data)
     except ClienteNoEncontrado as e:
@@ -66,7 +66,7 @@ async def update(id: int, data: ClienteUpdate, service: ClienteService = Depends
     except ClienteDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
-        raise HTTPException(status_code=422, detail=str(e))  # 👈 agregado
+        raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

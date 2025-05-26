@@ -4,11 +4,11 @@ from typing import Optional
 
 @dataclass
 class Cliente:
-    id: Optional[int]
-    nombre: Optional[str]
-    apellido: Optional[str]
-    razon_social: Optional[str]
-    cuit: Optional[str]
-    email: str
-    tipo_doc_id: Optional[int]
-    iva_id: Optional[int]
+    id: Optional[int] = None
+    nombre: Optional[str] = None
+    apellido: Optional[str] = None
+    razon_social: Optional[str] = None
+    cuit: Optional[str] = None
+    email: Optional[str] = None
+    tipo_doc_id: Optional[int] = None
+    iva_id: Optional[int] = None

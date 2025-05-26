@@ -26,8 +26,8 @@ class ClienteUseCase:
         existing = await self.repo.get_by_id(cliente_id)
         if not existing:
             raise ClienteNoEncontrado(cliente_id)
-
-        cliente = Cliente(id=cliente_id, **data.model_dump(exclude_unset=True))
+        
+        cliente = Cliente(id=cliente_id, **data.model_dump(exclude_unset=True))        
         return await self.repo.update(cliente_id, cliente)
 
     async def delete(self, cliente_id: int) -> None:

@@ -37,6 +37,7 @@ ipython = "^8.24.0"
 ptvsd = "^4.3.2"
 aiomysql = "^0.2.0"
 python-jose = {extras = ["cryptography"], version = "^3.4.0"}
+python-json-logger = "^3.3.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"

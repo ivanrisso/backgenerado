@@ -12,6 +12,10 @@ from app.domain.exceptions.cliente import ClienteDuplicado
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
 
 class ClienteRepositoryImpl(ClienteRepositoryInterface):
     def __init__(self, db: AsyncSession):
@@ -42,6 +46,8 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
 
+                logger.error(f"Integritt Error: {msg}")
+
                 if error_code == 1062:
                     if "cuit" in msg:
                         raise ClienteDuplicado("cuit", cliente.cuit)
@@ -71,15 +77,22 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             if not cliente_sql:
                 return None
 
+            cambios = False
             for field, value in vars(cliente).items():
                 if value is not None and hasattr(cliente_sql, field):
                     setattr(cliente_sql, field, value)
+                    cambios = True  # ✅ Marcar que hubo modificación
 
-            await self.db.commit()
-            await self.db.refresh(cliente_sql)
+            if cambios:
+                await self.db.commit()
+                await self.db.refresh(cliente_sql)
+                
             return self._to_domain(cliente_sql)
 
         except IntegrityError as e:
+            
+            logger.info("acaaaaaa1111")
+            
             if hasattr(e.orig, "args"):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
@@ -103,9 +116,12 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             raise ErrorDeRepositorio("Error de integridad al actualizar cliente")
 
         except OperationalError:
+            logger.info("acaaaaaa33333")
             raise BaseDeDatosNoDisponible()
-        except Exception:
+        except Exception as e:
+            logger.info("acaaaaaa")
             raise ErrorDeRepositorio("Error inesperado al actualizar cliente")
+
 
     async def delete(self, cliente_id: int) -> None:
         try:
