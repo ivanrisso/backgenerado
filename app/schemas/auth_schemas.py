@@ -21,3 +21,5 @@ class TokenResponse(BaseModel):
 # Esquema para decodificar payloads de JWT
 class TokenData(BaseModel):
     sub: Optional[str] = None
+    
+    
