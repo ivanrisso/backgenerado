@@ -3,51 +3,84 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import AsyncGenerator, List
 
 from app.infrastructure.db.engine import SessionLocal
+from app.repositories.cliente_repository import ClienteRepositoryImpl
+from app.use_cases.cliente_use_case import ClienteUseCase
 from app.services.cliente_service import ClienteService
 from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse
+from app.domain.exceptions.cliente import ClienteNoEncontrado, ClienteDuplicado
+from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
+from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
 router = APIRouter(prefix="/clientes", tags=["Cliente"])
 
-# Dependency para obtener sesión de base de datos
+# DB session
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
 
-# Listar todos los clientes
+# ClienteService como dependencia
+def get_cliente_service(db: AsyncSession = Depends(get_db_session)) -> ClienteService:
+    repo = ClienteRepositoryImpl(db)
+    use_case = ClienteUseCase(repo)
+    return ClienteService(use_case)
+
+# Rutas
+
 @router.get("/", response_model=List[ClienteResponse])
-async def get_all(db: AsyncSession = Depends(get_db_session)):
-    service = ClienteService(db)
-    return await service.get_all()
+async def get_all(service: ClienteService = Depends(get_cliente_service)):
+    try:
+        return await service.get_all()
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
 
-# Obtener cliente por ID
 @router.get("/{id}", response_model=ClienteResponse)
-async def get_by_id(id: int, db: AsyncSession = Depends(get_db_session)):
-    service = ClienteService(db)
-    cliente = await service.get_by_id(id)
-    if cliente is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
-    return cliente
+async def get_by_id(id: int, service: ClienteService = Depends(get_cliente_service)):
+    try:
+        return await service.get_by_id(id)
+    except ClienteNoEncontrado as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
 
-# Crear nuevo cliente
 @router.post("/", response_model=ClienteResponse, status_code=status.HTTP_201_CREATED)
-async def create(data: ClienteCreate, db: AsyncSession = Depends(get_db_session)):
-    service = ClienteService(db)
-    return await service.create(data)
+async def create(data: ClienteCreate, service: ClienteService = Depends(get_cliente_service)):
+    try:
+        return await service.create(data)
+    except ClienteDuplicado as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except ClaveForaneaInvalida as e:
+        raise HTTPException(status_code=422, detail=str(e))  # 👈 agregado
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
 
-# Actualizar cliente existente
 @router.put("/{id}", response_model=ClienteResponse)
-async def update(id: int, data: ClienteUpdate, db: AsyncSession = Depends(get_db_session)):
-    service = ClienteService(db)
-    cliente = await service.update(id, data)
-    if cliente is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
-    return cliente
+async def update(id: int, data: ClienteUpdate, service: ClienteService = Depends(get_cliente_service)):
+    try:
+        return await service.update(id, data)
+    except ClienteNoEncontrado as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ClienteDuplicado as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except ClaveForaneaInvalida as e:
+        raise HTTPException(status_code=422, detail=str(e))  # 👈 agregado
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
 
-# Eliminar cliente por ID
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete(id: int, db: AsyncSession = Depends(get_db_session)):
-    service = ClienteService(db)
-    cliente = await service.get_by_id(id)
-    if cliente is None:
-        raise HTTPException(status_code=404, detail="Cliente no encontrado")
-    await service.delete(id)
+async def delete(id: int, service: ClienteService = Depends(get_cliente_service)):
+    try:
+        await service.delete(id)
+    except ClienteNoEncontrado as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ClaveForaneaInvalida as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
