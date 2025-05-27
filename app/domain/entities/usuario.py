@@ -1,5 +1,6 @@
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Optional, List
+from app.domain.entities.rol import Rol
 
 @dataclass
 class Usuario:
@@ -9,4 +10,4 @@ class Usuario:
     nombre: Optional[str]
     apellido: Optional[str]
     plain_password: Optional[str] = None
-    
+    roles: List[Rol] = field(default_factory=list)    

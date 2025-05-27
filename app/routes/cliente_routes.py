@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import AsyncGenerator, List
+from app.core.dependencies import require_roles
 
 from app.infrastructure.db.engine import SessionLocal
 from app.repositories.cliente_repository import ClienteRepositoryImpl
@@ -26,7 +27,7 @@ def get_cliente_service(db: AsyncSession = Depends(get_db_session)) -> ClienteSe
 
 # Rutas
 
-@router.get("/", response_model=List[ClienteResponse])
+@router.get("/", response_model=List[ClienteResponse], dependencies=[Depends(require_roles("admin"))])
 async def get_all(service: ClienteService = Depends(get_cliente_service)):
     try:
         return await service.get_all()
@@ -35,7 +36,7 @@ async def get_all(service: ClienteService = Depends(get_cliente_service)):
     except ErrorDeRepositorio:
         raise HTTPException(status_code=500, detail="Error inesperado")
 
-@router.get("/{id}", response_model=ClienteResponse)
+@router.get("/{id}", response_model=ClienteResponse,dependencies=[Depends(require_roles("admin"))])
 async def get_by_id(id: int, service: ClienteService = Depends(get_cliente_service)):
     try:
         return await service.get_by_id(id)
@@ -44,7 +45,7 @@ async def get_by_id(id: int, service: ClienteService = Depends(get_cliente_servi
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
 
-@router.post("/", response_model=ClienteResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=ClienteResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_roles("admin"))])
 async def create(data: ClienteCreate, service: ClienteService = Depends(get_cliente_service)):
     try:
         return await service.create(data)
@@ -57,7 +58,7 @@ async def create(data: ClienteCreate, service: ClienteService = Depends(get_clie
     except ErrorDeRepositorio:
         raise HTTPException(status_code=500, detail="Error inesperado")
 
-@router.patch("/{id}", response_model=ClienteResponse)
+@router.patch("/{id}", response_model=ClienteResponse, dependencies=[Depends(require_roles("admin"))])
 async def partial_update(id: int, data: ClienteUpdate, service: ClienteService = Depends(get_cliente_service)):
     try:
         return await service.update(id, data)
@@ -72,7 +73,7 @@ async def partial_update(id: int, data: ClienteUpdate, service: ClienteService =
     except ErrorDeRepositorio:
         raise HTTPException(status_code=500, detail="Error inesperado")
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_roles("admin"))])
 async def delete(id: int, service: ClienteService = Depends(get_cliente_service)):
     try:
         await service.delete(id)

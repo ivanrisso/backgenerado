@@ -53,7 +53,6 @@ async def get_by_email(usuario_mail: str, service: UsuarioService = Depends(get_
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
 
-
 @router.post("/", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED)
 async def create(data: UsuarioCreate, service: UsuarioService = Depends(get_usuario_service)):
     try:

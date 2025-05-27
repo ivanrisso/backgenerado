@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Response, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.auth_schemas import UsuarioCreate, UsuarioLogin
-from app.schemas.usuario import UsuarioResponse
+from app.schemas.usuario import UsuarioResponse, UsuarioResponseConRoles
 from app.services.auth_service import AuthService
 from app.infrastructure.db.engine import SessionLocal
 from app.infrastructure.security.jwt_handler import decode_token
@@ -79,6 +79,7 @@ async def logout_user(response: Response):
     )
     return {"msg": "Sesión cerrada correctamente"}
 
-@router.get("/me", response_model=UsuarioResponse, summary="Obtener datos del usuario autenticado")
+@router.get("/me", response_model=UsuarioResponseConRoles, summary="Obtener datos del usuario autenticado")
 async def get_me(current_user = Depends(get_current_user)):
     return current_user
+

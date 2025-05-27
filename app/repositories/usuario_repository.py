@@ -3,10 +3,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.orm import selectinload
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Usuario as UsuarioSQL
 from app.domain.entities.usuario import Usuario
+from app.domain.entities.rol import Rol
 from app.domain.repository.usuario_repository_interfase import UsuarioRepositoryInterface
 from app.domain.exceptions.usuario import UsuarioDuplicado
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
@@ -28,9 +30,10 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
         return self._to_domain(usuario_sql) if usuario_sql else None
 
     async def get_by_email(self, usuario_mail: str) -> Optional[Usuario]:
-        stmt = select(UsuarioSQL).where(UsuarioSQL.usuario_email == usuario_mail)
+        #stmt = select(UsuarioSQL).where(UsuarioSQL.usuario_email == usuario_mail)        
+        stmt = (select(UsuarioSQL).options(selectinload(UsuarioSQL.roles)).where(UsuarioSQL.usuario_email == usuario_mail))
         result = await self.db.execute(stmt)
-        usuario_sql = result.scalar_one_or_none()
+        usuario_sql = result.scalar_one_or_none()                
         return self._to_domain(usuario_sql) if usuario_sql else None
 
     async def get_all(self) -> List[Usuario]:
@@ -145,7 +148,15 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
             usuario_email=usuario_sql.usuario_email,
             usuario_password=usuario_sql.usuario_password,
             nombre=usuario_sql.nombre,
-            apellido=usuario_sql.apellido
+            apellido=usuario_sql.apellido,
+            roles = [
+            Rol(
+                id=rol.id,
+                rol_nombre=rol.rol_nombre,
+                es_admin=rol.es_admin
+            ) for rol in usuario_sql.roles
+            ] if usuario_sql.roles else []
+
         )
     
     def _to_orm(self, usuario: Usuario) -> UsuarioSQL:
