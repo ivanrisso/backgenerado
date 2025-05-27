@@ -1,16 +1,17 @@
+# ✅ app/schemas/usuario.py
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 
-class UsuarioBase(BaseModel):
+class UsuarioCreate(BaseModel):
     usuario_email: EmailStr
-    nombre: str
-    apellido: str
-
-class UsuarioCreate(UsuarioBase):
     usuario_password: str
 
-class UsuarioResponse(UsuarioBase):
-    id: int
+class UsuarioUpdate(BaseModel):
+    pass
+
+class UsuarioResponse(BaseModel):
+    usuario_email: str
+
 
     class Config:
         from_attributes = True
+        

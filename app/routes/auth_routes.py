@@ -1,11 +1,17 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Response, Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.auth_schemas import UsuarioCreate
+from app.schemas.auth_schemas import UsuarioCreate, UsuarioLogin
 from app.schemas.usuario import UsuarioResponse
 from app.services.auth_service import AuthService
 from app.infrastructure.db.engine import SessionLocal
 from app.infrastructure.security.jwt_handler import decode_token
 from typing import AsyncGenerator
+from app.core.dependencies import get_current_user
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
+
 
 router = APIRouter(
     prefix="/auth",
@@ -22,7 +28,7 @@ async def register_user(user_data: UsuarioCreate, db: AsyncSession = Depends(get
     return await auth_service.registrar_usuario(user_data)
 
 @router.post("/login", summary="Login de usuario")
-async def login_user(response: Response, form_data: UsuarioCreate, db: AsyncSession = Depends(get_db_session)):
+async def login_user(response: Response, form_data: UsuarioLogin, db: AsyncSession = Depends(get_db_session)):    
     auth_service = AuthService(db)
     usuario = await auth_service.autenticar_usuario(email=form_data.usuario_email, password=form_data.usuario_password)
     access_token, refresh_token = auth_service.crear_tokens(usuario)
@@ -57,6 +63,22 @@ async def refresh_token(request: Request, response: Response, db: AsyncSession =
 @router.post("/logout", summary="Cerrar sesión")
 async def logout_user(response: Response):
     """Borra cookies para cerrar sesión en el cliente."""
-    response.delete_cookie("access_token")
-    response.delete_cookie("refresh_token")
+    response.delete_cookie(
+        key="access_token",
+        path="/",
+        secure=True,
+        httponly=True,
+        samesite="Strict"
+    )
+    response.delete_cookie(
+        key="refresh_token",
+        path="/",
+        secure=True,
+        httponly=True,
+        samesite="Strict"
+    )
     return {"msg": "Sesión cerrada correctamente"}
+
+@router.get("/me", response_model=UsuarioResponse, summary="Obtener datos del usuario autenticado")
+async def get_me(current_user = Depends(get_current_user)):
+    return current_user

@@ -10,8 +10,8 @@ class UsuarioCreate(BaseModel):
 
 # Esquema para la autenticación (formulario de login)
 class UsuarioLogin(BaseModel):
-    username: EmailStr
-    password: str
+    usuario_email: EmailStr
+    usuario_password: str
 
 # Esquema de respuesta con el token
 class TokenResponse(BaseModel):

@@ -1,14 +1,19 @@
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.repositories.usuario_repository import UsuarioRepository
+from app.repositories.usuario_repository import UsuarioRepositoryImpl
 from app.schemas.auth_schemas import UsuarioCreate
 from app.infrastructure.db.orm_models import Usuario
 from app.infrastructure.security.password_hashing import hash_password, verify_password
 from app.infrastructure.security.jwt_handler import create_access_token, create_refresh_token
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
+
 
 class AuthService:
     def __init__(self, db: AsyncSession):
-        self.usuario_repo = UsuarioRepository(db)
+        self.usuario_repo = UsuarioRepositoryImpl(db)
 
     async def registrar_usuario(self, data: UsuarioCreate) -> Usuario:
         usuario_existente = await self.usuario_repo.get_by_email(data.usuario_email)
@@ -26,6 +31,9 @@ class AuthService:
         return await self.usuario_repo.create(usuario_nuevo)
 
     async def autenticar_usuario(self, email: str, password: str) -> Usuario:
+        
+        logger.info(f"email:{email} password:{password}")
+        
         usuario = await self.usuario_repo.get_by_email(email)
         if not usuario or not verify_password(password, usuario.usuario_password):
             raise HTTPException(

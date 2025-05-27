@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.db.engine import SessionLocal
 from app.infrastructure.security.jwt_handler import decode_token
-from app.repositories.usuario_repository import UsuarioRepository
+from app.repositories.usuario_repository import UsuarioRepositoryImpl
 from app.infrastructure.db.orm_models import Usuario
 from typing import AsyncGenerator
 
@@ -33,7 +33,7 @@ async def get_current_user(
     if not email:
         raise credentials_exception
 
-    usuario_repo = UsuarioRepository(db)
+    usuario_repo = UsuarioRepositoryImpl(db)
     user = await usuario_repo.get_by_email(email)
 
     if user is None:
