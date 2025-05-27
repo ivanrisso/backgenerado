@@ -1,18 +1,29 @@
-from pydantic import BaseModel
+# ✅ app/schemas/iva.py
+from pydantic import BaseModel, EmailStr
+from typing import Optional
 from decimal import Decimal
 
-class IvaBase(BaseModel):
+class IvaCreate(BaseModel):
     codigo: int
     descripcion: str
     porcentaje: Decimal
     discriminado: bool
     porcentaje_sobre: Decimal
 
-class IvaCreate(IvaBase):
-    pass
+class IvaUpdate(BaseModel):
+    codigo: Optional[int] = None
+    descripcion: Optional[str] = None
+    porcentaje: Optional[Decimal] = None
+    discriminado: Optional[bool] = None
+    porcentaje_sobre: Optional[Decimal] = None
 
-class IvaResponse(IvaBase):
-    id: int
+class IvaResponse(BaseModel):
+    id: int 
+    codigo: int
+    descripcion: str
+    porcentaje: Decimal
+    discriminado: bool
+    porcentaje_sobre: Decimal
 
     class Config:
         from_attributes = True
