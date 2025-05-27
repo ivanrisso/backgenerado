@@ -1,19 +1,42 @@
 from typing import Optional, List
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.infrastructure.db.orm_models import TipoDoc
-from app.repositories.tipodoc_repository import TipoDocRepository
-from app.schemas.tipo_doc import TipoDocCreate
+from app.domain.entities.tipodoc import TipoDoc
+from app.domain.repository.tipodoc_repository_interfase import TipoDocRepositoryInterface
+from app.schemas.tipo_doc import TipoDocCreate, TipoDocUpdate
+from app.domain.exceptions.tipodoc import TipoDocNoEncontrado
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
+
 
 class TipoDocUseCase:
-    def __init__(self, db: AsyncSession):
-        self.repo = TipoDocRepository(db)
+    def __init__(self, repo: TipoDocRepositoryInterface):
+        self.repo = repo
 
-    async def get_by_id(self, id: int) -> Optional[TipoDoc]:
-        return await self.repo.get_by_id(id)
+    async def get_by_id(self, tipodoc_id: int) -> TipoDoc:
+        tipodoc = await self.repo.get_by_id(tipodoc_id)
+        if not tipodoc:
+            raise TipoDocNoEncontrado(tipodoc_id)
+        return tipodoc
 
-    async def list_all(self) -> List[TipoDoc]:
-        return await self.repo.list_all()
+    async def get_all(self) -> List[TipoDoc]:
+        return await self.repo.get_all()
 
     async def create(self, data: TipoDocCreate) -> TipoDoc:
-        obj = TipoDoc(**data.model_dump())
-        return await self.repo.create(obj)
+        tipodoc = TipoDoc(id=None, **data.model_dump())
+        return await self.repo.create(tipodoc)
+
+    async def update(self, tipodoc_id: int, data: TipoDocUpdate) -> TipoDoc:
+        existing = await self.repo.get_by_id(tipodoc_id)        
+        if not existing:
+            raise TipoDocNoEncontrado(tipodoc_id)
+        
+        tipodoc = TipoDoc(id=tipodoc_id, **data.model_dump(exclude_unset=True))   
+        return await self.repo.update(tipodoc_id, tipodoc)
+
+    async def delete(self, tipodoc_id: int) -> None:
+        existing = await self.repo.get_by_id(tipodoc_id)
+        if not existing:
+            raise TipoDocNoEncontrado(tipodoc_id)
+
+        await self.repo.delete(tipodoc_id)

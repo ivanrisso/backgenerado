@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class TipoDocBase(BaseModel):
     tipo_doc_nombre: str
@@ -6,6 +7,10 @@ class TipoDocBase(BaseModel):
 
 class TipoDocCreate(TipoDocBase):
     pass
+
+class TipoDocUpdate(BaseModel):
+    tipo_doc_nombre: Optional[str] = None 
+    habilitado: Optional[bool] = None
 
 class TipoDocResponse(TipoDocBase):
     id: int

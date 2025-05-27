@@ -32,8 +32,6 @@ class AuthService:
 
     async def autenticar_usuario(self, email: str, password: str) -> Usuario:
         
-        logger.info(f"email:{email} password:{password}")
-        
         usuario = await self.usuario_repo.get_by_email(email)
         if not usuario or not verify_password(password, usuario.usuario_password):
             raise HTTPException(

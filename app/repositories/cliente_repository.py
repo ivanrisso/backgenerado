@@ -17,6 +17,7 @@ import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO) 
 
+
 class ClienteRepositoryImpl(ClienteRepositoryInterface):
     def __init__(self, db: AsyncSession):
         self.db = db
