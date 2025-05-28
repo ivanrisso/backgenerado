@@ -1,15 +1,18 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class PaisBase(BaseModel):
-    codigo: Optional[str]
-    nombre: Optional[str]
+class PaisCreate(BaseModel):
+    codigo: str
+    nombre: str
 
-class PaisCreate(PaisBase):
-    pass
+class PaisUpdate(BaseModel):
+    codigo: Optional[str] = None
+    nombre: Optional[str] = None
 
-class PaisResponse(PaisBase):
+class PaisResponse(BaseModel):
     id: int
+    codigo: str
+    nombre: str
 
     class Config:
         from_attributes = True

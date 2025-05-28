@@ -1,13 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class OperadorBase(BaseModel):
+
+class OperadorCreate(BaseModel):
     cliente_id: Optional[int]
 
-class OperadorCreate(OperadorBase):
-    pass
+class OperadorUpdate(BaseModel):
+    cliente_id: Optional[int]
 
-class OperadorResponse(OperadorBase):
+class OperadorResponse(BaseModel):
     id: int
 
     class Config:

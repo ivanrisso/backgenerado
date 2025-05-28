@@ -1,14 +1,18 @@
 from pydantic import BaseModel
+from typing import Optional
 
-class ConceptoBase(BaseModel):
+class ConceptoCreate(BaseModel):
     codigo: str
     descripcion: str
 
-class ConceptoCreate(ConceptoBase):
-    pass
+class ConceptoUpdate(BaseModel):
+    codigo: Optional[str] = None
+    descripcion: Optional[str] = None
 
-class ConceptoResponse(ConceptoBase):
+class ConceptoResponse(BaseModel):
     id: int
+    codigo: Optional[str] = None
+    descripcion: Optional[str] = None
 
     class Config:
         from_attributes = True

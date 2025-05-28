@@ -1,5 +1,5 @@
 # ✅ app/schemas/iva.py
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from typing import Optional
 from decimal import Decimal
 

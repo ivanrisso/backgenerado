@@ -6,11 +6,21 @@ class TipoComprobanteBase(BaseModel):
     descripcion: Optional[str]
     es_fiscal: Optional[bool]
 
-class TipoComprobanteCreate(TipoComprobanteBase):
-    pass
+class TipoComprobanteCreate(BaseModel):
+    codigo: str
+    descripcion: str
+    es_fiscal: bool
+
+class TipoComprobanteBase(BaseModel):
+    codigo: Optional[str] = None
+    descripcion: Optional[str] = None
+    es_fiscal: Optional[bool] = None
 
 class TipoComprobanteResponse(TipoComprobanteBase):
     id: int
+    codigo: str
+    descripcion: str
+    es_fiscal: bool
 
     class Config:
         from_attributes = True

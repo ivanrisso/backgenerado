@@ -1,14 +1,19 @@
 from pydantic import BaseModel
+from typing import Optional
 
-class MonedaBase(BaseModel):
+
+class MonedaCreate(BaseModel):
     codigo: str
     descripcion: str
 
-class MonedaCreate(MonedaBase):
-    pass
+class MonedaUpdate(BaseModel):
+    codigo: Optional[str] = None
+    descripcion: Optional[str] = None
 
-class MonedaResponse(MonedaBase):
+class MonedaResponse(BaseModel):
     id: int
+    codigo: str
+    descripcion: str
 
     class Config:
         from_attributes = True

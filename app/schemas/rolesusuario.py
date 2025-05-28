@@ -1,13 +1,18 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class RolesUsuarioBase(BaseModel):
-    usuario_id: Optional[int]
-    rol_id: Optional[int]
 
-class RolesUsuarioCreate(RolesUsuarioBase):
-    pass
+class RolesUsuarioCreate(BaseModel):
+    usuario_id: int
+    rol_id: int
 
-class RolesUsuarioResponse(RolesUsuarioBase):
+class RolesUsuarioUpdate(BaseModel):
+    usuario_id: int
+    rol_id: int
+
+class RolesUsuarioResponse(BaseModel):
+    usuario_id: int
+    rol_id: int
+    
     class Config:
         from_attributes = True
