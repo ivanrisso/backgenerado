@@ -1,10 +1,7 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-class TipoTel(BaseModel):
-    id: Optional[int]
-    nombre: Optional[str]
-    
-    class Config:
-        from_attributes = True
-    
+@dataclass
+class TipoTel:
+    id: Optional[int] = None
+    nombre: Optional[str] = None
