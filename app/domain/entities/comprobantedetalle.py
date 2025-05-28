@@ -1,16 +1,15 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-class ComprobanteDetalle(BaseModel):
-    id: Optional[int]
-    comprobante_id: Optional[int]
-    iva_id: Optional[int]
-    descripcion: Optional[str]
-    cantidad: Optional[float]
-    precio_unitario: Optional[float]
-    importe: Optional[float]
-    alicuota_iva: Optional[float]
-    importe_iva: Optional[float]
+@dataclass
+class ComprobanteDetalle:
+    id: Optional[int] = None
+    comprobante_id: Optional[int] = None
+    iva_id: Optional[int] = None
+    descripcion: Optional[str] = None
+    cantidad: Optional[float] = None
+    precio_unitario: Optional[float] = None
+    importe: Optional[float] = None
+    alicuota_iva: Optional[float] = None
+    importe_iva: Optional[float] = None
     
-    class Config:
-        from_attributes = True

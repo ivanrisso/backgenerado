@@ -1,10 +1,7 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-class RolMenuItem(BaseModel):
-    rol_id: Optional[int]
-    menu_item_id: Optional[int]
-    
-    class Config:
-        from_attributes = True
-    
+@dataclass
+class RolMenuItem:
+    rol_id: Optional[int] = None
+    menu_item_id: Optional[int] = None

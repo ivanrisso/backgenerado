@@ -1,10 +1,8 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-class Provincia(BaseModel):
-    id: Optional[int]
-    provincia_nombre: Optional[str]
-    pais_id: Optional[int]
-
-    class Config:
-        from_attributes = True
+@dataclass
+class Provincia:
+    id: Optional[int] = None
+    provincia_nombre: Optional[str] = None
+    pais_id: Optional[int] = None

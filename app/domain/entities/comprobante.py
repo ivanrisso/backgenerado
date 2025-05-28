@@ -1,30 +1,28 @@
 from typing import Optional, List
 from datetime import date
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-class Comprobante(BaseModel):
-    id: Optional[int]
-    cliente_id: Optional[int]
-    tipo_comprobante_id: Optional[int]
-    concepto_id: Optional[int]
-    tipo_doc_id: Optional[int]
-    moneda_id: Optional[int]
-    punto_venta: Optional[int]
-    numero: Optional[int]
-    fecha_emision: Optional[date]
-    doc_nro: Optional[str]
-    nombre_cliente: Optional[str]
-    cuit_cliente: Optional[str]
-    domicilio_cliente: Optional[str]
-    localidad_cliente: Optional[str]
-    cod_postal_cliente: Optional[str]
-    provincia_cliente: Optional[str]
+@dataclass
+class Comprobante:
+    id: Optional[int] = None
+    cliente_id: Optional[int] = None
+    tipo_comprobante_id: Optional[int] = None
+    concepto_id: Optional[int] = None
+    tipo_doc_id: Optional[int] = None
+    moneda_id: Optional[int] = None
+    punto_venta: Optional[int] = None
+    numero: Optional[int] = None
+    fecha_emision: Optional[date] = None
+    doc_nro: Optional[str] = None
+    nombre_cliente: Optional[str] = None
+    cuit_cliente: Optional[str] = None
+    domicilio_cliente: Optional[str] = None
+    localidad_cliente: Optional[str] = None
+    cod_postal_cliente: Optional[str] = None
+    provincia_cliente: Optional[str] = None
     cotizacion_moneda: Optional[float]
-    total_neto: Optional[float]
-    total_iva: Optional[float]
-    total_impuestos: Optional[float]
-    total: Optional[float]
-    observaciones: Optional[str]
-
-    class Config:
-        from_attributes = True
+    total_neto: Optional[float] = None
+    total_iva: Optional[float] = None
+    total_impuestos: Optional[float] = None
+    total: Optional[float] = None
+    observaciones: Optional[str] = None

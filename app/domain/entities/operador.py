@@ -1,10 +1,7 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-
-class Operador(BaseModel):
+@dataclass
+class Operador:
     id: Optional[int]
     cliente_id: Optional[int]
-
-    class Config:
-        from_attributes = True

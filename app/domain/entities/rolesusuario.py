@@ -1,11 +1,7 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-
-class RolesUsuario(BaseModel):
-    usuario_id: Optional[int]
-    rol_id: Optional[int]
-    
-    class Config:
-        from_attributes = True
-    
+@dataclass
+class RolesUsuario:
+    usuario_id: Optional[int] = None
+    rol_id: Optional[int] = None

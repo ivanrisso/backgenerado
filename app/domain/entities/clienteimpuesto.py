@@ -1,13 +1,11 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-class ClienteImpuesto(BaseModel):
-    id: Optional[int]
-    cliente_id: Optional[int]
-    tipo_impuesto_id: Optional[int]
-    aplica: Optional[bool]
-    alicuota: Optional[float]
-    observaciones: Optional[str]
-
-    class Config:
-        from_attributes = True
+@dataclass
+class ClienteImpuesto:
+    id: Optional[int] = None
+    cliente_id: Optional[int] = None
+    tipo_impuesto_id: Optional[int] = None
+    aplica: Optional[bool] = None
+    alicuota: Optional[float] = None
+    observaciones: Optional[str] = None

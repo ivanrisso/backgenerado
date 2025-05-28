@@ -1,17 +1,15 @@
 from typing import Optional
 from datetime import date
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-class CuentaCorriente(BaseModel):
-    id: Optional[int]
-    cliente_id: Optional[int]
-    comprobante_id: Optional[int]
-    fecha: Optional[date]
-    tipo: Optional[str]
-    descripcion: Optional[str]
-    importe: Optional[float]
-    signo: Optional[int]
-    saldo: Optional[float]
-
-    class Config:
-        from_attributes = True
+@dataclass
+class CuentaCorriente:
+    id: Optional[int] = None
+    cliente_id: Optional[int] = None
+    comprobante_id: Optional[int] = None
+    fecha: Optional[date] = None
+    tipo: Optional[str] = None
+    descripcion: Optional[str] = None
+    importe: Optional[float] = None
+    signo: Optional[int] = None
+    saldo: Optional[float] = None

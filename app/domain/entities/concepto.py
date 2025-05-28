@@ -1,11 +1,9 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-
-class Concepto(BaseModel):
-    id: Optional[int]
-    codigo: Optional[str]
-    descripcion: Optional[str]
+@dataclass
+class Concepto:
+    id: Optional[int] = None
+    codigo: Optional[str] = None
+    descripcion: Optional[str] = None
     
-    class Config:
-        from_attributes = True

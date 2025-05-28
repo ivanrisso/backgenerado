@@ -1,10 +1,8 @@
-from typing import Optional, List
-from pydantic import BaseModel
+from typing import Optional
+from dataclasses import dataclass
 
-class Moneda(BaseModel):
-    id: Optional[int]
-    codigo: Optional[str]
-    descripcion: Optional[str]
-
-    class Config:
-        from_attributes = True
+@dataclass
+class Moneda:
+    id: Optional[int] = None
+    codigo: Optional[str] = None
+    descripcion: Optional[str] = None

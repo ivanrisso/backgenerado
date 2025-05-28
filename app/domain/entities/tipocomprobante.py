@@ -1,13 +1,9 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-
-class TipoComprobante(BaseModel):
-    id: Optional[int]
-    codigo: Optional[str]
-    descripcion: Optional[str]
-    es_fiscal: Optional[bool]
-    
-    class Config:
-        from_attributes = True
-    
+@dataclass    
+class TipoComprobante:
+    id: Optional[int] = None
+    codigo: Optional[str] = None
+    descripcion: Optional[str] = None
+    es_fiscal: Optional[bool] = None

@@ -1,13 +1,10 @@
 from typing import Optional
-from pydantic import BaseModel
+from dataclasses import dataclass
 
-
-class MenuItem(BaseModel):
-    id: Optional[int]
-    nombre: Optional[str]
-    path: Optional[str]
-    parent_id: Optional[int]
-    
-    class Config:
-        from_attributes = True
+@dataclass
+class MenuItem:
+    id: Optional[int] = None
+    nombre: Optional[str] = None
+    path: Optional[str] = None
+    parent_id: Optional[int] = None
     

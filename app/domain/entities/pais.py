@@ -1,10 +1,8 @@
-from typing import Optional, List
-from pydantic import BaseModel
+from typing import Optional
+from dataclasses import dataclass
 
-class Pais(BaseModel):
-    id: Optional[int]
-    codigo: Optional[str]
-    nombre: Optional[str]
-
-    class Config:
-        from_attributes = True
+@dataclass
+class Pais:
+    id: Optional[int] = None
+    codigo: Optional[str] = None 
+    nombre: Optional[str] = None
