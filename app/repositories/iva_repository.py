@@ -48,20 +48,12 @@ class IvaRepositoryImpl(IvaRepositoryInterface):
                 msg = msg.lower()
 
                 if error_code == 1062:
-                    if "cuit" in msg:
-                        raise IvaDuplicado("cuit", iva.cuit)
+                    if "codigo" in msg:
+                        raise IvaDuplicado("codigo", str(iva.codigo))
                     elif "primary" in msg:
                         raise IvaDuplicado("id", str(iva.id))
                     else:
                         raise IvaDuplicado("desconocido", "valor duplicado")
-
-                elif error_code == 1452:
-                    if "iva_id" in msg:
-                        raise ClaveForaneaInvalida("iva_id", str(iva.iva_id))
-                    elif "tipo_doc_id" in msg:
-                        raise ClaveForaneaInvalida("tipo_doc_id", str(iva.tipo_doc_id))
-                    else:
-                        raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear iva")
 
@@ -80,37 +72,32 @@ class IvaRepositoryImpl(IvaRepositoryInterface):
             for field, value in vars(iva).items():
                 if value is not None and hasattr(iva_sql, field):
                     setattr(iva_sql, field, value)
-                    cambios = True  # ✅ Marcar que hubo modificación
+                    cambios = True
 
             if cambios:
                 await self.db.commit()
                 await self.db.refresh(iva_sql)
-                
+
             return self._to_domain(iva_sql)
 
         except IntegrityError as e:
-                        
             if hasattr(e.orig, "args"):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
 
                 if error_code == 1062:
-                    if "cuit" in msg:
-                        raise IvaDuplicado("cuit", iva.cuit)
+                    if "codigo" in msg:
+                        raise IvaDuplicado("codigo", str(iva.codigo))
                     elif "primary" in msg:
                         raise IvaDuplicado("id", str(iva.id))
                     else:
                         raise IvaDuplicado("desconocido", "valor duplicado")
 
-                elif error_code == 1452:
-                    raise ClaveForaneaInvalida("campo_desconocido")
-
             raise ErrorDeRepositorio("Error de integridad al actualizar iva")
 
         except OperationalError:
             raise BaseDeDatosNoDisponible()
-        except Exception as e:
-            logger.info("acaaaaaa")
+        except Exception:
             raise ErrorDeRepositorio("Error inesperado al actualizar iva")
 
 

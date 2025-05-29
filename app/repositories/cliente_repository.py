@@ -47,8 +47,6 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
 
-                logger.error(f"Integritt Error: {msg}")
-
                 if error_code == 1062:
                     if "cuit" in msg:
                         raise ClienteDuplicado("cuit", cliente.cuit)
@@ -91,9 +89,7 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             return self._to_domain(cliente_sql)
 
         except IntegrityError as e:
-            
-            logger.info("acaaaaaa1111")
-            
+                        
             if hasattr(e.orig, "args"):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
@@ -117,10 +113,8 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             raise ErrorDeRepositorio("Error de integridad al actualizar cliente")
 
         except OperationalError:
-            logger.info("acaaaaaa33333")
             raise BaseDeDatosNoDisponible()
         except Exception as e:
-            logger.info("acaaaaaa")
             raise ErrorDeRepositorio("Error inesperado al actualizar cliente")
 
 
