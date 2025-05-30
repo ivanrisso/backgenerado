@@ -20,7 +20,7 @@ class Comprobante:
     localidad_cliente: Optional[str] = None
     cod_postal_cliente: Optional[str] = None
     provincia_cliente: Optional[str] = None
-    cotizacion_moneda: Optional[float]
+    cotizacion_moneda: Optional[float] = None
     total_neto: Optional[float] = None
     total_iva: Optional[float] = None
     total_impuestos: Optional[float] = None

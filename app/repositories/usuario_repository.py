@@ -55,8 +55,6 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
 
-                logger.error(f"Integritt Error: {msg}")
-
                 if error_code == 1062:
                     if "usuario_mail" in msg:
                         raise UsuarioDuplicado("mail", usuario.usuario_email)
@@ -73,7 +71,7 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception as ex:
-            logger.error(f"❌ Error SQLAlchemy al crear usuario: {ex}")
+            logger.error(f"❌ Error SQLAlchemy al crear usuariooooooooooo: {ex}")
             raise ErrorDeRepositorio("Error inesperado al crear usuario")
 
     async def update(self, usuario_id: int, usuario: Usuario) -> Optional[Usuario]:

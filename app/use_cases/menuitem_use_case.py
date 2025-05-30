@@ -1,7 +1,7 @@
 from typing import  List
 from app.domain.entities.menuitem import MenuItem
 from app.domain.repository.menuitem_repository_interfase import MenuItemRepositoryInterface
-from app.schemas.menuitem import MenuItemCreate, MenuItemUpdate
+from app.schemas.menu_item import MenuItemCreate, MenuItemUpdate
 from app.domain.exceptions.menuitem import MenuItemNoEncontrado
 import logging
 
