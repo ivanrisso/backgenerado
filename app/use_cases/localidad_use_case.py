@@ -1,19 +1,42 @@
-from typing import Optional, List
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.infrastructure.db.orm_models import Localidad
-from app.repositories.localidad_repository import LocalidadRepository
-from app.schemas.localidad import LocalidadCreate
+from typing import  List
+from app.domain.entities.localidad import Localidad
+from app.domain.repository.localidad_repository_interfase import LocalidadRepositoryInterface
+from app.schemas.localidad import LocalidadCreate, LocalidadUpdate
+from app.domain.exceptions.localidad import LocalidadNoEncontrado
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
+
 
 class LocalidadUseCase:
-    def __init__(self, db: AsyncSession):
-        self.repo = LocalidadRepository(db)
+    def __init__(self, repo: LocalidadRepositoryInterface):
+        self.repo = repo
 
-    async def get_by_id(self, id: int) -> Optional[Localidad]:
-        return await self.repo.get_by_id(id)
+    async def get_by_id(self, localidad_id: int) -> Localidad:
+        localidad = await self.repo.get_by_id(localidad_id)
+        if not localidad:
+            raise LocalidadNoEncontrado(localidad_id)
+        return localidad
 
-    async def list_all(self) -> List[Localidad]:
-        return await self.repo.list_all()
+    async def get_all(self) -> List[Localidad]:
+        return await self.repo.get_all()
 
     async def create(self, data: LocalidadCreate) -> Localidad:
-        obj = Localidad(**data.model_dump())
-        return await self.repo.create(obj)
+        localidad = Localidad(id=None, **data.model_dump())
+        return await self.repo.create(localidad)
+
+    async def update(self, localidad_id: int, data: LocalidadUpdate) -> Localidad:
+        existing = await self.repo.get_by_id(localidad_id)
+        if not existing:
+            raise LocalidadNoEncontrado(localidad_id)
+        
+        localidad = Localidad(id=localidad_id, **data.model_dump(exclude_unset=True))        
+        return await self.repo.update(localidad_id, localidad)
+
+    async def delete(self, localidad_id: int) -> None:
+        existing = await self.repo.get_by_id(localidad_id)
+        if not existing:
+            raise LocalidadNoEncontrado(localidad_id)
+
+        await self.repo.delete(localidad_id)

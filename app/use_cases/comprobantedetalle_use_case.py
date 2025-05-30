@@ -1,19 +1,42 @@
-from typing import Optional, List
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.infrastructure.db.orm_models import ComprobanteDetalle
-from app.repositories.comprobantedetalle_repository import ComprobanteDetalleRepository
-from app.schemas.comprobante_detalle import ComprobanteDetalleCreate
+from typing import  List
+from app.domain.entities.comprobantedetalle import ComprobanteDetalle
+from app.domain.repository.comprobantedetalle_repository_interfase import ComprobanteDetalleRepositoryInterface
+from app.schemas.comprobante_detalle import ComprobanteDetalleCreate, ComprobanteDetalleUpdate
+from app.domain.exceptions.comprobantedetalle import ComprobanteDetalleNoEncontrado
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
+
 
 class ComprobanteDetalleUseCase:
-    def __init__(self, db: AsyncSession):
-        self.repo = ComprobanteDetalleRepository(db)
+    def __init__(self, repo: ComprobanteDetalleRepositoryInterface):
+        self.repo = repo
 
-    async def get_by_id(self, id: int) -> Optional[ComprobanteDetalle]:
-        return await self.repo.get_by_id(id)
+    async def get_by_id(self, comprobantedetalle_id: int) -> ComprobanteDetalle:
+        comprobantedetalle = await self.repo.get_by_id(comprobantedetalle_id)
+        if not comprobantedetalle:
+            raise ComprobanteDetalleNoEncontrado(comprobantedetalle_id)
+        return comprobantedetalle
 
-    async def list_all(self) -> List[ComprobanteDetalle]:
-        return await self.repo.list_all()
+    async def get_all(self) -> List[ComprobanteDetalle]:
+        return await self.repo.get_all()
 
     async def create(self, data: ComprobanteDetalleCreate) -> ComprobanteDetalle:
-        obj = ComprobanteDetalle(**data.model_dump())
-        return await self.repo.create(obj)
+        comprobantedetalle = ComprobanteDetalle(id=None, **data.model_dump())
+        return await self.repo.create(comprobantedetalle)
+
+    async def update(self, comprobantedetalle_id: int, data: ComprobanteDetalleUpdate) -> ComprobanteDetalle:
+        existing = await self.repo.get_by_id(comprobantedetalle_id)
+        if not existing:
+            raise ComprobanteDetalleNoEncontrado(comprobantedetalle_id)
+        
+        comprobantedetalle = ComprobanteDetalle(id=comprobantedetalle_id, **data.model_dump(exclude_unset=True))        
+        return await self.repo.update(comprobantedetalle_id, comprobantedetalle)
+
+    async def delete(self, comprobantedetalle_id: int) -> None:
+        existing = await self.repo.get_by_id(comprobantedetalle_id)
+        if not existing:
+            raise ComprobanteDetalleNoEncontrado(comprobantedetalle_id)
+
+        await self.repo.delete(comprobantedetalle_id)

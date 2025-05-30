@@ -1,8 +1,12 @@
-from typing import Optional, List
+from typing import  List
 from app.domain.entities.cliente import Cliente
 from app.domain.repository.cliente_repository_interfase import ClienteRepositoryInterface
 from app.schemas.cliente import ClienteCreate, ClienteUpdate
 from app.domain.exceptions.cliente import ClienteNoEncontrado
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
 
 
 class ClienteUseCase:
