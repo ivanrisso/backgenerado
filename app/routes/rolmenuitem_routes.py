@@ -1,28 +1,91 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.infrastructure.db.engine import SessionLocal
-from app.services.rolmenuitem_service import RolMenuItemService
-from app.schemas.rolmenuitem import RolMenuItemCreate, RolMenuItemResponse
-from typing import AsyncGenerator
+from typing import AsyncGenerator, List
+from app.core.dependencies import require_roles
 
+from app.infrastructure.db.engine import SessionLocal
+from app.repositories.rolmenuitem_repository import RolMenuItemRepositoryImpl
+from app.use_cases.rolmenuitem_use_case import RolMenuItemUseCase
+from app.services.rolmenuitem_service import RolMenuItemService
+from app.schemas.rolmenuitem import RolMenuItemCreate, RolMenuItemUpdate, RolMenuItemResponse
+from app.domain.exceptions.rolmenuitem import RolMenuItemNoEncontrado, RolMenuItemDuplicado
+from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
+from app.domain.exceptions.integridad import ClaveForaneaInvalida
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
 
 router = APIRouter(prefix="/rolmenuitems", tags=["RolMenuItem"])
 
+# DB session
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
 
-@router.get("/", response_model=list[RolMenuItemResponse])
-async def list_all(db: AsyncSession = Depends(get_db_session)):
-    service = RolMenuItemService(db)
-    return await service.list_all()
+# RolMenuItemService como dependencia
+def get_rolmenuitem_service(db: AsyncSession = Depends(get_db_session)) -> RolMenuItemService:
+    repo = RolMenuItemRepositoryImpl(db)
+    use_case = RolMenuItemUseCase(repo)
+    return RolMenuItemService(use_case)
 
-@router.get("/{id}", response_model=RolMenuItemResponse)
-async def get_by_id(id: int, db: AsyncSession = Depends(get_db_session)):
-    service = RolMenuItemService(db)
-    return await service.get_by_id(id)
+# Rutas
 
-@router.post("/", response_model=RolMenuItemResponse, status_code=status.HTTP_201_CREATED)
-async def create(data: RolMenuItemCreate, db: AsyncSession = Depends(get_db_session)):
-    service = RolMenuItemService(db)
-    return await service.create(data)
+@router.get("/", response_model=List[RolMenuItemResponse], dependencies=[Depends(require_roles("admin"))])
+async def get_all(service: RolMenuItemService = Depends(get_rolmenuitem_service)):
+    try:
+        return await service.get_all()
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
+
+@router.get("/{id}", response_model=RolMenuItemResponse,dependencies=[Depends(require_roles("admin"))])
+async def get_by_id(id: int, service: RolMenuItemService = Depends(get_rolmenuitem_service)):
+    try:
+        return await service.get_by_id(id)
+    except RolMenuItemNoEncontrado as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+
+@router.post("/", response_model=RolMenuItemResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_roles("admin"))])
+async def create(data: RolMenuItemCreate, service: RolMenuItemService = Depends(get_rolmenuitem_service)):
+    try:
+        return await service.create(data)
+    except RolMenuItemDuplicado as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except ClaveForaneaInvalida as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
+
+@router.patch("/{id}", response_model=RolMenuItemResponse, dependencies=[Depends(require_roles("admin"))])
+async def partial_update(id: int, data: RolMenuItemUpdate, service: RolMenuItemService = Depends(get_rolmenuitem_service)):
+    try:
+        return await service.update(id, data)
+    except RolMenuItemNoEncontrado as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except RolMenuItemDuplicado as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except ClaveForaneaInvalida as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_roles("admin"))])
+async def delete(id: int, service: RolMenuItemService = Depends(get_rolmenuitem_service)):
+    try:
+        await service.delete(id)
+    except RolMenuItemNoEncontrado as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ClaveForaneaInvalida as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")

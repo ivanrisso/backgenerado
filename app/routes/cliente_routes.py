@@ -11,6 +11,10 @@ from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse
 from app.domain.exceptions.cliente import ClienteNoEncontrado, ClienteDuplicado
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
 
 router = APIRouter(prefix="/clientes", tags=["Cliente"])
 

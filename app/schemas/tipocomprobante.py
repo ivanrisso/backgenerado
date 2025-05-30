@@ -11,7 +11,7 @@ class TipoComprobanteCreate(BaseModel):
     descripcion: str
     es_fiscal: bool
 
-class TipoComprobanteBase(BaseModel):
+class TipoComprobanteUpdate(BaseModel):
     codigo: Optional[str] = None
     descripcion: Optional[str] = None
     es_fiscal: Optional[bool] = None
