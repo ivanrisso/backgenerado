@@ -1,18 +1,73 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional, List
+# ✅ app/services/tipodom_service.py
+
+from typing import List
 from app.use_cases.tipodom_use_case import TipoDomUseCase
-from app.schemas.tipodom import TipoDomCreate
-from app.infrastructure.db.orm_models import TipoDom
+from app.schemas.tipodom import TipoDomCreate, TipoDomUpdate, TipoDomResponse
+from app.domain.entities.tipodom import TipoDom
+from app.domain.exceptions.tipodom import TipoDomNoEncontrado, TipoDomDuplicado
+from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
+from app.domain.exceptions.integridad import ClaveForaneaInvalida
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
+
 
 class TipoDomService:
-    def __init__(self, db: AsyncSession):
-        self.use_case = TipoDomUseCase(db)
+    def __init__(self, use_case: TipoDomUseCase):
+        self.use_case = use_case
 
-    async def get_by_id(self, id: int) -> Optional[TipoDom]:
-        return await self.use_case.get_by_id(id)
+    def to_response(self, tipodom: TipoDom) -> TipoDomResponse:
+        return TipoDomResponse(**tipodom.__dict__)
 
-    async def list_all(self) -> List[TipoDom]:
-        return await self.use_case.list_all()
+    async def get_by_id(self, id: int) -> TipoDomResponse:
+        try:
+            tipodom = await self.use_case.get_by_id(id)
+            return self.to_response(tipodom)
+        except TipoDomNoEncontrado as e:
+            raise e
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al obtener tipodom")
 
-    async def create(self, data: TipoDomCreate) -> TipoDom:
-        return await self.use_case.create(data)
+    async def get_all(self) -> List[TipoDomResponse]:
+        try:
+            tipodoms = await self.use_case.get_all()
+            return [self.to_response(c) for c in tipodoms]
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al listar tipodoms")
+
+    async def create(self, data: TipoDomCreate) -> TipoDomResponse:
+        try:
+            tipodom = await self.use_case.create(data)
+            return self.to_response(tipodom)
+        except (TipoDomDuplicado, ClaveForaneaInvalida) as e:
+            raise e
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al crear tipodom")
+
+    async def update(self, id: int, data: TipoDomUpdate) -> TipoDomResponse:
+        try:
+            tipodom = await self.use_case.update(id, data)
+            return self.to_response(tipodom)
+        except (TipoDomNoEncontrado, TipoDomDuplicado, ClaveForaneaInvalida) as e:
+            raise e
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al actualizar tipodom")
+
+    async def delete(self, id: int) -> None:
+        try:
+            await self.use_case.delete(id)
+        except (TipoDomNoEncontrado, ClaveForaneaInvalida) as e:
+            raise e
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al eliminar tipodom")
