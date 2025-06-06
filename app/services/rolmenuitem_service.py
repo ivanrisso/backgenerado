@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.rolmenuitem_use_case import RolMenuItemUseCase
 from app.schemas.rolmenuitem import RolMenuItemCreate, RolMenuItemUpdate, RolMenuItemResponse
 from app.domain.entities.rolmenuitem import RolMenuItem
-from app.domain.exceptions.rolmenuitem import RolMenuItemNoEncontrado, RolMenuItemDuplicado
+from app.domain.exceptions.rolmenuitem import RolMenuItemNoEncontrado, RolMenuItemDuplicado, RolMenuItemInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class RolMenuItemService:
         try:
             rolmenuitem = await self.use_case.create(data)
             return self.to_response(rolmenuitem)
-        except (RolMenuItemDuplicado, ClaveForaneaInvalida) as e:
+        except (RolMenuItemDuplicado, ClaveForaneaInvalida, RolMenuItemInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class RolMenuItemService:
         try:
             rolmenuitem = await self.use_case.update(id, data)
             return self.to_response(rolmenuitem)
-        except (RolMenuItemNoEncontrado, RolMenuItemDuplicado, ClaveForaneaInvalida) as e:
+        except (RolMenuItemNoEncontrado, RolMenuItemDuplicado, ClaveForaneaInvalida, RolMenuItemInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

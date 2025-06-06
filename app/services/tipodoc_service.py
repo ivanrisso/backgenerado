@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.tipodoc_use_case import TipoDocUseCase
 from app.schemas.tipo_doc import TipoDocCreate, TipoDocUpdate, TipoDocResponse
 from app.domain.entities.tipodoc import TipoDoc
-from app.domain.exceptions.tipodoc import TipoDocNoEncontrado, TipoDocDuplicado
+from app.domain.exceptions.tipodoc import TipoDocNoEncontrado, TipoDocDuplicado, TipoDocInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class TipoDocService:
         try:
             tipodoc = await self.use_case.create(data)
             return self.to_response(tipodoc)
-        except (TipoDocDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoDocDuplicado, ClaveForaneaInvalida, TipoDocInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class TipoDocService:
         try:
             tipodoc = await self.use_case.update(id, data)
             return self.to_response(tipodoc)
-        except (TipoDocNoEncontrado, TipoDocDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoDocNoEncontrado, TipoDocDuplicado, ClaveForaneaInvalida, TipoDocInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

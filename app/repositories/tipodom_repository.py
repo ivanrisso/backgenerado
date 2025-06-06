@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import TipoDom as TipoDomSQL
 from app.domain.entities.tipodom import TipoDom
 from app.domain.repository.tipodom_repository_interfase import TipoDomRepositoryInterface
-from app.domain.exceptions.tipodom import TipoDomDuplicado
+from app.domain.exceptions.tipodom import TipoDomDuplicado, TipoDomInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -59,7 +59,10 @@ class TipoDomRepositoryImpl(TipoDomRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear tipodom")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoDomInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -101,6 +104,11 @@ class TipoDomRepositoryImpl(TipoDomRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar tipodom")
+        
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoDomInvalido(msg)        
 
         except OperationalError:
             logger.info("acaaaaaa33333")

@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.tipotel_use_case import TipoTelUseCase
 from app.schemas.tipotel import TipoTelCreate, TipoTelUpdate, TipoTelResponse
 from app.domain.entities.tipotel import TipoTel
-from app.domain.exceptions.tipotel import TipoTelNoEncontrado, TipoTelDuplicado
+from app.domain.exceptions.tipotel import TipoTelNoEncontrado, TipoTelDuplicado, TipoTelInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -45,7 +45,7 @@ class TipoTelService:
     async def create(self, data: TipoTelCreate) -> TipoTelResponse:
         try:
             return await self.use_case.create(data)
-        except (TipoTelDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoTelDuplicado, ClaveForaneaInvalida, TipoTelInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class TipoTelService:
     async def update(self, id: int, data: TipoTelUpdate) -> TipoTelResponse:
         try:
             return await self.use_case.update(id, data)
-        except (TipoTelNoEncontrado, TipoTelDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoTelNoEncontrado, TipoTelDuplicado, ClaveForaneaInvalida, TipoTelInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.cliente_use_case import ClienteUseCase
 from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse
 from app.domain.entities.cliente import Cliente
-from app.domain.exceptions.cliente import ClienteNoEncontrado, ClienteDuplicado
+from app.domain.exceptions.cliente import ClienteNoEncontrado, ClienteDuplicado, ClienteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class ClienteService:
         try:
             cliente = await self.use_case.create(data)
             return self.to_response(cliente)
-        except (ClienteDuplicado, ClaveForaneaInvalida) as e:
+        except (ClienteDuplicado, ClaveForaneaInvalida, ClienteInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class ClienteService:
         try:
             cliente = await self.use_case.update(id, data)
             return self.to_response(cliente)
-        except (ClienteNoEncontrado, ClienteDuplicado, ClaveForaneaInvalida) as e:
+        except (ClienteNoEncontrado, ClienteDuplicado, ClaveForaneaInvalida, ClienteInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

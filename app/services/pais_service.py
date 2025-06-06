@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.pais_use_case import PaisUseCase
 from app.schemas.pais import PaisCreate, PaisUpdate, PaisResponse
 from app.domain.entities.pais import Pais
-from app.domain.exceptions.pais import PaisNoEncontrado, PaisDuplicado
+from app.domain.exceptions.pais import PaisNoEncontrado, PaisDuplicado, PaisInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class PaisService:
         try:
             pais = await self.use_case.create(data)
             return self.to_response(pais)
-        except (PaisDuplicado, ClaveForaneaInvalida) as e:
+        except (PaisDuplicado, ClaveForaneaInvalida, PaisInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class PaisService:
         try:
             pais = await self.use_case.update(id, data)
             return self.to_response(pais)
-        except (PaisNoEncontrado, PaisDuplicado, ClaveForaneaInvalida) as e:
+        except (PaisNoEncontrado, PaisDuplicado, ClaveForaneaInvalida, PaisInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

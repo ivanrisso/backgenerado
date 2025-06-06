@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.concepto_use_case import ConceptoUseCase
 from app.schemas.concepto import ConceptoCreate, ConceptoUpdate, ConceptoResponse
 from app.domain.entities.concepto import Concepto
-from app.domain.exceptions.concepto import ConceptoNoEncontrado, ConceptoDuplicado
+from app.domain.exceptions.concepto import ConceptoNoEncontrado, ConceptoDuplicado, ConceptoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class ConceptoService:
         try:
             concepto = await self.use_case.create(data)
             return self.to_response(concepto)
-        except (ConceptoDuplicado, ClaveForaneaInvalida) as e:
+        except (ConceptoDuplicado, ClaveForaneaInvalida, ConceptoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class ConceptoService:
         try:
             concepto = await self.use_case.update(id, data)
             return self.to_response(concepto)
-        except (ConceptoNoEncontrado, ConceptoDuplicado, ClaveForaneaInvalida) as e:
+        except (ConceptoNoEncontrado, ConceptoDuplicado, ClaveForaneaInvalida, ConceptoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

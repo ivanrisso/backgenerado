@@ -8,7 +8,7 @@ from app.repositories.tipoimpuesto_repository import TipoImpuestoRepositoryImpl
 from app.use_cases.tipoimpuesto_use_case import TipoImpuestoUseCase
 from app.services.tipoimpuesto_service import TipoImpuestoService
 from app.schemas.tipo_impuesto import TipoImpuestoCreate, TipoImpuestoUpdate, TipoImpuestoResponse
-from app.domain.exceptions.tipoimpuesto import TipoImpuestoNoEncontrado, TipoImpuestoDuplicado
+from app.domain.exceptions.tipoimpuesto import TipoImpuestoNoEncontrado, TipoImpuestoDuplicado, TipoImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -55,6 +55,8 @@ async def create(data: TipoImpuestoCreate, service: TipoImpuestoService = Depend
         return await service.create(data)
     except TipoImpuestoDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except TipoImpuestoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))        
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:
@@ -70,6 +72,8 @@ async def partial_update(id: int, data: TipoImpuestoUpdate, service: TipoImpuest
         raise HTTPException(status_code=404, detail=str(e))
     except TipoImpuestoDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except TipoImpuestoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))            
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

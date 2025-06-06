@@ -10,3 +10,4 @@ class BaseDeDatosNoDisponible(Exception):
     """Error por conexión fallida a la base de datos."""
     def __init__(self, message: str = "No se pudo conectar a la base de datos"):
         super().__init__(message)
+

@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.comprobanteimpuesto_use_case import ComprobanteImpuestoUseCase
 from app.schemas.comprobante_impuesto import ComprobanteImpuestoCreate, ComprobanteImpuestoUpdate, ComprobanteImpuestoResponse
 from app.domain.entities.comprobanteimpuesto import ComprobanteImpuesto
-from app.domain.exceptions.comprobanteimpuesto import ComprobanteImpuestoNoEncontrado, ComprobanteImpuestoDuplicado
+from app.domain.exceptions.comprobanteimpuesto import ComprobanteImpuestoNoEncontrado, ComprobanteImpuestoDuplicado, ComprobanteImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class ComprobanteImpuestoService:
         try:
             comprobanteimpuesto = await self.use_case.create(data)
             return self.to_response(comprobanteimpuesto)
-        except (ComprobanteImpuestoDuplicado, ClaveForaneaInvalida) as e:
+        except (ComprobanteImpuestoDuplicado, ClaveForaneaInvalida, ComprobanteImpuestoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class ComprobanteImpuestoService:
         try:
             comprobanteimpuesto = await self.use_case.update(id, data)
             return self.to_response(comprobanteimpuesto)
-        except (ComprobanteImpuestoNoEncontrado, ComprobanteImpuestoDuplicado, ClaveForaneaInvalida) as e:
+        except (ComprobanteImpuestoNoEncontrado, ComprobanteImpuestoDuplicado, ClaveForaneaInvalida, ComprobanteImpuestoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

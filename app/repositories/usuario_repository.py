@@ -48,6 +48,15 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
             self.db.add(usuario_sql)
             await self.db.commit()
             await self.db.refresh(usuario_sql)
+            
+            stmt = (
+                select(UsuarioSQL)
+                .options(selectinload(UsuarioSQL.roles))
+                .where(UsuarioSQL.id == usuario_sql.id)
+            )
+            result = await self.db.execute(stmt)
+            usuario_sql = result.scalar_one()
+            
             return self._to_domain(usuario_sql)
 
         except IntegrityError as e:
@@ -90,6 +99,14 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
                 await self.db.commit()
                 await self.db.refresh(usuario_sql)
                 
+            stmt = (
+                select(UsuarioSQL)
+                .options(selectinload(UsuarioSQL.roles))
+                .where(UsuarioSQL.id == usuario_sql.id)
+            )
+            result = await self.db.execute(stmt)
+            usuario_sql = result.scalar_one()
+                            
             return self._to_domain(usuario_sql)
 
         except IntegrityError as e:

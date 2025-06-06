@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.menuitem_use_case import MenuItemUseCase
 from app.schemas.menu_item import MenuItemCreate, MenuItemUpdate, MenuItemResponse
 from app.domain.entities.menuitem import MenuItem
-from app.domain.exceptions.menuitem import MenuItemNoEncontrado, MenuItemDuplicado
+from app.domain.exceptions.menuitem import MenuItemNoEncontrado, MenuItemDuplicado, MenuItemInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class MenuItemService:
         try:
             menuitem = await self.use_case.create(data)
             return self.to_response(menuitem)
-        except (MenuItemDuplicado, ClaveForaneaInvalida) as e:
+        except (MenuItemDuplicado, ClaveForaneaInvalida, MenuItemInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class MenuItemService:
         try:
             menuitem = await self.use_case.update(id, data)
             return self.to_response(menuitem)
-        except (MenuItemNoEncontrado, MenuItemDuplicado, ClaveForaneaInvalida) as e:
+        except (MenuItemNoEncontrado, MenuItemDuplicado, ClaveForaneaInvalida, MenuItemInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

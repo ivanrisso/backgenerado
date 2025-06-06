@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.localidad_use_case import LocalidadUseCase
 from app.schemas.localidad import LocalidadCreate, LocalidadUpdate, LocalidadResponse
 from app.domain.entities.localidad import Localidad
-from app.domain.exceptions.localidad import LocalidadNoEncontrado, LocalidadDuplicado
+from app.domain.exceptions.localidad import LocalidadNoEncontrado, LocalidadDuplicado, LocalidadInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class LocalidadService:
         try:
             localidad = await self.use_case.create(data)
             return self.to_response(localidad)
-        except (LocalidadDuplicado, ClaveForaneaInvalida) as e:
+        except (LocalidadDuplicado, ClaveForaneaInvalida, LocalidadInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class LocalidadService:
         try:
             localidad = await self.use_case.update(id, data)
             return self.to_response(localidad)
-        except (LocalidadNoEncontrado, LocalidadDuplicado, ClaveForaneaInvalida) as e:
+        except (LocalidadNoEncontrado, LocalidadDuplicado, ClaveForaneaInvalida, LocalidadInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Telefono as TelefonoSQL
 from app.domain.entities.telefono import Telefono
 from app.domain.repository.telefono_repository_interfase import TelefonoRepositoryInterface
-from app.domain.exceptions.telefono import TelefonoDuplicado
+from app.domain.exceptions.telefono import TelefonoDuplicado, TelefonoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -66,7 +66,10 @@ class TelefonoRepositoryImpl(TelefonoRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear telefono")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TelefonoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -115,7 +118,10 @@ class TelefonoRepositoryImpl(TelefonoRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar telefono")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TelefonoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception as e:

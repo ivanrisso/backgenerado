@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.tipodom_use_case import TipoDomUseCase
 from app.schemas.tipodom import TipoDomCreate, TipoDomUpdate, TipoDomResponse
 from app.domain.entities.tipodom import TipoDom
-from app.domain.exceptions.tipodom import TipoDomNoEncontrado, TipoDomDuplicado
+from app.domain.exceptions.tipodom import TipoDomNoEncontrado, TipoDomDuplicado, TipoDomInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class TipoDomService:
         try:
             tipodom = await self.use_case.create(data)
             return self.to_response(tipodom)
-        except (TipoDomDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoDomDuplicado, ClaveForaneaInvalida, TipoDomInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class TipoDomService:
         try:
             tipodom = await self.use_case.update(id, data)
             return self.to_response(tipodom)
-        except (TipoDomNoEncontrado, TipoDomDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoDomNoEncontrado, TipoDomDuplicado, ClaveForaneaInvalida, TipoDomInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

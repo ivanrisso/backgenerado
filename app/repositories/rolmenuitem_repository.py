@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import RolMenuItem as RolMenuItemSQL
 from app.domain.entities.rolmenuitem import RolMenuItem
 from app.domain.repository.rolmenuitem_repository_interfase import RolMenuItemRepositoryInterface
-from app.domain.exceptions.rolmenuitem import RolMenuItemDuplicado
+from app.domain.exceptions.rolmenuitem import RolMenuItemDuplicado, RolMenuItemInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -68,7 +68,10 @@ class RolMenuItemRepositoryImpl(RolMenuItemRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear rolmenuitem")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise RolMenuItemInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -113,12 +116,13 @@ class RolMenuItemRepositoryImpl(RolMenuItemRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar rolmenuitem")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise RolMenuItemInvalido(msg)        
         except OperationalError:
-            logger.info("acaaaaaa33333")
             raise BaseDeDatosNoDisponible()
         except Exception as e:
-            logger.info("acaaaaaa")
             raise ErrorDeRepositorio("Error inesperado al actualizar rolmenuitem")
 
 

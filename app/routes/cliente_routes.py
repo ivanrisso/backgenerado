@@ -8,7 +8,7 @@ from app.repositories.cliente_repository import ClienteRepositoryImpl
 from app.use_cases.cliente_use_case import ClienteUseCase
 from app.services.cliente_service import ClienteService
 from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse
-from app.domain.exceptions.cliente import ClienteNoEncontrado, ClienteDuplicado
+from app.domain.exceptions.cliente import ClienteNoEncontrado, ClienteDuplicado, ClienteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -55,6 +55,8 @@ async def create(data: ClienteCreate, service: ClienteService = Depends(get_clie
         return await service.create(data)
     except ClienteDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except ClienteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))        
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:
@@ -70,6 +72,8 @@ async def partial_update(id: int, data: ClienteUpdate, service: ClienteService =
         raise HTTPException(status_code=404, detail=str(e))
     except ClienteDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except ClienteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))            
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import TipoDoc as TipoDocSQL
 from app.domain.entities.tipodoc import TipoDoc
 from app.domain.repository.tipodoc_repository_interfase import TipoDocRepositoryInterface
-from app.domain.exceptions.tipodoc import TipoDocDuplicado
+from app.domain.exceptions.tipodoc import TipoDocDuplicado, TipoDocInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -60,7 +60,10 @@ class TipoDocRepositoryImpl(TipoDocRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear tipodoc")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoDocInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -103,7 +106,10 @@ class TipoDocRepositoryImpl(TipoDocRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar tipodoc")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoDocInvalido(msg)        
         except OperationalError:
             logger.info("acaaaaaa33333")
             raise BaseDeDatosNoDisponible()

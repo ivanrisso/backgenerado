@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import RolesUsuario as RolesUsuarioSQL
 from app.domain.entities.rolesusuario import RolesUsuario
 from app.domain.repository.rolesusuario_repository_interfase import RolesUsuarioRepositoryInterface
-from app.domain.exceptions.rolesusuario import RolesUsuarioDuplicado
+from app.domain.exceptions.rolesusuario import RolesUsuarioDuplicado, RolesUsuarioInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -70,7 +70,10 @@ class RolesUsuarioRepositoryImpl(RolesUsuarioRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear rolesusuario")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise RolesUsuarioInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -95,9 +98,7 @@ class RolesUsuarioRepositoryImpl(RolesUsuarioRepositoryInterface):
             return self._to_domain(rolesusuario_sql)
 
         except IntegrityError as e:
-            
-            logger.info("acaaaaaa1111")
-            
+                        
             if hasattr(e.orig, "args"):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
@@ -117,12 +118,13 @@ class RolesUsuarioRepositoryImpl(RolesUsuarioRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar rolesusuario")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise RolesUsuarioInvalido(msg)        
         except OperationalError:
-            logger.info("acaaaaaa33333")
             raise BaseDeDatosNoDisponible()
         except Exception as e:
-            logger.info("acaaaaaa")
             raise ErrorDeRepositorio("Error inesperado al actualizar rolesusuario")
 
 

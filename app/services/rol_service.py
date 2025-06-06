@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.rol_use_case import RolUseCase
 from app.schemas.rol import RolCreate, RolUpdate, RolResponse
 from app.domain.entities.rol import Rol
-from app.domain.exceptions.rol import RolNoEncontrado, RolDuplicado
+from app.domain.exceptions.rol import RolNoEncontrado, RolDuplicado, RolInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class RolService:
         try:
             rol = await self.use_case.create(data)
             return self.to_response(rol)
-        except (RolDuplicado, ClaveForaneaInvalida) as e:
+        except (RolDuplicado, ClaveForaneaInvalida, RolInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class RolService:
         try:
             rol = await self.use_case.update(id, data)
             return self.to_response(rol)
-        except (RolNoEncontrado, RolDuplicado, ClaveForaneaInvalida) as e:
+        except (RolNoEncontrado, RolDuplicado, ClaveForaneaInvalida, RolInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

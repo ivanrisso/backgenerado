@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.moneda_use_case import MonedaUseCase
 from app.schemas.moneda import MonedaCreate, MonedaUpdate, MonedaResponse
 from app.domain.entities.moneda import Moneda
-from app.domain.exceptions.moneda import MonedaNoEncontrado, MonedaDuplicado
+from app.domain.exceptions.moneda import MonedaNoEncontrado, MonedaDuplicado, MonedaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class MonedaService:
         try:
             moneda = await self.use_case.create(data)
             return self.to_response(moneda)
-        except (MonedaDuplicado, ClaveForaneaInvalida) as e:
+        except (MonedaDuplicado, ClaveForaneaInvalida, MonedaInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class MonedaService:
         try:
             moneda = await self.use_case.update(id, data)
             return self.to_response(moneda)
-        except (MonedaNoEncontrado, MonedaDuplicado, ClaveForaneaInvalida) as e:
+        except (MonedaNoEncontrado, MonedaDuplicado, ClaveForaneaInvalida, MonedaInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.comprobantedetalle_use_case import ComprobanteDetalleUseCase
 from app.schemas.comprobante_detalle import ComprobanteDetalleCreate, ComprobanteDetalleUpdate, ComprobanteDetalleResponse
 from app.domain.entities.comprobantedetalle import ComprobanteDetalle
-from app.domain.exceptions.comprobantedetalle import ComprobanteDetalleNoEncontrado, ComprobanteDetalleDuplicado
+from app.domain.exceptions.comprobantedetalle import ComprobanteDetalleNoEncontrado, ComprobanteDetalleDuplicado, ComprobanteDetalleInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class ComprobanteDetalleService:
         try:
             comprobantedetalle = await self.use_case.create(data)
             return self.to_response(comprobantedetalle)
-        except (ComprobanteDetalleDuplicado, ClaveForaneaInvalida) as e:
+        except (ComprobanteDetalleDuplicado, ClaveForaneaInvalida, ComprobanteDetalleInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class ComprobanteDetalleService:
         try:
             comprobantedetalle = await self.use_case.update(id, data)
             return self.to_response(comprobantedetalle)
-        except (ComprobanteDetalleNoEncontrado, ComprobanteDetalleDuplicado, ClaveForaneaInvalida) as e:
+        except (ComprobanteDetalleNoEncontrado, ComprobanteDetalleDuplicado, ClaveForaneaInvalida, ComprobanteDetalleInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.provincia_use_case import ProvinciaUseCase
 from app.schemas.provincia import ProvinciaCreate, ProvinciaUpdate, ProvinciaResponse
 from app.domain.entities.provincia import Provincia
-from app.domain.exceptions.provincia import ProvinciaNoEncontrado, ProvinciaDuplicado
+from app.domain.exceptions.provincia import ProvinciaNoEncontrado, ProvinciaDuplicado, ProvinciaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class ProvinciaService:
         try:
             provincia = await self.use_case.create(data)
             return self.to_response(provincia)
-        except (ProvinciaDuplicado, ClaveForaneaInvalida) as e:
+        except (ProvinciaDuplicado, ClaveForaneaInvalida, ProvinciaInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class ProvinciaService:
         try:
             provincia = await self.use_case.update(id, data)
             return self.to_response(provincia)
-        except (ProvinciaNoEncontrado, ProvinciaDuplicado, ClaveForaneaInvalida) as e:
+        except (ProvinciaNoEncontrado, ProvinciaDuplicado, ClaveForaneaInvalida, ProvinciaInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

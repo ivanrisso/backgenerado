@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.tipoimpuesto_use_case import TipoImpuestoUseCase
 from app.schemas.tipo_impuesto import TipoImpuestoCreate, TipoImpuestoUpdate, TipoImpuestoResponse
 from app.domain.entities.tipoimpuesto import TipoImpuesto
-from app.domain.exceptions.tipoimpuesto import TipoImpuestoNoEncontrado, TipoImpuestoDuplicado
+from app.domain.exceptions.tipoimpuesto import TipoImpuestoNoEncontrado, TipoImpuestoDuplicado, TipoImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class TipoImpuestoService:
         try:
             tipoimpuesto = await self.use_case.create(data)
             return self.to_response(tipoimpuesto)
-        except (TipoImpuestoDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoImpuestoDuplicado, ClaveForaneaInvalida, TipoImpuestoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class TipoImpuestoService:
         try:
             tipoimpuesto = await self.use_case.update(id, data)
             return self.to_response(tipoimpuesto)
-        except (TipoImpuestoNoEncontrado, TipoImpuestoDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoImpuestoNoEncontrado, TipoImpuestoDuplicado, ClaveForaneaInvalida, TipoImpuestoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

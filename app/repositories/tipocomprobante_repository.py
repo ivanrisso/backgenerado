@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import TipoComprobante as TipoComprobanteSQL
 from app.domain.entities.tipocomprobante import TipoComprobante
 from app.domain.repository.tipocomprobante_repository_interfase import TipoComprobanteRepositoryInterface
-from app.domain.exceptions.tipocomprobante import TipoComprobanteDuplicado
+from app.domain.exceptions.tipocomprobante import TipoComprobanteDuplicado, TipoComprobanteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -57,7 +57,10 @@ class TipoComprobanteRepositoryImpl(TipoComprobanteRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear tipocomprobante")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoComprobanteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -97,7 +100,10 @@ class TipoComprobanteRepositoryImpl(TipoComprobanteRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar tipocomprobante")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoComprobanteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception as e:

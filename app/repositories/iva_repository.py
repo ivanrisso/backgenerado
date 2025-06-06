@@ -2,13 +2,14 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
+
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Iva as IvaSQL
 from app.domain.entities.iva import Iva
 from app.domain.repository.iva_repository_interfase import IvaRepositoryInterface
-from app.domain.exceptions.iva import IvaDuplicado
+from app.domain.exceptions.iva import IvaDuplicado, IvaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -56,10 +57,15 @@ class IvaRepositoryImpl(IvaRepositoryInterface):
                         raise IvaDuplicado("desconocido", "valor duplicado")
 
             raise ErrorDeRepositorio("Error de integridad al crear iva")
-
+        
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise IvaInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
-        except Exception:
+        except Exception as ex:
+            logger.info(f"Error repo en {ex}")
             raise ErrorDeRepositorio("Error inesperado al crear iva")
 
     async def update(self, iva_id: int, iva: Iva) -> Optional[Iva]:

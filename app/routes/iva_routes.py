@@ -8,7 +8,7 @@ from app.repositories.iva_repository import IvaRepositoryImpl
 from app.use_cases.iva_use_case import IvaUseCase
 from app.services.iva_service import IvaService
 from app.schemas.iva import IvaCreate, IvaUpdate, IvaResponse
-from app.domain.exceptions.iva import IvaNoEncontrado, IvaDuplicado
+from app.domain.exceptions.iva import IvaNoEncontrado, IvaDuplicado, IvaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -51,6 +51,8 @@ async def create(data: IvaCreate, service: IvaService = Depends(get_iva_service)
         return await service.create(data)
     except IvaDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except IvaInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))    
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

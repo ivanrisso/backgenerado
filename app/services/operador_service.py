@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.operador_use_case import OperadorUseCase
 from app.schemas.operador import OperadorCreate, OperadorUpdate, OperadorResponse
 from app.domain.entities.operador import Operador
-from app.domain.exceptions.operador import OperadorNoEncontrado, OperadorDuplicado
+from app.domain.exceptions.operador import OperadorNoEncontrado, OperadorDuplicado, OperadorInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class OperadorService:
         try:
             operador = await self.use_case.create(data)
             return self.to_response(operador)
-        except (OperadorDuplicado, ClaveForaneaInvalida) as e:
+        except (OperadorDuplicado, ClaveForaneaInvalida, OperadorInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class OperadorService:
         try:
             operador = await self.use_case.update(id, data)
             return self.to_response(operador)
-        except (OperadorNoEncontrado, OperadorDuplicado, ClaveForaneaInvalida) as e:
+        except (OperadorNoEncontrado, OperadorDuplicado, ClaveForaneaInvalida, OperadorInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

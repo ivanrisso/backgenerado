@@ -8,7 +8,7 @@ from app.repositories.tipotel_repository import TipoTelRepositoryImpl
 from app.use_cases.tipotel_use_case import TipoTelUseCase
 from app.services.tipotel_service import TipoTelService
 from app.schemas.tipotel import TipoTelCreate, TipoTelUpdate, TipoTelResponse
-from app.domain.exceptions.tipotel import TipoTelNoEncontrado, TipoTelDuplicado
+from app.domain.exceptions.tipotel import TipoTelNoEncontrado, TipoTelDuplicado, TipoTelInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -61,6 +61,8 @@ async def create(data: TipoTelCreate, service: TipoTelService = Depends(get_tipo
         return await service.create(data)
     except TipoTelDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except TipoTelInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))    
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:
@@ -76,6 +78,8 @@ async def partial_update(id: int, data: TipoTelUpdate, service: TipoTelService =
         raise HTTPException(status_code=404, detail=str(e))
     except TipoTelDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except TipoTelInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))        
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

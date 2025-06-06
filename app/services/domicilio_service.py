@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.domicilio_use_case import DomicilioUseCase
 from app.schemas.domicilio import DomicilioCreate, DomicilioUpdate, DomicilioResponse
 from app.domain.entities.domicilio import Domicilio
-from app.domain.exceptions.domicilio import DomicilioNoEncontrado, DomicilioDuplicado
+from app.domain.exceptions.domicilio import DomicilioNoEncontrado, DomicilioDuplicado, DomicilioInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class DomicilioService:
         try:
             domicilio = await self.use_case.create(data)
             return self.to_response(domicilio)
-        except (DomicilioDuplicado, ClaveForaneaInvalida) as e:
+        except (DomicilioDuplicado, ClaveForaneaInvalida, DomicilioInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class DomicilioService:
         try:
             domicilio = await self.use_case.update(id, data)
             return self.to_response(domicilio)
-        except (DomicilioNoEncontrado, DomicilioDuplicado, ClaveForaneaInvalida) as e:
+        except (DomicilioNoEncontrado, DomicilioDuplicado, ClaveForaneaInvalida, DomicilioInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

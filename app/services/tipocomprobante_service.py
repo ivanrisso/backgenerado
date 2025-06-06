@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.tipocomprobante_use_case import TipoComprobanteUseCase
 from app.schemas.tipocomprobante import TipoComprobanteCreate, TipoComprobanteUpdate, TipoComprobanteResponse
 from app.domain.entities.tipocomprobante import TipoComprobante
-from app.domain.exceptions.tipocomprobante import TipoComprobanteNoEncontrado, TipoComprobanteDuplicado
+from app.domain.exceptions.tipocomprobante import TipoComprobanteNoEncontrado, TipoComprobanteDuplicado, TipoComprobanteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class TipoComprobanteService:
         try:
             tipocomprobante = await self.use_case.create(data)
             return self.to_response(tipocomprobante)
-        except (TipoComprobanteDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoComprobanteDuplicado, ClaveForaneaInvalida, TipoComprobanteInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class TipoComprobanteService:
         try:
             tipocomprobante = await self.use_case.update(id, data)
             return self.to_response(tipocomprobante)
-        except (TipoComprobanteNoEncontrado, TipoComprobanteDuplicado, ClaveForaneaInvalida) as e:
+        except (TipoComprobanteNoEncontrado, TipoComprobanteDuplicado, ClaveForaneaInvalida, TipoComprobanteInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

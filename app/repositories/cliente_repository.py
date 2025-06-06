@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Cliente as ClienteSQL
 from app.domain.entities.cliente import Cliente
 from app.domain.repository.cliente_repository_interfase import ClienteRepositoryInterface
-from app.domain.exceptions.cliente import ClienteDuplicado
+from app.domain.exceptions.cliente import ClienteDuplicado, ClienteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -64,7 +64,10 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear cliente")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ClienteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -111,7 +114,10 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar cliente")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ClienteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception as e:

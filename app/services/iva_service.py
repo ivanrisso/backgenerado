@@ -4,9 +4,13 @@ from typing import List
 from app.use_cases.iva_use_case import IvaUseCase
 from app.schemas.iva import IvaCreate, IvaUpdate, IvaResponse
 from app.domain.entities.iva import Iva
-from app.domain.exceptions.iva import IvaNoEncontrado, IvaDuplicado
+from app.domain.exceptions.iva import IvaNoEncontrado, IvaDuplicado, IvaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO) 
 
 
 class IvaService:
@@ -39,11 +43,11 @@ class IvaService:
     async def create(self, data: IvaCreate) -> IvaResponse:
         try:
             return await self.use_case.create(data)
-        except (IvaDuplicado, ClaveForaneaInvalida) as e:
+        except (IvaDuplicado, ClaveForaneaInvalida, IvaInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
-            raise e
-        except Exception:
+            raise e        
+        except Exception as ex:
             raise ErrorDeRepositorio("Error inesperado al crear iva")
 
     async def update(self, id: int, data: IvaUpdate) -> IvaResponse:

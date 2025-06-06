@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import TipoImpuesto as TipoImpuestoSQL
 from app.domain.entities.tipoimpuesto import TipoImpuesto
 from app.domain.repository.tipoimpuesto_repository_interfase import TipoImpuestoRepositoryInterface
-from app.domain.exceptions.tipoimpuesto import TipoImpuestoDuplicado
+from app.domain.exceptions.tipoimpuesto import TipoImpuestoDuplicado, TipoImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -59,7 +59,10 @@ class TipoImpuestoRepositoryImpl(TipoImpuestoRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear tipoimpuesto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoImpuestoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -99,7 +102,10 @@ class TipoImpuestoRepositoryImpl(TipoImpuestoRepositoryInterface):
                     raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar tipoimpuesto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise TipoImpuestoInvalido(msg)        
         except OperationalError:
             logger.info("acaaaaaa33333")
             raise BaseDeDatosNoDisponible()

@@ -25,7 +25,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"usuario_email\": \"yeYDqRyFMA5f@MgGikzNuHzYPLw.sdrl\",\n  \"usuario_password\": \"eiusmod magn\",\n  \"nombre\": \"officia deserunt\",\n  \"apellido\": \"non voluptate\"\n}",
+							"raw": "{\n  \"usuario_email\": \"yeYDqRyasasasMA5f@MgGikzNuHzYPLw.com\",\n  \"usuario_password\": \"ex\",\n  \"nombre\": \"officia deserunt\",\n  \"apellido\": \"non voluptate\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -8,7 +8,7 @@ from app.repositories.tipodoc_repository import TipoDocRepositoryImpl
 from app.use_cases.tipodoc_use_case import TipoDocUseCase
 from app.services.tipodoc_service import TipoDocService
 from app.schemas.tipo_doc import TipoDocCreate, TipoDocUpdate, TipoDocResponse
-from app.domain.exceptions.tipodoc import TipoDocNoEncontrado, TipoDocDuplicado
+from app.domain.exceptions.tipodoc import TipoDocNoEncontrado, TipoDocDuplicado, TipoDocInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -57,6 +57,8 @@ async def create(data: TipoDocCreate, service: TipoDocService = Depends(get_tipo
         return await service.create(data)
     except TipoDocDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except TipoDocInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))    
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: TipoDocUpdate, service: TipoDocService =
         raise HTTPException(status_code=404, detail=str(e))
     except TipoDocDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except TipoDocInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))        
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

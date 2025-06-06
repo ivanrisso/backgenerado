@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.telefono_use_case import TelefonoUseCase
 from app.schemas.telefono import TelefonoCreate, TelefonoUpdate, TelefonoResponse
 from app.domain.entities.telefono import Telefono
-from app.domain.exceptions.telefono import TelefonoNoEncontrado, TelefonoDuplicado
+from app.domain.exceptions.telefono import TelefonoNoEncontrado, TelefonoDuplicado, TelefonoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class TelefonoService:
         try:
             telefono = await self.use_case.create(data)
             return self.to_response(telefono)
-        except (TelefonoDuplicado, ClaveForaneaInvalida) as e:
+        except (TelefonoDuplicado, ClaveForaneaInvalida, TelefonoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class TelefonoService:
         try:
             telefono = await self.use_case.update(id, data)
             return self.to_response(telefono)
-        except (TelefonoNoEncontrado, TelefonoDuplicado, ClaveForaneaInvalida) as e:
+        except (TelefonoNoEncontrado, TelefonoDuplicado, ClaveForaneaInvalida, TelefonoInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

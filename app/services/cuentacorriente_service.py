@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.cuentacorriente_use_case import CuentaCorrienteUseCase
 from app.schemas.cuenta_corriente import CuentaCorrienteCreate, CuentaCorrienteUpdate, CuentaCorrienteResponse
 from app.domain.entities.cuentacorriente import CuentaCorriente
-from app.domain.exceptions.cuentacorriente import CuentaCorrienteNoEncontrado, CuentaCorrienteDuplicado
+from app.domain.exceptions.cuentacorriente import CuentaCorrienteNoEncontrado, CuentaCorrienteDuplicado, CuentaCorrienteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class CuentaCorrienteService:
         try:
             cuentacorriente = await self.use_case.create(data)
             return self.to_response(cuentacorriente)
-        except (CuentaCorrienteDuplicado, ClaveForaneaInvalida) as e:
+        except (CuentaCorrienteDuplicado, ClaveForaneaInvalida, CuentaCorrienteInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class CuentaCorrienteService:
         try:
             cuentacorriente = await self.use_case.update(id, data)
             return self.to_response(cuentacorriente)
-        except (CuentaCorrienteNoEncontrado, CuentaCorrienteDuplicado, ClaveForaneaInvalida) as e:
+        except (CuentaCorrienteNoEncontrado, CuentaCorrienteDuplicado, ClaveForaneaInvalida, CuentaCorrienteInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e

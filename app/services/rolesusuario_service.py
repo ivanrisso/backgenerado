@@ -4,7 +4,7 @@ from typing import List
 from app.use_cases.rolesusuario_use_case import RolesUsuarioUseCase
 from app.schemas.rolesusuario import RolesUsuarioCreate, RolesUsuarioUpdate, RolesUsuarioResponse
 from app.domain.entities.rolesusuario import RolesUsuario
-from app.domain.exceptions.rolesusuario import RolesUsuarioNoEncontrado, RolesUsuarioDuplicado
+from app.domain.exceptions.rolesusuario import RolesUsuarioNoEncontrado, RolesUsuarioDuplicado, RolesUsuarioInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -44,7 +44,7 @@ class RolesUsuarioService:
         try:
             rolesusuario = await self.use_case.create(data)
             return self.to_response(rolesusuario)
-        except (RolesUsuarioDuplicado, ClaveForaneaInvalida) as e:
+        except (RolesUsuarioDuplicado, ClaveForaneaInvalida, RolesUsuarioInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
@@ -55,7 +55,7 @@ class RolesUsuarioService:
         try:
             rolesusuario = await self.use_case.update(id, data)
             return self.to_response(rolesusuario)
-        except (RolesUsuarioNoEncontrado, RolesUsuarioDuplicado, ClaveForaneaInvalida) as e:
+        except (RolesUsuarioNoEncontrado, RolesUsuarioDuplicado, ClaveForaneaInvalida, RolesUsuarioInvalido) as e:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
