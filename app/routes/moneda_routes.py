@@ -8,7 +8,7 @@ from app.repositories.moneda_repository import MonedaRepositoryImpl
 from app.use_cases.moneda_use_case import MonedaUseCase
 from app.services.moneda_service import MonedaService
 from app.schemas.moneda import MonedaCreate, MonedaUpdate, MonedaResponse
-from app.domain.exceptions.moneda import MonedaNoEncontrado, MonedaDuplicado
+from app.domain.exceptions.moneda import MonedaNoEncontrado, MonedaDuplicado, MonedaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: MonedaCreate, service: MonedaService = Depends(get_moneda
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except MonedaInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                            
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: MonedaUpdate, service: MonedaService = D
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except MonedaInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

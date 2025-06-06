@@ -8,7 +8,7 @@ from app.repositories.auditoriacomprobante_repository import AuditoriaComprobant
 from app.use_cases.auditoriacomprobante_use_case import AuditoriaComprobanteUseCase
 from app.services.auditoriacomprobante_service import AuditoriaComprobanteService
 from app.schemas.auditoria_comprobante import AuditoriaComprobanteCreate, AuditoriaComprobanteUpdate, AuditoriaComprobanteResponse
-from app.domain.exceptions.auditoriacomprobante import AuditoriaComprobanteNoEncontrado, AuditoriaComprobanteDuplicado
+from app.domain.exceptions.auditoriacomprobante import AuditoriaComprobanteNoEncontrado, AuditoriaComprobanteDuplicado, AuditoriaComprobanteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: AuditoriaComprobanteCreate, service: AuditoriaComprobante
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except AuditoriaComprobanteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: AuditoriaComprobanteUpdate, service: Aud
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except AuditoriaComprobanteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

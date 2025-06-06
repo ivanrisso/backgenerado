@@ -8,7 +8,7 @@ from app.repositories.cuentacorriente_repository import CuentaCorrienteRepositor
 from app.use_cases.cuentacorriente_use_case import CuentaCorrienteUseCase
 from app.services.cuentacorriente_service import CuentaCorrienteService
 from app.schemas.cuenta_corriente import CuentaCorrienteCreate, CuentaCorrienteUpdate, CuentaCorrienteResponse
-from app.domain.exceptions.cuentacorriente import CuentaCorrienteNoEncontrado, CuentaCorrienteDuplicado
+from app.domain.exceptions.cuentacorriente import CuentaCorrienteNoEncontrado, CuentaCorrienteDuplicado, CuentaCorrienteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: CuentaCorrienteCreate, service: CuentaCorrienteService = 
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except CuentaCorrienteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                            
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: CuentaCorrienteUpdate, service: CuentaCo
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except CuentaCorrienteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

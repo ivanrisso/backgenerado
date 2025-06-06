@@ -8,7 +8,7 @@ from app.repositories.clienteimpuesto_repository import ClienteImpuestoRepositor
 from app.use_cases.clienteimpuesto_use_case import ClienteImpuestoUseCase
 from app.services.clienteimpuesto_service import ClienteImpuestoService
 from app.schemas.clienteimpuesto import ClienteImpuestoCreate, ClienteImpuestoUpdate, ClienteImpuestoResponse
-from app.domain.exceptions.clienteimpuesto import ClienteImpuestoNoEncontrado, ClienteImpuestoDuplicado
+from app.domain.exceptions.clienteimpuesto import ClienteImpuestoNoEncontrado, ClienteImpuestoDuplicado, ClienteImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -55,6 +55,8 @@ async def create(data: ClienteImpuestoCreate, service: ClienteImpuestoService = 
         return await service.create(data)
     except ClienteImpuestoDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except ClienteImpuestoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))            
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:
@@ -70,6 +72,8 @@ async def partial_update(id: int, data: ClienteImpuestoUpdate, service: ClienteI
         raise HTTPException(status_code=404, detail=str(e))
     except ClienteImpuestoDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except ClienteImpuestoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

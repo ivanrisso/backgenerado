@@ -8,7 +8,7 @@ from app.repositories.localidad_repository import LocalidadRepositoryImpl
 from app.use_cases.localidad_use_case import LocalidadUseCase
 from app.services.localidad_service import LocalidadService
 from app.schemas.localidad import LocalidadCreate, LocalidadUpdate, LocalidadResponse
-from app.domain.exceptions.localidad import LocalidadNoEncontrado, LocalidadDuplicado
+from app.domain.exceptions.localidad import LocalidadNoEncontrado, LocalidadDuplicado, LocalidadInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: LocalidadCreate, service: LocalidadService = Depends(get_
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except LocalidadInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -70,6 +72,8 @@ async def partial_update(id: int, data: LocalidadUpdate, service: LocalidadServi
         raise HTTPException(status_code=404, detail=str(e))
     except LocalidadDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except LocalidadInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                        
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

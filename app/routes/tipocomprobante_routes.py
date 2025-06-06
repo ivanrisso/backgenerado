@@ -8,7 +8,7 @@ from app.repositories.tipocomprobante_repository import TipoComprobanteRepositor
 from app.use_cases.tipocomprobante_use_case import TipoComprobanteUseCase
 from app.services.tipocomprobante_service import TipoComprobanteService
 from app.schemas.tipocomprobante import TipoComprobanteCreate, TipoComprobanteUpdate, TipoComprobanteResponse
-from app.domain.exceptions.tipocomprobante import TipoComprobanteNoEncontrado, TipoComprobanteDuplicado
+from app.domain.exceptions.tipocomprobante import TipoComprobanteNoEncontrado, TipoComprobanteDuplicado, TipoComprobanteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: TipoComprobanteCreate, service: TipoComprobanteService = 
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except TipoComprobanteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                        
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: TipoComprobanteUpdate, service: TipoComp
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except TipoComprobanteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

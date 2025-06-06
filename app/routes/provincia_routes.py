@@ -8,7 +8,7 @@ from app.repositories.provincia_repository import ProvinciaRepositoryImpl
 from app.use_cases.provincia_use_case import ProvinciaUseCase
 from app.services.provincia_service import ProvinciaService
 from app.schemas.provincia import ProvinciaCreate, ProvinciaUpdate, ProvinciaResponse
-from app.domain.exceptions.provincia import ProvinciaNoEncontrado, ProvinciaDuplicado
+from app.domain.exceptions.provincia import ProvinciaNoEncontrado, ProvinciaDuplicado, ProvinciaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: ProvinciaCreate, service: ProvinciaService = Depends(get_
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except ProvinciaInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                        
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: ProvinciaUpdate, service: ProvinciaServi
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except ProvinciaInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                            
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

@@ -8,7 +8,7 @@ from app.repositories.concepto_repository import ConceptoRepositoryImpl
 from app.use_cases.concepto_use_case import ConceptoUseCase
 from app.services.concepto_service import ConceptoService
 from app.schemas.concepto import ConceptoCreate, ConceptoUpdate, ConceptoResponse
-from app.domain.exceptions.concepto import ConceptoNoEncontrado, ConceptoDuplicado
+from app.domain.exceptions.concepto import ConceptoNoEncontrado, ConceptoDuplicado, ConceptoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: ConceptoCreate, service: ConceptoService = Depends(get_co
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except ConceptoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                        
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: ConceptoUpdate, service: ConceptoService
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except ConceptoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                            
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

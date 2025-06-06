@@ -8,7 +8,7 @@ from app.repositories.telefono_repository import TelefonoRepositoryImpl
 from app.use_cases.telefono_use_case import TelefonoUseCase
 from app.services.telefono_service import TelefonoService
 from app.schemas.telefono import TelefonoCreate, TelefonoUpdate, TelefonoResponse
-from app.domain.exceptions.telefono import TelefonoNoEncontrado, TelefonoDuplicado
+from app.domain.exceptions.telefono import TelefonoNoEncontrado, TelefonoDuplicado, TelefonoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: TelefonoCreate, service: TelefonoService = Depends(get_te
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except TelefonoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: TelefonoUpdate, service: TelefonoService
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except TelefonoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

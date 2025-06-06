@@ -8,7 +8,7 @@ from app.repositories.rolesusuario_repository import RolesUsuarioRepositoryImpl
 from app.use_cases.rolesusuario_use_case import RolesUsuarioUseCase
 from app.services.rolesusuario_service import RolesUsuarioService
 from app.schemas.rolesusuario import RolesUsuarioCreate, RolesUsuarioUpdate, RolesUsuarioResponse
-from app.domain.exceptions.rolesusuario import RolesUsuarioNoEncontrado, RolesUsuarioDuplicado
+from app.domain.exceptions.rolesusuario import RolesUsuarioNoEncontrado, RolesUsuarioDuplicado, RolesUsuarioInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: RolesUsuarioCreate, service: RolesUsuarioService = Depend
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except RolesUsuarioInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: RolesUsuarioUpdate, service: RolesUsuari
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except RolesUsuarioInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

@@ -8,7 +8,7 @@ from app.repositories.domicilio_repository import DomicilioRepositoryImpl
 from app.use_cases.domicilio_use_case import DomicilioUseCase
 from app.services.domicilio_service import DomicilioService
 from app.schemas.domicilio import DomicilioCreate, DomicilioUpdate, DomicilioResponse
-from app.domain.exceptions.domicilio import DomicilioNoEncontrado, DomicilioDuplicado
+from app.domain.exceptions.domicilio import DomicilioNoEncontrado, DomicilioDuplicado, DomicilioInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: DomicilioCreate, service: DomicilioService = Depends(get_
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except DomicilioInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -70,6 +72,8 @@ async def partial_update(id: int, data: DomicilioUpdate, service: DomicilioServi
         raise HTTPException(status_code=404, detail=str(e))
     except DomicilioDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except DomicilioInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                    
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

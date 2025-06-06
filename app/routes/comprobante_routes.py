@@ -8,7 +8,7 @@ from app.repositories.comprobante_repository import ComprobanteRepositoryImpl
 from app.use_cases.comprobante_use_case import ComprobanteUseCase
 from app.services.comprobante_service import ComprobanteService
 from app.schemas.comprobante import ComprobanteCreate, ComprobanteUpdate, ComprobanteResponse
-from app.domain.exceptions.comprobante import ComprobanteNoEncontrado, ComprobanteDuplicado
+from app.domain.exceptions.comprobante import ComprobanteNoEncontrado, ComprobanteDuplicado, ComprobanteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -54,9 +54,11 @@ async def create(data: ComprobanteCreate, service: ComprobanteService = Depends(
     try:
         return await service.create(data)
     except ComprobanteDuplicado as e:
-        raise HTTPException(status_code=409, detail=str(e))
+        raise HTTPException(status_code=409, detail=str(e))    
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except ComprobanteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -70,6 +72,8 @@ async def partial_update(id: int, data: ComprobanteUpdate, service: ComprobanteS
         raise HTTPException(status_code=404, detail=str(e))
     except ComprobanteDuplicado as e:
         raise HTTPException(status_code=409, detail=str(e))
+    except ComprobanteInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                    
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
     except BaseDeDatosNoDisponible:

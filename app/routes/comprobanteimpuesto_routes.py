@@ -8,7 +8,7 @@ from app.repositories.comprobanteimpuesto_repository import ComprobanteImpuestoR
 from app.use_cases.comprobanteimpuesto_use_case import ComprobanteImpuestoUseCase
 from app.services.comprobanteimpuesto_service import ComprobanteImpuestoService
 from app.schemas.comprobante_impuesto import ComprobanteImpuestoCreate, ComprobanteImpuestoUpdate, ComprobanteImpuestoResponse
-from app.domain.exceptions.comprobanteimpuesto import ComprobanteImpuestoNoEncontrado, ComprobanteImpuestoDuplicado
+from app.domain.exceptions.comprobanteimpuesto import ComprobanteImpuestoNoEncontrado, ComprobanteImpuestoDuplicado, ComprobanteImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: ComprobanteImpuestoCreate, service: ComprobanteImpuestoSe
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except ComprobanteImpuestoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: ComprobanteImpuestoUpdate, service: Comp
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except ComprobanteImpuestoInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                        
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

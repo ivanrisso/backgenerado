@@ -8,7 +8,7 @@ from app.repositories.menuitem_repository import MenuItemRepositoryImpl
 from app.use_cases.menuitem_use_case import MenuItemUseCase
 from app.services.menuitem_service import MenuItemService
 from app.schemas.menu_item import MenuItemCreate, MenuItemUpdate, MenuItemResponse
-from app.domain.exceptions.menuitem import MenuItemNoEncontrado, MenuItemDuplicado
+from app.domain.exceptions.menuitem import MenuItemNoEncontrado, MenuItemDuplicado, MenuItemInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: MenuItemCreate, service: MenuItemService = Depends(get_me
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except MenuItemInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                        
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: MenuItemUpdate, service: MenuItemService
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except MenuItemInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                            
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

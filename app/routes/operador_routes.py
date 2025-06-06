@@ -8,7 +8,7 @@ from app.repositories.operador_repository import OperadorRepositoryImpl
 from app.use_cases.operador_use_case import OperadorUseCase
 from app.services.operador_service import OperadorService
 from app.schemas.operador import OperadorCreate, OperadorUpdate, OperadorResponse
-from app.domain.exceptions.operador import OperadorNoEncontrado, OperadorDuplicado
+from app.domain.exceptions.operador import OperadorNoEncontrado, OperadorDuplicado, OperadorInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: OperadorCreate, service: OperadorService = Depends(get_op
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except OperadorInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: OperadorUpdate, service: OperadorService
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except OperadorInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

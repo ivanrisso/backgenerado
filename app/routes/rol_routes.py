@@ -8,7 +8,7 @@ from app.repositories.rol_repository import RolRepositoryImpl
 from app.use_cases.rol_use_case import RolUseCase
 from app.services.rol_service import RolService
 from app.schemas.rol import RolCreate, RolUpdate, RolResponse
-from app.domain.exceptions.rol import RolNoEncontrado, RolDuplicado
+from app.domain.exceptions.rol import RolNoEncontrado, RolDuplicado, RolInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: RolCreate, service: RolService = Depends(get_rol_service)
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except RolInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                            
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: RolUpdate, service: RolService = Depends
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except RolInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                                
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

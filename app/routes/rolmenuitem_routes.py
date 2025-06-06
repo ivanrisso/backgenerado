@@ -8,7 +8,7 @@ from app.repositories.rolmenuitem_repository import RolMenuItemRepositoryImpl
 from app.use_cases.rolmenuitem_use_case import RolMenuItemUseCase
 from app.services.rolmenuitem_service import RolMenuItemService
 from app.schemas.rolmenuitem import RolMenuItemCreate, RolMenuItemUpdate, RolMenuItemResponse
-from app.domain.exceptions.rolmenuitem import RolMenuItemNoEncontrado, RolMenuItemDuplicado
+from app.domain.exceptions.rolmenuitem import RolMenuItemNoEncontrado, RolMenuItemDuplicado, RolMenuItemInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: RolMenuItemCreate, service: RolMenuItemService = Depends(
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except RolMenuItemInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: RolMenuItemUpdate, service: RolMenuItemS
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except RolMenuItemInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                                        
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:

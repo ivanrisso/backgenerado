@@ -8,7 +8,7 @@ from app.repositories.pais_repository import PaisRepositoryImpl
 from app.use_cases.pais_use_case import PaisUseCase
 from app.services.pais_service import PaisService
 from app.schemas.pais import PaisCreate, PaisUpdate, PaisResponse
-from app.domain.exceptions.pais import PaisNoEncontrado, PaisDuplicado
+from app.domain.exceptions.pais import PaisNoEncontrado, PaisDuplicado, PaisInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 import logging
@@ -57,6 +57,8 @@ async def create(data: PaisCreate, service: PaisService = Depends(get_pais_servi
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except PaisInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                    
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
@@ -72,6 +74,8 @@ async def partial_update(id: int, data: PaisUpdate, service: PaisService = Depen
         raise HTTPException(status_code=409, detail=str(e))
     except ClaveForaneaInvalida as e:
         raise HTTPException(status_code=422, detail=str(e))
+    except PaisInvalido as e:
+        raise HTTPException(status_code=422, detail=str(e))                                                        
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
     except ErrorDeRepositorio:
