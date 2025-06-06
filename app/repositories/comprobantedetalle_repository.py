@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import ComprobanteDetalle as ComprobanteDetalleSQL
 from app.domain.entities.comprobantedetalle import ComprobanteDetalle
 from app.domain.repository.comprobantedetalle_repository_interfase import ComprobanteDetalleRepositoryInterface
-from app.domain.exceptions.comprobantedetalle import ComprobanteDetalleDuplicado
+from app.domain.exceptions.comprobantedetalle import ComprobanteDetalleDuplicado, ComprobanteDetalleInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -59,7 +59,10 @@ class ComprobanteDetalleRepositoryImpl(ComprobanteDetalleRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear comprobantedetalle")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ComprobanteDetalleInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -100,7 +103,10 @@ class ComprobanteDetalleRepositoryImpl(ComprobanteDetalleRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar comprobantedetalle")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ComprobanteDetalleInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:

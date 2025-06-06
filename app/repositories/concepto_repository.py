@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Concepto as ConceptoSQL
 from app.domain.entities.concepto import Concepto
 from app.domain.repository.concepto_repository_interfase import ConceptoRepositoryInterface
-from app.domain.exceptions.concepto import ConceptoDuplicado
+from app.domain.exceptions.concepto import ConceptoDuplicado, ConceptoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -56,7 +56,10 @@ class ConceptoRepositoryImpl(ConceptoRepositoryInterface):
                         raise ConceptoDuplicado("desconocido", "valor duplicado")
 
             raise ErrorDeRepositorio("Error de integridad al crear concepto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ConceptoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -94,7 +97,10 @@ class ConceptoRepositoryImpl(ConceptoRepositoryInterface):
                         raise ConceptoDuplicado("desconocido", "valor duplicado")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar concepto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ConceptoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:

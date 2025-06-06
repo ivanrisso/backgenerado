@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import ComprobanteImpuesto as ComprobanteImpuestoSQL
 from app.domain.entities.comprobanteimpuesto import ComprobanteImpuesto
 from app.domain.repository.comprobanteimpuesto_repository_interfase import ComprobanteImpuestoRepositoryInterface
-from app.domain.exceptions.comprobanteimpuesto import ComprobanteImpuestoDuplicado
+from app.domain.exceptions.comprobanteimpuesto import ComprobanteImpuestoDuplicado, ComprobanteImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -58,7 +58,10 @@ class ComprobanteImpuestoRepositoryImpl(ComprobanteImpuestoRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear comprobanteimpuesto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ComprobanteImpuestoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -98,7 +101,10 @@ class ComprobanteImpuestoRepositoryImpl(ComprobanteImpuestoRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar comprobanteimpuesto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ComprobanteImpuestoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:

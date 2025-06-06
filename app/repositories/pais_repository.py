@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Pais as PaisSQL
 from app.domain.entities.pais import Pais
 from app.domain.repository.pais_repository_interfase import PaisRepositoryInterface
-from app.domain.exceptions.pais import PaisDuplicado
+from app.domain.exceptions.pais import PaisDuplicado, PaisInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -56,7 +56,10 @@ class PaisRepositoryImpl(PaisRepositoryInterface):
                         raise PaisDuplicado("desconocido", "valor duplicado")
 
             raise ErrorDeRepositorio("Error de integridad al crear país")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise PaisInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -95,7 +98,10 @@ class PaisRepositoryImpl(PaisRepositoryInterface):
                         raise PaisDuplicado("desconocido", "valor duplicado")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar país")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise PaisInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:

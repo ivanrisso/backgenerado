@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import AuditoriaComprobante as AuditoriaComprobanteSQL
 from app.domain.entities.auditoriacomprobante import AuditoriaComprobante
 from app.domain.repository.auditoriacomprobante_repository_interfase import AuditoriaComprobanteRepositoryInterface
-from app.domain.exceptions.auditoriacomprobante import AuditoriaComprobanteDuplicado
+from app.domain.exceptions.auditoriacomprobante import AuditoriaComprobanteDuplicado, AuditoriaComprobanteInvalido 
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -59,7 +59,10 @@ class AuditoriaComprobanteRepositoryImpl(AuditoriaComprobanteRepositoryInterface
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear auditoriacomprobante")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise AuditoriaComprobanteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -101,7 +104,10 @@ class AuditoriaComprobanteRepositoryImpl(AuditoriaComprobanteRepositoryInterface
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar auditoriacomprobante")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise AuditoriaComprobanteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:

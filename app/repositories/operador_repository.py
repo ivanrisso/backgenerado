@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Operador as OperadorSQL
 from app.domain.entities.operador import Operador
 from app.domain.repository.operador_repository_interfase import OperadorRepositoryInterface
-from app.domain.exceptions.operador import OperadorDuplicado
+from app.domain.exceptions.operador import OperadorDuplicado, OperadorInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -64,7 +64,10 @@ class OperadorRepositoryImpl(OperadorRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear operador")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise OperadorInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -111,7 +114,10 @@ class OperadorRepositoryImpl(OperadorRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar operador")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise OperadorInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception as e:

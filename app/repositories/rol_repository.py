@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Rol as RolSQL
 from app.domain.entities.rol import Rol
 from app.domain.repository.rol_repository_interfase import RolRepositoryInterface
-from app.domain.exceptions.rol import RolDuplicado
+from app.domain.exceptions.rol import RolDuplicado, RolInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -41,6 +41,35 @@ class RolRepositoryImpl(RolRepositoryInterface):
             await self.db.commit()
             await self.db.refresh(rol_sql)
             return self._to_domain(rol_sql)
+
+        except IntegrityError as e:
+            if hasattr(e.orig, "args"):
+                error_code, msg = e.orig.args
+                msg = msg.lower()
+
+                if error_code == 1062:
+                    if "domicilio_id" in msg:
+                        raise RolDuplicado("domicilio_id", rol.domicilio_id)
+                    elif "tipo_tel_id" in msg:
+                        raise RolDuplicado("tipo_tel_id", str(rol.tipo_tel_id))                    
+                    elif "primary" in msg:
+                        raise RolDuplicado("id", str(rol.id))
+                    else:
+                        raise RolDuplicado("desconocido", "valor duplicado")
+                    
+                elif error_code == 1452:
+                    if "domicilio_id" in msg:
+                        raise ClaveForaneaInvalida("domicilio_id", str(rol.domicilio_id))
+                    elif "tipo_doc_id" in msg:
+                        raise ClaveForaneaInvalida("tipo_doc_id", str(rol.tipo_doc_id))                    
+                    else:
+                        raise ClaveForaneaInvalida("campo_desconocido")
+
+            raise ErrorDeRepositorio("Error de integridad al crear rol")
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise RolInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -64,6 +93,35 @@ class RolRepositoryImpl(RolRepositoryInterface):
                 
             return self._to_domain(rol_sql)
 
+        except IntegrityError as e:
+                        
+            if hasattr(e.orig, "args"):
+                error_code, msg = e.orig.args
+                msg = msg.lower()
+
+                if error_code == 1062:
+                    if "domicilio_id" in msg:
+                        raise RolDuplicado("domicilio_id", rol.domicilio_id)
+                    elif "tipo_tel_id" in msg:
+                        raise RolDuplicado("tipo_tel_id", str(rol.tipo_tel_id))                    
+                    elif "primary" in msg:
+                        raise RolDuplicado("id", str(rol.id))
+                    else:
+                        raise RolDuplicado("desconocido", "valor duplicado")
+
+                elif error_code == 1452:
+                    if "domicilio_id" in msg:
+                        raise ClaveForaneaInvalida("domicilio_id", str(rol.domicilio_id))
+                    elif "tipo_doc_id" in msg:
+                        raise ClaveForaneaInvalida("tipo_doc_id", str(rol.tipo_doc_id))                    
+                    else:
+                        raise ClaveForaneaInvalida("campo_desconocido")
+
+            raise ErrorDeRepositorio("Error de integridad al actualizar rol")
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise RolInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception as e:
@@ -78,14 +136,18 @@ class RolRepositoryImpl(RolRepositoryInterface):
 
             await self.db.delete(rol_sql)
             await self.db.commit()
-            
+
         except IntegrityError as e:
             if hasattr(e.orig, "args"):
                 error_code, msg = e.orig.args
-                msg = msg.lower()
                 if error_code == 1451:
-                    # 1451 = Cannot delete or update a parent row: a foreign key constraint fails
-                    raise ClaveForaneaInvalida("rol_id", str(rol_id))
+                    if "domicilio_id" in msg:
+                        raise ClaveForaneaInvalida("domicilio_id", "domicilio_id")
+                    elif "tipo_doc_id" in msg:
+                        raise ClaveForaneaInvalida("tipo_doc_id","tipo_doc_id")                    
+                    else:
+                        raise ClaveForaneaInvalida("campo_desconocido")
+                
             raise ErrorDeRepositorio("Error de integridad al eliminar rol")
 
         except OperationalError:

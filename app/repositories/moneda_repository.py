@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Moneda as MonedaSQL
 from app.domain.entities.moneda import Moneda
 from app.domain.repository.moneda_repository_interfase import MonedaRepositoryInterface
-from app.domain.exceptions.moneda import MonedaDuplicado
+from app.domain.exceptions.moneda import MonedaDuplicado, MonedaInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -56,7 +56,10 @@ class MonedaRepositoryImpl(MonedaRepositoryInterface):
                         raise MonedaDuplicado("desconocido", "valor duplicado")
 
             raise ErrorDeRepositorio("Error de integridad al crear moneda")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise MonedaInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -95,7 +98,10 @@ class MonedaRepositoryImpl(MonedaRepositoryInterface):
                         raise MonedaDuplicado("desconocido", "valor duplicado")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar moneda")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise MonedaInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:

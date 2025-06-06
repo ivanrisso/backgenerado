@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import ClienteImpuesto as ClienteImpuestoSQL
 from app.domain.entities.clienteimpuesto import ClienteImpuesto
 from app.domain.repository.clienteimpuesto_repository_interfase import ClienteImpuestoRepositoryInterface
-from app.domain.exceptions.clienteimpuesto import ClienteImpuestoDuplicado
+from app.domain.exceptions.clienteimpuesto import ClienteImpuestoDuplicado, ClienteImpuestoInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -59,7 +59,10 @@ class ClienteImpuestoRepositoryImpl(ClienteImpuestoRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear clienteimpuesto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ClienteImpuestoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -100,7 +103,10 @@ class ClienteImpuestoRepositoryImpl(ClienteImpuestoRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar clienteimpuesto")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise ClienteImpuestoInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:

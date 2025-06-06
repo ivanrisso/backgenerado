@@ -2,13 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import CuentaCorriente as CuentaCorrienteSQL
 from app.domain.entities.cuentacorriente import CuentaCorriente
 from app.domain.repository.cuentacorriente_repository_interfase import CuentaCorrienteRepositoryInterface
-from app.domain.exceptions.cuentacorriente import CuentaCorrienteDuplicado
+from app.domain.exceptions.cuentacorriente import CuentaCorrienteDuplicado, CuentaCorrienteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
@@ -68,7 +68,10 @@ class CuentaCorrienteRepositoryImpl(CuentaCorrienteRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al crear cuentacorriente")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise CuentaCorrienteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -112,7 +115,10 @@ class CuentaCorrienteRepositoryImpl(CuentaCorrienteRepositoryInterface):
                         raise ClaveForaneaInvalida("campo_desconocido")
 
             raise ErrorDeRepositorio("Error de integridad al actualizar cuentacorriente")
-
+        except DataError as da:
+            if hasattr(da.orig, "args"):
+                error_code, msg = da.orig.args
+                raise CuentaCorrienteInvalido(msg)        
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
