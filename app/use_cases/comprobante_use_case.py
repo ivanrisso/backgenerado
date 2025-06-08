@@ -23,7 +23,8 @@ class ComprobanteUseCase:
         return await self.repo.get_all()
 
     async def create(self, data: ComprobanteCreate) -> Comprobante:
-        comprobante = Comprobante(id=None, **data.model_dump())
+        
+        comprobante = Comprobante(id=None, **data.model_dump())                            
         return await self.repo.create(comprobante)
 
     async def update(self, comprobante_id: int, data: ComprobanteUpdate) -> Comprobante:

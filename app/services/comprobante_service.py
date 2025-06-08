@@ -48,7 +48,8 @@ class ComprobanteService:
             raise e
         except BaseDeDatosNoDisponible as e:
             raise e
-        except Exception:
+        except Exception as ex:
+            logger.exception("Error inesperado al crear comprobante")
             raise ErrorDeRepositorio("Error inesperado al crear comprobante")
 
     async def update(self, id: int, data: ComprobanteUpdate) -> ComprobanteResponse:

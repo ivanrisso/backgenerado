@@ -43,6 +43,7 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
             return self._to_domain(comprobante_sql)
 
         except IntegrityError as e:
+                        
             if hasattr(e.orig, "args"):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
@@ -63,15 +64,21 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
                         raise ClaveForaneaInvalida("moneda_id", str(comprobante.moneda_id))
                     else:
                         raise ClaveForaneaInvalida("campo_desconocido")
-
+                                                
+            logger.info("Error de integridad al crear comprobante")
             raise ErrorDeRepositorio("Error de integridad al crear comprobante")
+        
         except DataError as da:
+            
             if hasattr(da.orig, "args"):
                 error_code, msg = da.orig.args
-                raise Comprobante(msg)        
+                raise ComprobanteInvalido(msg)   
+            
+            raise ComprobanteInvalido(msg)   
+                 
         except OperationalError:
             raise BaseDeDatosNoDisponible()
-        except Exception:
+        except Exception as exc:
             raise ErrorDeRepositorio("Error inesperado al crear comprobante")
 
     async def update(self, comprobante_id: int, comprobante: Comprobante) -> Optional[Comprobante]:
@@ -118,7 +125,8 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
         except DataError as da:
             if hasattr(da.orig, "args"):
                 error_code, msg = da.orig.args
-                raise Comprobante(msg)        
+                raise ComprobanteInvalido(msg)   
+            
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception:
@@ -150,6 +158,7 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
     def _to_domain(self, comprobante_sql: ComprobanteSQL) -> Comprobante:
         return Comprobante(
             id=comprobante_sql.id,
+            cliente_id=comprobante_sql.cliente_id,
             tipo_comprobante_id=comprobante_sql.tipo_comprobante_id,
             concepto_id=comprobante_sql.concepto_id,
             tipo_doc_id=comprobante_sql.tipo_doc_id,
@@ -176,6 +185,7 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
     def _to_orm(self, comprobante: Comprobante) -> ComprobanteSQL:
         return ComprobanteSQL(
             id=comprobante.id,
+            cliente_id=comprobante.cliente_id,
             tipo_comprobante_id=comprobante.tipo_comprobante_id,
             concepto_id=comprobante.concepto_id,
             tipo_doc_id=comprobante.tipo_doc_id,
@@ -198,3 +208,4 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
             observaciones=comprobante.observaciones            
             
         )
+        
