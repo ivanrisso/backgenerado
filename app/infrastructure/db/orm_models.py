@@ -196,6 +196,7 @@ class TipoComprobante(Base):
     codigo: Mapped[str] = mapped_column(String(3), nullable=False, unique=True)
     descripcion: Mapped[str] = mapped_column(String(50), nullable=False)
     es_fiscal: Mapped[bool] = mapped_column(nullable=False)
+    codigo_arca: Mapped[str] = mapped_column(String(3), nullable=False)
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="tipo_comprobante")
 
@@ -229,6 +230,7 @@ class Iva(Base):
 
     clientes: Mapped[List["Cliente"]] = relationship(back_populates="iva")
     detalles: Mapped[List["ComprobanteDetalle"]] = relationship(back_populates="iva")
+
 
 class TipoImpuesto(Base):
     __tablename__ = "tipoimpuesto"

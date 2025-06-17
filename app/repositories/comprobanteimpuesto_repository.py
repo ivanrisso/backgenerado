@@ -34,12 +34,14 @@ class ComprobanteImpuestoRepositoryImpl(ComprobanteImpuestoRepositoryInterface):
         comprobanteimpuestos_sql = result.scalars().all()
         return [self._to_domain(c) for c in comprobanteimpuestos_sql]
 
-    async def create(self, comprobanteimpuesto: ComprobanteImpuesto) -> ComprobanteImpuesto:
+    async def create(self, comprobanteimpuesto: ComprobanteImpuesto, commit: bool = True) -> ComprobanteImpuesto:
         try:
             obj_sql = self._to_orm(comprobanteimpuesto)
             self.db.add(obj_sql)
-            await self.db.commit()
-            await self.db.refresh(obj_sql)
+            
+            if commit:
+                await self.db.commit()
+                await self.db.refresh(obj_sql)
             return self._to_domain(obj_sql)
 
         except IntegrityError as e:
@@ -67,7 +69,7 @@ class ComprobanteImpuestoRepositoryImpl(ComprobanteImpuestoRepositoryInterface):
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al crear comprobanteimpuesto")
 
-    async def update(self, id: int, data: ComprobanteImpuesto) -> Optional[ComprobanteImpuesto]:
+    async def update(self, id: int, data: ComprobanteImpuesto, commit: bool = True) -> Optional[ComprobanteImpuesto]:
         try:
             obj_sql = await self.db.get(ComprobanteImpuestoSQL, id)
             if not obj_sql:
@@ -80,8 +82,9 @@ class ComprobanteImpuestoRepositoryImpl(ComprobanteImpuestoRepositoryInterface):
                     cambios = True
 
             if cambios:
-                await self.db.commit()
-                await self.db.refresh(obj_sql)
+                if commit:
+                    await self.db.commit()
+                    await self.db.refresh(obj_sql)
 
             return self._to_domain(obj_sql)
 

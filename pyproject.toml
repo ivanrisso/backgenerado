@@ -44,6 +44,11 @@ httpx = "^0.28.1"
 pytest = "^8.3.5"
 faker = "^37.3.0"
 pytest-asyncio = "^1.0.0"
+pyopenssl = "^25.1.0"
+cryptography = "^45.0.3"
+zeep = "^4.3.1"
+requests-pkcs12 = "^1.25"
+afip-py = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"

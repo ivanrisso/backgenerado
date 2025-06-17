@@ -34,12 +34,15 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
         comprobantes_sql = result.scalars().all()
         return [self._to_domain(c) for c in comprobantes_sql]
 
-    async def create(self, comprobante: Comprobante) -> Comprobante:
+    async def create(self, comprobante: Comprobante, commit: bool = True) -> Comprobante:
         try:
             comprobante_sql = self._to_orm(comprobante)
             self.db.add(comprobante_sql)
-            await self.db.commit()
-            await self.db.refresh(comprobante_sql)
+            
+            if commit:
+                await self.db.commit()
+                await self.db.refresh(comprobante_sql)
+                
             return self._to_domain(comprobante_sql)
 
         except IntegrityError as e:
@@ -81,7 +84,7 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
         except Exception as exc:
             raise ErrorDeRepositorio("Error inesperado al crear comprobante")
 
-    async def update(self, comprobante_id: int, comprobante: Comprobante) -> Optional[Comprobante]:
+    async def update(self, comprobante_id: int, comprobante: Comprobante, commit: bool = True) -> Optional[Comprobante]:
         try:
             comprobante_sql = await self.db.get(ComprobanteSQL, comprobante_id)
             if not comprobante_sql:
@@ -94,8 +97,9 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
                     cambios = True
 
             if cambios:
-                await self.db.commit()
-                await self.db.refresh(comprobante_sql)
+                if commit:
+                    await self.db.commit()
+                    await self.db.refresh(comprobante_sql)
 
             return self._to_domain(comprobante_sql)
 

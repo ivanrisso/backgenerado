@@ -34,12 +34,14 @@ class ComprobanteDetalleRepositoryImpl(ComprobanteDetalleRepositoryInterface):
         comprobantedetalles_sql = result.scalars().all()
         return [self._to_domain(c) for c in comprobantedetalles_sql]
 
-    async def create(self, comprobantedetalle: ComprobanteDetalle) -> ComprobanteDetalle:
+    async def create(self, comprobantedetalle: ComprobanteDetalle, commit: bool = True) -> ComprobanteDetalle:
         try:
             obj_sql = self._to_orm(comprobantedetalle)
             self.db.add(obj_sql)
-            await self.db.commit()
-            await self.db.refresh(obj_sql)
+            
+            if commit:
+                await self.db.commit()
+                await self.db.refresh(obj_sql)
             return self._to_domain(obj_sql)
 
         except IntegrityError as e:
@@ -68,7 +70,7 @@ class ComprobanteDetalleRepositoryImpl(ComprobanteDetalleRepositoryInterface):
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al crear comprobantedetalle")
 
-    async def update(self, id: int, data: ComprobanteDetalle) -> Optional[ComprobanteDetalle]:
+    async def update(self, id: int, data: ComprobanteDetalle, commit: bool = True) -> Optional[ComprobanteDetalle]:
         try:
             obj_sql = await self.db.get(ComprobanteDetalleSQL, id)
             if not obj_sql:
@@ -81,8 +83,9 @@ class ComprobanteDetalleRepositoryImpl(ComprobanteDetalleRepositoryInterface):
                     cambios = True
 
             if cambios:
-                await self.db.commit()
-                await self.db.refresh(obj_sql)
+                if commit:
+                    await self.db.commit()
+                    await self.db.refresh(obj_sql)
 
             return self._to_domain(obj_sql)
 

@@ -1,20 +1,19 @@
+# app/infrastructure/db/engine.py
+
+from pathlib import Path
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import NullPool
-from dotenv import load_dotenv
-from pathlib import Path
-import os
 
-# Importa DeclarativeBase ya definida con tus modelos
+# Tu Settings centralizado
+from app.core.config import settings
+
+# Tu metadata declarativa
 from app.infrastructure.db.orm_models import Base
 
-# Carga de variables de entorno
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
+# URL de la base de datos desde settings
+DATABASE_URL = settings.DATABASE_URL  # añade este campo en tu Settings
 
-# URL de la base de datos (aiomysql o equivalente)
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-# Motor asincrónico
+# Crea el engine asincrónico
 engine = create_async_engine(
     DATABASE_URL,
     echo=False,
@@ -22,10 +21,10 @@ engine = create_async_engine(
     poolclass=NullPool
 )
 
-# Sesión asincrónica
+# Crea la fábrica de sesiones
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
-# Crear tablas automáticamente al iniciar
-async def create_db_and_tables():
+# Función para crear tablas al iniciar
+async def create_db_and_tables() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

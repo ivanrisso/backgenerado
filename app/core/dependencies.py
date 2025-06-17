@@ -8,10 +8,25 @@ from app.infrastructure.security.jwt_handler import decode_token
 from app.repositories.usuario_repository import UsuarioRepositoryImpl
 from app.infrastructure.db.orm_models import Usuario
 from typing import AsyncGenerator
+from app.core.afip_auth import AfipAuthService
+from app.core.afip_client import get_afip_client
+from afip import Afip
+
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
+
+def get_afip_client_dep() -> Afip:
+    try:
+        return get_afip_client()
+    except Exception as e:
+        raise HTTPException(
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Error configurando AFIP SDK: {e}"
+        )
+
+
 
 async def get_current_user(
     request: Request,
@@ -56,3 +71,19 @@ def require_roles(*allowed_roles: str):
             )
         return current_user
     return role_dependency
+
+
+async def get_afip_credentials() -> dict:
+    """
+    Inyecta credenciales AFIP: token, sign y cuit.
+    Renueva automáticamente si expiran; en caso de error devuelve 503.
+    """
+    try:
+        service = AfipAuthService()
+        return await service.get_credentials()
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Error en credenciales AFIP: {e}"
+        )
+

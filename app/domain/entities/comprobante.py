@@ -1,3 +1,4 @@
+# app/domain/entities/comprobante.py
 from typing import Optional, List
 from datetime import date
 from dataclasses import dataclass
