@@ -1,0 +1,57 @@
+Generación y aplicación de migraciones de base de datos
+
+Este documento describe exclusivamente los pasos para:
+
+Generar los scripts de migración (impactos de BD) que reflejen cambios en tus modelos.
+
+Aplicar esas migraciones a la base de datos.
+
+1. Generar el script de migración
+
+Cuando realices cambios en tus modelos SQLAlchemy (p.ej. añadiste la columna codigo_arca a TipoComprobante), ejecuta:
+
+# Desde la raíz del proyecto
+alembic revision --autogenerate -m "Agregar codigo_arca a tipocomprobante"
+
+Esto crea un nuevo archivo en alembic/versions/ nombrado con un timestamp y tu mensaje.
+
+Verifica dentro del archivo alembic/versions/xxxx_agregar_codigo_arca.py que contenga la operación correcta, por ejemplo:
+
+def upgrade():
+    op.add_column(
+        'tipocomprobante',
+        sa.Column('codigo_arca', sa.String(length=3), nullable=False)
+    )
+
+Si se detectan cambios no deseados, edita manualmente el script antes de continuar.
+
+2. Aplicar las migraciones a la base de datos
+
+Para ejecutar y aplicar todos los scripts pendientes en orden, usa:
+
+alembic upgrade head
+
+Alembic leerá la tabla alembic_version para saber qué revisiones ya están aplicadas.
+
+Ejecutará cada script faltante en alembic/versions/, actualizando tu esquema.
+
+Insertará la versión actual en alembic_version.
+
+3. Verificación rápida
+
+Tras aplicar la migración, comprueba que la columna exista:
+
+DESCRIBE tipocomprobante;
+
+Deberías ver la nueva columna:
+
+codigo_arca | varchar(3) | NO |     | NULL |
+
+Con estos dos comandos tendrás:
+
+Scripts de migración generados y revisados.
+
+Impacto real en la base de datos de forma controlada y repetible.
+
+Fin del flujo.
+

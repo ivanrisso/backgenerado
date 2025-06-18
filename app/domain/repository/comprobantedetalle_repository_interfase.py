@@ -1,4 +1,5 @@
 # ✅ app/domain/repository/comprobantedetalle_repository_interface.py
+
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from app.domain.entities.comprobantedetalle import ComprobanteDetalle
@@ -23,4 +24,9 @@ class ComprobanteDetalleRepositoryInterface(ABC):
 
     @abstractmethod
     async def delete(self, comprobantedetalle_id: int) -> None:
+        pass
+
+    @abstractmethod
+    async def get_by_comprobante_id(self, comprobante_id: int) -> List[ComprobanteDetalle]:
+        """Devuelve todos los detalles asociados a un comprobante"""
         pass

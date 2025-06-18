@@ -1,4 +1,5 @@
 # ✅ app/domain/repository/comprobanteimpuesto_repository_interface.py
+
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from app.domain.entities.comprobanteimpuesto import ComprobanteImpuesto
@@ -23,4 +24,9 @@ class ComprobanteImpuestoRepositoryInterface(ABC):
 
     @abstractmethod
     async def delete(self, comprobanteimpuesto_id: int) -> None:
+        pass
+
+    @abstractmethod
+    async def get_by_comprobante_id(self, comprobante_id: int) -> List[ComprobanteImpuesto]:
+        """Devuelve todos los impuestos asociados a un comprobante"""
         pass

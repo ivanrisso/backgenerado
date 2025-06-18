@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import AsyncGenerator, List
-from app.core.dependencies import require_roles
+from app.core.dependencies import require_roles, get_db_session
 
 from app.infrastructure.db.engine import SessionLocal
 from app.repositories.comprobante_repository import ComprobanteRepositoryImpl
@@ -19,10 +19,6 @@ logging.basicConfig(level=logging.INFO)
 
 router = APIRouter(prefix="/comprobantes", tags=["Comprobante"])
 
-# DB session
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with SessionLocal() as session:
-        yield session
 
 # ComprobanteService como dependencia
 def get_comprobante_service(db: AsyncSession = Depends(get_db_session)) -> ComprobanteService:

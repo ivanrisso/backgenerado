@@ -69,6 +69,8 @@ class TipoDoc(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     tipo_doc_nombre: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
     habilitado: Mapped[bool] = mapped_column(nullable=False)
+    codigo_arca: Mapped[str] = mapped_column(String(3), nullable=False)
+
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="tipo_doc")
     clientes: Mapped[List["Cliente"]] = relationship(back_populates="tipo_doc")
@@ -206,6 +208,7 @@ class Concepto(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     codigo: Mapped[str] = mapped_column(String(3), nullable=False, unique=True)
     descripcion: Mapped[str] = mapped_column(String(50), nullable=False)
+    codigo_arca: Mapped[str] = mapped_column(String(3), nullable=False)
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="concepto")
 
@@ -215,6 +218,7 @@ class Moneda(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     codigo: Mapped[str] = mapped_column(String(3), nullable=False, unique=True)
     descripcion: Mapped[str] = mapped_column(String(50), nullable=False)
+    codigo_arca: Mapped[str] = mapped_column(String(3), nullable=False)
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="moneda")
 

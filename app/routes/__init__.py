@@ -26,7 +26,7 @@ from app.routes.tipodom_routes import router as tipodom_router
 from app.routes.tipoimpuesto_routes import router as tipoimpuesto_router
 from app.routes.tipotel_routes import router as tipotel_router
 from app.routes.usuario_routes import router as usuario_router
-from app.routes.comprobante_full import router as comprobante_full_router
+from app.routes.comprobante_full_routes import router as comprobante_full_router
 
 
 def include_all_routes(app: FastAPI):
