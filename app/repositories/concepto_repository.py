@@ -134,7 +134,8 @@ class ConceptoRepositoryImpl(ConceptoRepositoryInterface):
         return Concepto(
             id=concepto_sql.id,
             codigo=concepto_sql.codigo,
-            descripcion=concepto_sql.descripcion
+            descripcion=concepto_sql.descripcion,
+            codigo_arca = concepto_sql.codigo_arca
         )
 
 
@@ -142,5 +143,6 @@ class ConceptoRepositoryImpl(ConceptoRepositoryInterface):
         return ConceptoSQL(
             id=concepto.id,
             codigo=concepto.codigo,
-            descripcion=concepto.descripcion
+            descripcion=concepto.descripcion,
+            codigo_arca = concepto.codigo_arca
         )

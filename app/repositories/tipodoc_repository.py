@@ -145,6 +145,7 @@ class TipoDocRepositoryImpl(TipoDocRepositoryInterface):
             id=tipodoc_sql.id,
             tipo_doc_nombre=tipodoc_sql.tipo_doc_nombre,
             habilitado=tipodoc_sql.habilitado,
+            codigo_arca = tipodoc_sql.codigo_arca
         )
 
     def _to_orm(self, tipodoc: TipoDoc) -> TipoDocSQL:
@@ -152,4 +153,5 @@ class TipoDocRepositoryImpl(TipoDocRepositoryInterface):
             id=tipodoc.id,
             tipo_doc_nombre=tipodoc.tipo_doc_nombre,
             habilitado=tipodoc.habilitado,
+            codigo_arca = tipodoc.codigo_arca
         )

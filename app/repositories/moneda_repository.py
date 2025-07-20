@@ -134,12 +134,14 @@ class MonedaRepositoryImpl(MonedaRepositoryInterface):
         return Moneda(
             id=moneda_sql.id,
             codigo=moneda_sql.codigo,
-            descripcion=moneda_sql.descripcion
+            descripcion=moneda_sql.descripcion,
+            codigo_arca = moneda_sql.codigo_arca
         )
 
     def _to_orm(self, moneda: Moneda) -> MonedaSQL:
         return MonedaSQL(
             id=moneda.id,
             codigo=moneda.codigo,
-            descripcion=moneda.descripcion
+            descripcion=moneda.descripcion,
+            codigo_arca = moneda.codigo_arca
         )

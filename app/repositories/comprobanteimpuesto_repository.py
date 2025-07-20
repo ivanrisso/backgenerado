@@ -136,6 +136,12 @@ class ComprobanteImpuestoRepositoryImpl(ComprobanteImpuestoRepositoryInterface):
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al eliminar comprobanteimpuesto")
 
+    async def get_by_comprobante_id(self, comprobante_id: int) -> list[ComprobanteImpuesto]:
+        result = await self.session.execute(
+            select(ComprobanteImpuestoSQL).where(ComprobanteImpuestoSQL.comprobante_id == comprobante_id)
+        )
+        return [self._to_domain(row) for row in result.scalars().all()]
+
 
     def _to_domain(self, comprobanteimpuesto_sql: ComprobanteImpuestoSQL) -> ComprobanteImpuesto:
         return ComprobanteImpuesto(

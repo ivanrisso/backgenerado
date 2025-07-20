@@ -1,7 +1,9 @@
 # app/domain/entities/comprobante.py
-from typing import Optional, List
+
+from typing import Optional
 from datetime import date
 from dataclasses import dataclass
+from app.domain.dtos.comprobante_dto import ComprobanteDTO
 
 @dataclass
 class Comprobante:
@@ -27,3 +29,30 @@ class Comprobante:
     total_impuestos: Optional[float] = None
     total: Optional[float] = None
     observaciones: Optional[str] = None
+    cae: Optional[str] = None
+    cae_vencimiento: Optional[date] = None
+
+    @classmethod
+    def from_dto(cls, dto: ComprobanteDTO) -> "Comprobante":
+        return cls(
+            cliente_id=dto.cliente_id,
+            tipo_comprobante_id=dto.tipo_comprobante_id,
+            concepto_id=dto.concepto_id,
+            tipo_doc_id=dto.tipo_doc_id,
+            moneda_id=dto.moneda_id,
+            punto_venta=dto.punto_venta,
+            fecha_emision=dto.fecha_emision,
+            doc_nro=dto.doc_nro,
+            nombre_cliente=dto.nombre_cliente,
+            cuit_cliente=dto.cuit_cliente,
+            domicilio_cliente=dto.domicilio_cliente,
+            localidad_cliente=dto.localidad_cliente,
+            cod_postal_cliente=dto.cod_postal_cliente,
+            provincia_cliente=dto.provincia_cliente,
+            cotizacion_moneda=dto.cotizacion_moneda,
+            total_neto=dto.total_neto,
+            total_iva=dto.total_iva,
+            total_impuestos=dto.total_impuestos,
+            total=dto.total,
+            observaciones=dto.observaciones
+        )

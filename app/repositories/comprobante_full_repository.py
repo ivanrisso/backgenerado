@@ -1,5 +1,3 @@
-# ✅ app/repositories/comprobante_full_uow.py
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.domain.repository.comprobante_repository_interfase import ComprobanteRepositoryInterface
 from app.domain.repository.comprobantedetalle_repository_interfase import ComprobanteDetalleRepositoryInterface
@@ -7,6 +5,9 @@ from app.domain.repository.comprobanteimpuesto_repository_interfase import Compr
 from app.repositories.comprobante_repository import ComprobanteRepositoryImpl
 from app.repositories.comprobantedetalle_repository import ComprobanteDetalleRepositoryImpl
 from app.repositories.comprobanteimpuesto_repository import ComprobanteImpuestoRepositoryImpl
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ComprobanteFullUOW:
@@ -17,13 +18,15 @@ class ComprobanteFullUOW:
         self._comprobante_impuesto_repo: ComprobanteImpuestoRepositoryInterface | None = None
 
     async def __aenter__(self):
-        await self.session.begin()
+        logger.debug("🟢 Iniciando unidad de trabajo comprobante")
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
         if exc_type:
+            logger.warning("🔴 Rollback por excepción en UOW: %s", exc_type)
             await self.rollback()
         else:
+            logger.info("🟢 Commit exitoso en UOW")
             await self.commit()
 
     async def commit(self):
@@ -31,6 +34,9 @@ class ComprobanteFullUOW:
 
     async def rollback(self):
         await self.session.rollback()
+
+    async def flush(self):
+        await self.session.flush()
 
     @property
     def comprobante_repo(self) -> ComprobanteRepositoryInterface:

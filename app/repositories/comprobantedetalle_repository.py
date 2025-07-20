@@ -138,6 +138,12 @@ class ComprobanteDetalleRepositoryImpl(ComprobanteDetalleRepositoryInterface):
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al eliminar comprobantedetalle")
 
+    # ✅ Obtener todos los detalles de un comprobante
+    async def get_by_comprobante_id(self, comprobante_id: int) -> list[ComprobanteDetalle]:
+        result = await self.session.execute(
+            select(ComprobanteDetalleSQL).where(ComprobanteDetalleSQL.comprobante_id == comprobante_id)
+        )
+        return [self._to_domain(row) for row in result.scalars().all()]
 
     def _to_domain(self, comprobantedetalle_sql: ComprobanteDetalleSQL) -> ComprobanteDetalle:
         return ComprobanteDetalle(

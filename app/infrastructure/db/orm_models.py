@@ -283,6 +283,8 @@ class Comprobante(Base):
     total_impuestos: Mapped[float] = mapped_column(nullable=False)
     total: Mapped[float] = mapped_column(nullable=False)
     observaciones: Mapped[Optional[str]] = mapped_column(String(255))
+    cae: Mapped[str] = mapped_column(String(50), nullable=False)
+    cae_vencimiento: Mapped[date] = mapped_column(nullable=False)
 
     tipo_comprobante: Mapped["TipoComprobante"] = relationship(back_populates="comprobantes")
     concepto: Mapped["Concepto"] = relationship(back_populates="comprobantes")

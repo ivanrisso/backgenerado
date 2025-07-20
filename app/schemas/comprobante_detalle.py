@@ -23,7 +23,7 @@ class ComprobanteDetalleUpdate(BaseModel):
 
 
 class ComprobanteDetalleResponse(BaseModel):
-    id: int
+    id: Optional[int]
     comprobante_id: int
     iva_id: int
     descripcion: str

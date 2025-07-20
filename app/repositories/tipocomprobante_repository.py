@@ -137,7 +137,8 @@ class TipoComprobanteRepositoryImpl(TipoComprobanteRepositoryInterface):
             id=tipocomprobante_sql.id,
             codigo=tipocomprobante_sql.codigo,
             descripcion=tipocomprobante_sql.descripcion,
-            es_fiscal=tipocomprobante_sql.es_fiscal
+            es_fiscal=tipocomprobante_sql.es_fiscal,
+            codigo_arca=tipocomprobante_sql.codigo_arca   
         )
         
 
@@ -146,5 +147,6 @@ class TipoComprobanteRepositoryImpl(TipoComprobanteRepositoryInterface):
             id=tipocomprobante.id,
             codigo=tipocomprobante.codigo,
             descripcion=tipocomprobante.descripcion,
-            es_fiscal=tipocomprobante.es_fiscal
+            es_fiscal=tipocomprobante.es_fiscal,
+            codigo_arca=tipocomprobante.codigo_arca
         )

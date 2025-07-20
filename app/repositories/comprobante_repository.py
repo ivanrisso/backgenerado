@@ -41,8 +41,10 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
             
             if commit:
                 await self.db.commit()
-                await self.db.refresh(comprobante_sql)
+            else:
+                await self.db.flush()  
                 
+            await self.db.refresh(comprobante_sql)         
             return self._to_domain(comprobante_sql)
 
         except IntegrityError as e:

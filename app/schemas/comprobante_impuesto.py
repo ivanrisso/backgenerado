@@ -18,7 +18,7 @@ class ComprobanteImpuestoUpdate(BaseModel):
     importe: Optional[float] = None
 
 class ComprobanteImpuestoResponse(BaseModel):
-    id: int
+    id: Optional[int]
     comprobante_id: int
     tipo_impuesto_id: int
     descripcion: str
