@@ -11,6 +11,7 @@ class Settings(BaseSettings):
 
     # Base de datos
     DATABASE_URL: str = Field(..., env="DATABASE_URL")
+    ALEMBIC_URL: str | None = Field(None, env="ALEMBIC_URL")
 
     # AFIP
     AFIP_CERT_CRT_PATH: str = Field(..., env="AFIP_CERT_CRT_PATH")

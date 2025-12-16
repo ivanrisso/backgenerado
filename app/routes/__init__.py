@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from app.routes.auth_routes import router as auth_router
 from app.routes.auditoriacomprobante_routes import router as auditoriacomprobante_router
 from app.routes.cliente_routes import router as cliente_router
@@ -29,32 +29,38 @@ from app.routes.usuario_routes import router as usuario_router
 from app.routes.comprobante_full_routes import router as comprobante_full_router
 
 
+# Router principal para agrupar todo bajo /api/v1
+api_router = APIRouter(prefix="/api/v1")
+
+api_router.include_router(auth_router)
+api_router.include_router(auditoriacomprobante_router)
+api_router.include_router(cliente_router)
+api_router.include_router(clienteimpuesto_router)
+api_router.include_router(comprobante_router)
+api_router.include_router(comprobantedetalle_router)
+api_router.include_router(comprobanteimpuesto_router)
+api_router.include_router(concepto_router)
+api_router.include_router(cuentacorriente_router)
+api_router.include_router(domicilio_router)
+api_router.include_router(iva_router)
+api_router.include_router(localidad_router)
+api_router.include_router(menuitem_router)
+api_router.include_router(moneda_router)
+api_router.include_router(operador_router)
+api_router.include_router(pais_router)
+api_router.include_router(provincia_router)
+api_router.include_router(rol_router)
+api_router.include_router(rolesusuario_router)
+api_router.include_router(rolmenuitem_router)
+api_router.include_router(telefono_router)
+api_router.include_router(tipocomprobante_router)
+api_router.include_router(tipodoc_router)
+api_router.include_router(tipodom_router)
+api_router.include_router(tipoimpuesto_router)
+api_router.include_router(tipotel_router)
+api_router.include_router(usuario_router)
+api_router.include_router(comprobante_full_router)
+
+
 def include_all_routes(app: FastAPI):
-    app.include_router(auth_router)
-    app.include_router(auditoriacomprobante_router)
-    app.include_router(cliente_router)
-    app.include_router(clienteimpuesto_router)
-    app.include_router(comprobante_router)
-    app.include_router(comprobantedetalle_router)
-    app.include_router(comprobanteimpuesto_router)
-    app.include_router(concepto_router)
-    app.include_router(cuentacorriente_router)
-    app.include_router(domicilio_router)
-    app.include_router(iva_router)
-    app.include_router(localidad_router)
-    app.include_router(menuitem_router)
-    app.include_router(moneda_router)
-    app.include_router(operador_router)
-    app.include_router(pais_router)
-    app.include_router(provincia_router)
-    app.include_router(rol_router)
-    app.include_router(rolesusuario_router)
-    app.include_router(rolmenuitem_router)
-    app.include_router(telefono_router)
-    app.include_router(tipocomprobante_router)
-    app.include_router(tipodoc_router)
-    app.include_router(tipodom_router)
-    app.include_router(tipoimpuesto_router)
-    app.include_router(tipotel_router)
-    app.include_router(usuario_router)
-    app.include_router(comprobante_full_router)
+    app.include_router(api_router)

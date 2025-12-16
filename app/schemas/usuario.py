@@ -5,21 +5,31 @@ from typing import List, Optional
 class UsuarioCreate(BaseModel):
     usuario_email: EmailStr
     usuario_password: str
+    nombre: str
+    apellido: str
+    role_ids: List[int] = []
 
 class UsuarioUpdate(BaseModel):
-    pass
-
-class UsuarioResponse(BaseModel):
-    usuario_email: str
+    nombre: Optional[str] = None
+    apellido: Optional[str] = None
+    usuario_email: Optional[EmailStr] = None
+    usuario_password: Optional[str] = None
+    role_ids: Optional[List[int]] = None
 
 class RolResponse(BaseModel):
+    id: int
     rol_nombre: str
+    es_admin: bool
 
-class UsuarioResponseConRoles(BaseModel):
+    class Config:
+        from_attributes = True
+
+class UsuarioResponse(BaseModel):
+    id: int
     usuario_email: str
     nombre: str
     apellido: str
-    roles: Optional[List[RolResponse]] = None
+    roles: List[RolResponse] = []
 
     class Config:
         from_attributes = True

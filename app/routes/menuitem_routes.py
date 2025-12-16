@@ -24,9 +24,13 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 # MenuItemService como dependencia
+from app.repositories.rol_repository import RolRepositoryImpl
+
+# MenuItemService como dependencia
 def get_menuitem_service(db: AsyncSession = Depends(get_db_session)) -> MenuItemService:
     repo = MenuItemRepositoryImpl(db)
-    use_case = MenuItemUseCase(repo)
+    rol_repo = RolRepositoryImpl(db)
+    use_case = MenuItemUseCase(repo, rol_repo)
     return MenuItemService(use_case)
 
 # Rutas

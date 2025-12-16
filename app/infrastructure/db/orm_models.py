@@ -227,7 +227,7 @@ class Iva(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     codigo: Mapped[int] = mapped_column(unique=True, index=True, nullable=False)
-    descripcion: Mapped[str] = mapped_column(String(30), nullable=False)
+    descripcion: Mapped[str] = mapped_column(String(100), nullable=False)
     porcentaje: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False, default=Decimal("0.00"))
     discriminado: Mapped[bool] = mapped_column(nullable=False, default=False)
     porcentaje_sobre: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False, default=Decimal("0.00"))

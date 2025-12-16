@@ -28,6 +28,12 @@ class RolRepositoryImpl(RolRepositoryInterface):
         rol_sql = result.scalar_one_or_none()
         return self._to_domain(rol_sql) if rol_sql else None
 
+    async def get_by_nombre(self, nombre: str) -> Optional[Rol]:
+        stmt = select(RolSQL).where(RolSQL.rol_nombre == nombre)
+        result = await self.db.execute(stmt)
+        rol_sql = result.scalar_one_or_none()
+        return self._to_domain(rol_sql) if rol_sql else None
+
     async def get_all(self) -> List[Rol]:
         stmt = select(RolSQL)
         result = await self.db.execute(stmt)

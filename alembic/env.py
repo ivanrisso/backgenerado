@@ -14,8 +14,21 @@ if config.config_file_name:
     fileConfig(config.config_file_name)
 
 # 3) Importa Base desde orm_models.py
+# 3) Importa Base desde orm_models.py
 from app.infrastructure.db.orm_models import Base
+from app.core.config import settings
+
 target_metadata = Base.metadata
+
+# Sobreescribir la URL de sqlalchemy con la de settings
+# Alembic (sync) necesita un driver sincrónico.
+if hasattr(settings, "ALEMBIC_URL") and settings.ALEMBIC_URL:
+    db_url = settings.ALEMBIC_URL
+else:
+    # Fallback: intentar reemplazar aiomysql/asyncmy con pymysql
+    db_url = settings.DATABASE_URL.replace("aiomysql", "pymysql").replace("asyncmy", "pymysql")
+
+context.config.set_main_option("sqlalchemy.url", db_url)
 
 def run_migrations_offline() -> None:
     url = config.get_main_option("sqlalchemy.url")

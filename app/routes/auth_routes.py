@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Response, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.auth_schemas import UsuarioCreate, UsuarioLogin
-from app.schemas.usuario import UsuarioResponse, UsuarioResponseConRoles
+from app.schemas.usuario import UsuarioResponse
 from app.services.auth_service import AuthService
 from app.infrastructure.db.engine import SessionLocal
 from app.infrastructure.security.jwt_handler import decode_token
@@ -32,8 +32,8 @@ async def login_user(response: Response, form_data: UsuarioLogin, db: AsyncSessi
     auth_service = AuthService(db)
     usuario = await auth_service.autenticar_usuario(email=form_data.usuario_email, password=form_data.usuario_password)
     access_token, refresh_token = auth_service.crear_tokens(usuario)
-    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="Strict", max_age=15*60)
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="Strict", max_age=7*24*60*60)
+    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="Lax", max_age=15*60)
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=False, samesite="Lax", max_age=7*24*60*60)
     return {"msg": "Inicio de sesión exitoso"}
 
 @router.post("/refresh", summary="Renovación de sesión")
@@ -56,8 +56,8 @@ async def refresh_token(request: Request, response: Response, db: AsyncSession =
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado.")
 
     new_access, new_refresh = auth_service.crear_tokens(usuario)
-    response.set_cookie(key="access_token", value=new_access, httponly=True, secure=True, samesite="Strict", max_age=15*60)
-    response.set_cookie(key="refresh_token", value=new_refresh, httponly=True, secure=True, samesite="Strict", max_age=7*24*60*60)
+    response.set_cookie(key="access_token", value=new_access, httponly=True, secure=False, samesite="Lax", max_age=15*60)
+    response.set_cookie(key="refresh_token", value=new_refresh, httponly=True, secure=False, samesite="Lax", max_age=7*24*60*60)
     return {"msg": "Token renovado con éxito"}
 
 @router.post("/logout", summary="Cerrar sesión")
@@ -79,7 +79,7 @@ async def logout_user(response: Response):
     )
     return {"msg": "Sesión cerrada correctamente"}
 
-@router.get("/me", response_model=UsuarioResponseConRoles, summary="Obtener datos del usuario autenticado")
+@router.get("/me", response_model=UsuarioResponse, summary="Obtener datos del usuario autenticado")
 async def get_me(current_user = Depends(get_current_user)):
     return current_user
 

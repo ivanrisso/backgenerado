@@ -49,6 +49,7 @@ cryptography = "^45.0.3"
 zeep = "^4.3.1"
 requests-pkcs12 = "^1.25"
 afip-py = "^1.1.1"
+asyncmy = "^0.2.10"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"

@@ -4,6 +4,7 @@ from typing import AsyncGenerator, List
 
 from app.infrastructure.db.engine import SessionLocal
 from app.repositories.usuario_repository import UsuarioRepositoryImpl
+from app.repositories.rol_repository import RolRepositoryImpl
 from app.use_cases.usuario_use_case import UsuarioUseCase
 from app.services.usuario_service import UsuarioService
 from app.schemas.usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse
@@ -21,7 +22,8 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 # UsuarioService como dependencia
 def get_usuario_service(db: AsyncSession = Depends(get_db_session)) -> UsuarioService:
     repo = UsuarioRepositoryImpl(db)
-    use_case = UsuarioUseCase(repo)
+    rol_repo = RolRepositoryImpl(db)
+    use_case = UsuarioUseCase(repo, rol_repo)
     return UsuarioService(use_case)
 
 # Rutas

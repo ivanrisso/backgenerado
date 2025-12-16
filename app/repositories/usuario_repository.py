@@ -24,7 +24,7 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
         self.db = db
 
     async def get_by_id(self, usuario_id: int) -> Optional[Usuario]:
-        stmt = select(UsuarioSQL).where(UsuarioSQL.id == usuario_id)
+        stmt = select(UsuarioSQL).options(selectinload(UsuarioSQL.roles)).where(UsuarioSQL.id == usuario_id)
         result = await self.db.execute(stmt)
         usuario_sql = result.scalar_one_or_none()
         return self._to_domain(usuario_sql) if usuario_sql else None
@@ -37,7 +37,7 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
         return self._to_domain(usuario_sql) if usuario_sql else None
 
     async def get_all(self) -> List[Usuario]:
-        stmt = select(UsuarioSQL)
+        stmt = select(UsuarioSQL).options(selectinload(UsuarioSQL.roles))
         result = await self.db.execute(stmt)
         usuarios_sql = result.scalars().all()
         return [self._to_domain(c) for c in usuarios_sql]
@@ -45,6 +45,16 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
     async def create(self, usuario: Usuario) -> Usuario:
         try:
             usuario_sql = self._to_orm(usuario)
+            
+            # Handle Roles on Create
+            if usuario.roles:
+                rol_ids = [r.id for r in usuario.roles]
+                from app.infrastructure.db.orm_models import Rol as RolSQL
+                stmt = select(RolSQL).where(RolSQL.id.in_(rol_ids))
+                result = await self.db.execute(stmt)
+                roles_orm = result.scalars().all()
+                usuario_sql.roles = list(roles_orm)
+
             self.db.add(usuario_sql)
             await self.db.commit()
             await self.db.refresh(usuario_sql)
@@ -85,15 +95,42 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
 
     async def update(self, usuario_id: int, usuario: Usuario) -> Optional[Usuario]:
         try:
-            usuario_sql = await self.db.get(UsuarioSQL, usuario_id)
+            # Fetch with eager load to allow relationship modification
+            stmt = select(UsuarioSQL).options(selectinload(UsuarioSQL.roles)).where(UsuarioSQL.id == usuario_id)
+            result = await self.db.execute(stmt)
+            usuario_sql = result.scalar_one_or_none()
+            
             if not usuario_sql:
                 return None
 
             cambios = False
+            # Handle standard fields
             for field, value in vars(usuario).items():
+                # Skip 'roles' here, handle separately
+                if field == 'roles':
+                    continue
+                    
                 if value is not None and hasattr(usuario_sql, field):
                     setattr(usuario_sql, field, value)
-                    cambios = True  # ✅ Marcar que hubo modificación
+                    cambios = True
+
+            # Handle Roles specifically
+            if usuario.roles is not None:
+                # Assuming usuario.roles contains the new list of roles desired
+                # We need to fetch ORM roles corresponding to these
+                # To do this safely, let's get IDs and fetch them
+                rol_ids = [r.id for r in usuario.roles]
+                
+                # Fetch ORM roles
+                from app.infrastructure.db.orm_models import Rol as RolSQL
+                stmt = select(RolSQL).where(RolSQL.id.in_(rol_ids))
+                result = await self.db.execute(stmt)
+                roles_orm = result.scalars().all()
+                
+                # Update relationship
+                # If we want to REPLACE roles:
+                usuario_sql.roles = list(roles_orm)
+                cambios = True
 
             if cambios:
                 await self.db.commit()
@@ -131,8 +168,8 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
         except OperationalError:
             raise BaseDeDatosNoDisponible()
         except Exception as e:
-            logger.info("acaaaaaa")
-            raise ErrorDeRepositorio("Error inesperado al actualizar usuario")
+            logger.error(f"Error updating user: {e}")
+            raise ErrorDeRepositorio(f"Error inesperado al actualizar usuario: {e}")
 
 
     async def delete(self, usuario_id: int) -> None:

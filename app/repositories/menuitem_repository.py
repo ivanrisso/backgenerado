@@ -3,10 +3,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, OperationalError, DataError
+from sqlalchemy.orm import selectinload
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import MenuItem as MenuItemSQL
 from app.domain.entities.menuitem import MenuItem
+from app.domain.entities.rol import Rol
 from app.domain.repository.menuitem_repository_interfase import MenuItemRepositoryInterface
 from app.domain.exceptions.menuitem import MenuItemDuplicado, MenuItemInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
@@ -23,13 +25,13 @@ class MenuItemRepositoryImpl(MenuItemRepositoryInterface):
         self.db = db
 
     async def get_by_id(self, menuitem_id: int) -> Optional[MenuItem]:
-        stmt = select(MenuItemSQL).where(MenuItemSQL.id == menuitem_id)
+        stmt = select(MenuItemSQL).options(selectinload(MenuItemSQL.roles)).where(MenuItemSQL.id == menuitem_id)
         result = await self.db.execute(stmt)
         menuitem_sql = result.scalar_one_or_none()
         return self._to_domain(menuitem_sql) if menuitem_sql else None
 
     async def get_all(self) -> List[MenuItem]:
-        stmt = select(MenuItemSQL)
+        stmt = select(MenuItemSQL).options(selectinload(MenuItemSQL.roles))
         result = await self.db.execute(stmt)
         menuitems_sql = result.scalars().all()
         return [self._to_domain(c) for c in menuitems_sql]
@@ -37,9 +39,31 @@ class MenuItemRepositoryImpl(MenuItemRepositoryInterface):
     async def create(self, menuitem: MenuItem) -> MenuItem:
         try:
             menuitem_sql = self._to_orm(menuitem)
+            
+            # Handle Roles
+            if menuitem.roles:
+                rol_ids = [r.id for r in menuitem.roles]
+                from app.infrastructure.db.orm_models import Rol as RolSQL
+                stmt = select(RolSQL).where(RolSQL.id.in_(rol_ids))
+                result = await self.db.execute(stmt)
+                roles_orm = result.scalars().all()
+                menuitem_sql.roles = list(roles_orm)
+
             self.db.add(menuitem_sql)
             await self.db.commit()
             await self.db.refresh(menuitem_sql)
+            
+            # Re-fetch for clean state with eager loaded roles if strictly needed, 
+            # OR simple return _to_domain but roles might need re-attaching if SQLAlchemy session behavior varies.
+            # Best to reload to be safe:
+            stmt = (
+                select(MenuItemSQL)
+                .options(selectinload(MenuItemSQL.roles))
+                .where(MenuItemSQL.id == menuitem_sql.id)
+            )
+            result = await self.db.execute(stmt)
+            menuitem_sql = result.scalar_one()
+
             return self._to_domain(menuitem_sql)
 
         except IntegrityError as e:
@@ -68,19 +92,48 @@ class MenuItemRepositoryImpl(MenuItemRepositoryInterface):
 
     async def update(self, menuitem_id: int, menuitem: MenuItem) -> Optional[MenuItem]:
         try:
-            menuitem_sql = await self.db.get(MenuItemSQL, menuitem_id)
+            # Eager load for relationship modification
+            stmt = select(MenuItemSQL).options(selectinload(MenuItemSQL.roles)).where(MenuItemSQL.id == menuitem_id)
+            result = await self.db.execute(stmt)
+            menuitem_sql = result.scalar_one_or_none()
+
             if not menuitem_sql:
                 return None
 
             cambios = False
             for field, value in vars(menuitem).items():
+                if field == 'roles': continue # Handle separately
+
                 if value is not None and hasattr(menuitem_sql, field):
+                    # Special handling for Optional string fields if we want to allow clearing them (setting to None)
+                    # Currently strict update logic: "if value is not None".
+                    # If user sends path="" or None, we might want to apply it.
+                    # Pydantic schema sends Optional.
                     setattr(menuitem_sql, field, value)
                     cambios = True
+
+            # Handle Roles
+            if menuitem.roles is not None:
+                rol_ids = [r.id for r in menuitem.roles]
+                from app.infrastructure.db.orm_models import Rol as RolSQL
+                stmt = select(RolSQL).where(RolSQL.id.in_(rol_ids))
+                result = await self.db.execute(stmt)
+                roles_orm = result.scalars().all()
+                menuitem_sql.roles = list(roles_orm)
+                cambios = True
 
             if cambios:
                 await self.db.commit()
                 await self.db.refresh(menuitem_sql)
+
+            # Reload
+            stmt = (
+                select(MenuItemSQL)
+                .options(selectinload(MenuItemSQL.roles))
+                .where(MenuItemSQL.id == menuitem_sql.id)
+            )
+            result = await self.db.execute(stmt)
+            menuitem_sql = result.scalar_one()
 
             return self._to_domain(menuitem_sql)
 
@@ -135,7 +188,14 @@ class MenuItemRepositoryImpl(MenuItemRepositoryInterface):
             id=menuitem_sql.id,
             nombre=menuitem_sql.nombre,
             path=menuitem_sql.path,
-            parent_id=menuitem_sql.parent_id
+            parent_id=menuitem_sql.parent_id,
+            roles = [
+                Rol(
+                    id=rol.id,
+                    rol_nombre=rol.rol_nombre,
+                    es_admin=rol.es_admin
+                ) for rol in menuitem_sql.roles
+            ] if menuitem_sql.roles else []
         )
 
     def _to_orm(self, menuitem: MenuItem) -> MenuItemSQL:
