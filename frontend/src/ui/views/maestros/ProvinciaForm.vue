@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Provincia } from '../../../domain/entities/Provincia';
-import { useUbicacion } from '../../composables/useUbicacion';
+import { Pais } from '../../../domain/entities/Pais';
 
 const props = defineProps<{
     modelValue: Provincia | null;
     initialPaisId: number | null; // Pre-select pais
+    paises: any[];
 }>();
 
 const emit = defineEmits<{
@@ -13,21 +14,32 @@ const emit = defineEmits<{
     (e: 'cancel'): void;
 }>();
 
-const { paises } = useUbicacion(); // Reuse composable to get paises dropdown
-
 const form = ref({
     id: 0,
     nombre: '',
     paisId: 0
 });
 
+// Update form when modelValue (editing) changes
 watch(() => props.modelValue, (newVal) => {
     if (newVal) {
         form.value = { id: newVal.id, nombre: newVal.nombre, paisId: newVal.paisId };
     } else {
-        form.value = { id: 0, nombre: '', paisId: props.initialPaisId || 0 };
+        // Only set default if not editing
+        if (!form.value.id) {
+             form.value.paisId = props.initialPaisId || 0;
+             form.value.nombre = '';
+             form.value.id = 0;
+        }
     }
 }, { immediate: true });
+
+// Update form default when initialPaisId changes (only if in creation mode)
+watch(() => props.initialPaisId, (newId) => {
+    if (!props.modelValue && newId) {
+        form.value.paisId = newId;
+    }
+});
 
 const handleSubmit = () => {
     if(!form.value.paisId) {

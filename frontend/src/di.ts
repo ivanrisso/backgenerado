@@ -178,3 +178,110 @@ export const createMenuItemUseCase = new CreateMenuItemUseCase(menuItemRepositor
 export const updateMenuItemUseCase = new UpdateMenuItemUseCase(menuItemRepository);
 export const deleteMenuItemUseCase = new DeleteMenuItemUseCase(menuItemRepository);
 export const assignRolesToMenuItemUseCase = new AssignRolesToMenuItemUseCase(menuItemRepository);
+
+// ... existing imports ...
+import { HttpDomicilioRepository } from '@infra/repositories/HttpDomicilioRepository';
+import { HttpTelefonoRepository } from '@infra/repositories/HttpTelefonoRepository';
+import { HttpOperadorRepository } from '@infra/repositories/HttpOperadorRepository';
+import { HttpTipoComprobanteRepository } from '@infra/repositories/HttpTipoComprobanteRepository';
+import { HttpConceptoRepository } from '@infra/repositories/HttpConceptoRepository';
+import { HttpMonedaRepository } from '@infra/repositories/HttpMonedaRepository';
+import { HttpIvaRepository } from '@infra/repositories/HttpIvaRepository';
+import { HttpTipoImpuestoRepository } from '@infra/repositories/HttpTipoImpuestoRepository';
+
+import { GetDomiciliosUseCase } from '@app/use-cases/domicilio/GetDomiciliosUseCase';
+import { CreateDomicilioUseCase } from '@app/use-cases/domicilio/CreateDomicilioUseCase';
+import { UpdateDomicilioUseCase } from '@app/use-cases/domicilio/UpdateDomicilioUseCase';
+import { DeleteDomicilioUseCase } from '@app/use-cases/domicilio/DeleteDomicilioUseCase';
+
+import { GetTelefonosUseCase } from '@app/use-cases/telefono/GetTelefonosUseCase';
+import { CreateTelefonoUseCase } from '@app/use-cases/telefono/CreateTelefonoUseCase';
+import { UpdateTelefonoUseCase } from '@app/use-cases/telefono/UpdateTelefonoUseCase';
+import { DeleteTelefonoUseCase } from '@app/use-cases/telefono/DeleteTelefonoUseCase';
+
+import { GetOperadoresUseCase } from '@app/use-cases/operador/GetOperadoresUseCase';
+import { CreateOperadorUseCase } from '@app/use-cases/operador/CreateOperadorUseCase';
+import { DeleteOperadorUseCase } from '@app/use-cases/operador/DeleteOperadorUseCase';
+
+import { GetTiposComprobanteUseCase } from '@app/use-cases/tipocomprobante/GetTiposComprobanteUseCase';
+import { GetConceptosUseCase } from '@app/use-cases/concepto/GetConceptosUseCase';
+import { GetMonedasUseCase } from '@app/use-cases/moneda/GetMonedasUseCase';
+import { GetIvasUseCase } from '@app/use-cases/iva/GetIvasUseCase';
+
+import { GetTiposImpuestoUseCase } from '@app/use-cases/tipoimpuesto/GetTiposImpuestoUseCase';
+import { CreateTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/CreateTipoImpuestoUseCase';
+import { UpdateTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/UpdateTipoImpuestoUseCase';
+import { DeleteTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/DeleteTipoImpuestoUseCase';
+
+import { CreateIvaUseCase } from '@app/use-cases/iva/CreateIvaUseCase';
+import { UpdateIvaUseCase } from '@app/use-cases/iva/UpdateIvaUseCase';
+import { DeleteIvaUseCase } from '@app/use-cases/iva/DeleteIvaUseCase';
+// Note: imports might be separate files, checking file creation... yes separate files.
+// Need separate imports.
+
+
+import { CreateMonedaUseCase } from '@app/use-cases/moneda/CreateMonedaUseCase';
+import { UpdateMonedaUseCase } from '@app/use-cases/moneda/UpdateMonedaUseCase';
+import { DeleteMonedaUseCase } from '@app/use-cases/moneda/DeleteMonedaUseCase';
+
+import { CreateConceptoUseCase } from '@app/use-cases/concepto/CreateConceptoUseCase';
+import { UpdateConceptoUseCase } from '@app/use-cases/concepto/UpdateConceptoUseCase';
+import { DeleteConceptoUseCase } from '@app/use-cases/concepto/DeleteConceptoUseCase';
+
+import { CreateTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/CreateTipoComprobanteUseCase';
+import { UpdateTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/UpdateTipoComprobanteUseCase';
+import { DeleteTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/DeleteTipoComprobanteUseCase';
+
+import { UpdateOperadorUseCase } from '@app/use-cases/operador/UpdateOperadorUseCase';
+
+const domicilioRepository = new HttpDomicilioRepository();
+const telefonoRepository = new HttpTelefonoRepository();
+const operadorRepository = new HttpOperadorRepository();
+const tipoComprobanteRepository = new HttpTipoComprobanteRepository();
+const conceptoRepository = new HttpConceptoRepository();
+const monedaRepository = new HttpMonedaRepository();
+const ivaRepository = new HttpIvaRepository();
+const tipoImpuestoRepository = new HttpTipoImpuestoRepository();
+
+// Use Cases Exports
+
+export const getDomiciliosUseCase = new GetDomiciliosUseCase(domicilioRepository);
+export const createDomicilioUseCase = new CreateDomicilioUseCase(domicilioRepository);
+export const updateDomicilioUseCase = new UpdateDomicilioUseCase(domicilioRepository);
+export const deleteDomicilioUseCase = new DeleteDomicilioUseCase(domicilioRepository);
+
+export const getTelefonosUseCase = new GetTelefonosUseCase(telefonoRepository);
+export const createTelefonoUseCase = new CreateTelefonoUseCase(telefonoRepository);
+export const updateTelefonoUseCase = new UpdateTelefonoUseCase(telefonoRepository);
+export const deleteTelefonoUseCase = new DeleteTelefonoUseCase(telefonoRepository);
+
+export const getOperadoresUseCase = new GetOperadoresUseCase(operadorRepository);
+export const createOperadorUseCase = new CreateOperadorUseCase(operadorRepository);
+export const deleteOperadorUseCase = new DeleteOperadorUseCase(operadorRepository);
+
+export const getTiposComprobanteUseCase = new GetTiposComprobanteUseCase(tipoComprobanteRepository);
+export const getConceptosUseCase = new GetConceptosUseCase(conceptoRepository);
+export const getMonedasUseCase = new GetMonedasUseCase(monedaRepository);
+export const getIvasUseCase = new GetIvasUseCase(ivaRepository);
+export const createIvaUseCase = new CreateIvaUseCase(ivaRepository);
+export const updateIvaUseCase = new UpdateIvaUseCase(ivaRepository);
+export const deleteIvaUseCase = new DeleteIvaUseCase(ivaRepository);
+
+export const createMonedaUseCase = new CreateMonedaUseCase(monedaRepository);
+export const updateMonedaUseCase = new UpdateMonedaUseCase(monedaRepository);
+export const deleteMonedaUseCase = new DeleteMonedaUseCase(monedaRepository);
+
+export const createConceptoUseCase = new CreateConceptoUseCase(conceptoRepository);
+export const updateConceptoUseCase = new UpdateConceptoUseCase(conceptoRepository);
+export const deleteConceptoUseCase = new DeleteConceptoUseCase(conceptoRepository);
+
+export const createTipoComprobanteUseCase = new CreateTipoComprobanteUseCase(tipoComprobanteRepository);
+export const updateTipoComprobanteUseCase = new UpdateTipoComprobanteUseCase(tipoComprobanteRepository);
+export const deleteTipoComprobanteUseCase = new DeleteTipoComprobanteUseCase(tipoComprobanteRepository);
+
+export const getTiposImpuestoUseCase = new GetTiposImpuestoUseCase(tipoImpuestoRepository);
+export const createTipoImpuestoUseCase = new CreateTipoImpuestoUseCase(tipoImpuestoRepository);
+export const updateTipoImpuestoUseCase = new UpdateTipoImpuestoUseCase(tipoImpuestoRepository);
+export const deleteTipoImpuestoUseCase = new DeleteTipoImpuestoUseCase(tipoImpuestoRepository);
+
+export const updateOperadorUseCase = new UpdateOperadorUseCase(operadorRepository);

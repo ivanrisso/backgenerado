@@ -1,90 +1,83 @@
-import { ref, onMounted } from 'vue';
-import { getClientesUseCase, createClienteUseCase, getClienteByIdUseCase, updateClienteUseCase, deleteClienteUseCase } from '../../di';
-import type { Cliente } from '@domain/entities/Cliente';
+import { ref } from 'vue';
+import {
+    getClientesUseCase,
+    createClienteUseCase,
+    updateClienteUseCase,
+    getClienteByIdUseCase,
+    deleteClienteUseCase
+} from '../../di';
+import type { Cliente } from '../../domain/entities/Cliente';
 
 export function useClientes() {
     const clientes = ref<Cliente[]>([]);
-    const loading = ref(false);
+    const currentCliente = ref<Cliente | null>(null);
+    const isLoading = ref(false);
     const error = ref<string | null>(null);
 
-    const fetchClientes = async () => {
-        loading.value = true;
+    const loadClientes = async () => {
+        isLoading.value = true;
         error.value = null;
         try {
             clientes.value = await getClientesUseCase.execute();
         } catch (e: any) {
-            error.value = 'Error al cargar clientes: ' + (e.message || 'Desconocido');
-            console.error(e);
+            error.value = e.message || 'Error loading clientes';
         } finally {
-            loading.value = false;
+            isLoading.value = false;
         }
     };
 
-    const createCliente = async (cliente: Cliente) => {
-        loading.value = true;
-        try {
-            await createClienteUseCase.execute(cliente);
-            await fetchClientes(); // Refresh list
-        } catch (e: any) {
-            error.value = e.response?.data?.detail || 'Error al crear cliente';
-            throw e;
-        } finally {
-            loading.value = false;
-        }
-    };
-
-    const fetchClienteById = async (id: number): Promise<Cliente | null> => {
-        loading.value = true;
+    const loadClienteById = async (id: number) => {
+        isLoading.value = true;
         error.value = null;
         try {
-            return await getClienteByIdUseCase.execute(id);
+            // Note: getClienteByIdUseCase might return Promise<Cliente | null>
+            currentCliente.value = await getClienteByIdUseCase.execute(id);
         } catch (e: any) {
-            error.value = 'Error al cargar cliente: ' + (e.message || 'Desconocido');
-            console.error(e);
-            return null;
+            error.value = e.message || 'Error loading cliente';
         } finally {
-            loading.value = false;
+            isLoading.value = false;
         }
     };
 
-    const updateCliente = async (cliente: Cliente) => {
-        loading.value = true;
+    const saveCliente = async (cliente: Cliente) => {
+        isLoading.value = true;
+        error.value = null;
         try {
-            await updateClienteUseCase.execute(cliente);
-            // Optionally refresh list if needed, but usually we redirect
+            if (cliente.id && cliente.id > 0) {
+                await updateClienteUseCase.execute(cliente);
+            } else {
+                await createClienteUseCase.execute(cliente);
+            }
         } catch (e: any) {
-            error.value = e.response?.data?.detail || 'Error al actualizar cliente';
+            error.value = e.message || 'Error saving cliente';
             throw e;
         } finally {
-            loading.value = false;
+            isLoading.value = false;
         }
     };
 
     const deleteCliente = async (id: number) => {
+        isLoading.value = true;
+        error.value = null;
         try {
-            loading.value = true;
             await deleteClienteUseCase.execute(id);
-            await fetchClientes(); // Refresh list
+            await loadClientes();
         } catch (e: any) {
-            error.value = 'Error al eliminar cliente: ' + (e.message || 'Desconocido');
-            console.error(e);
+            error.value = e.message || 'Error deleting cliente';
+            throw e;
         } finally {
-            loading.value = false;
+            isLoading.value = false;
         }
     };
 
-    onMounted(() => {
-        fetchClientes();
-    });
-
     return {
         clientes,
-        loading,
+        currentCliente,
+        isLoading,
         error,
-        fetchClientes,
-        fetchClienteById,
-        createCliente,
-        updateCliente,
+        loadClientes,
+        loadClienteById,
+        saveCliente,
         deleteCliente
     };
 }

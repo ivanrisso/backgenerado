@@ -16,7 +16,7 @@ import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO) 
 
-router = APIRouter(prefix="/paiss", tags=["Pais"])
+router = APIRouter(prefix="/paises", tags=["Pais"])
 
 # DB session
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:

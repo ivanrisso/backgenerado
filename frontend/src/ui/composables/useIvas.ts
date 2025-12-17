@@ -1,30 +1,70 @@
-import { ref } from 'vue';
-import { AxiosIvaRepository } from '../../infrastructure/repositories/AxiosIvaRepository';
-import type { Iva } from '../../domain/entities/Iva';
 
-const repository = new AxiosIvaRepository();
+import { ref } from 'vue';
+import { getIvasUseCase, createIvaUseCase, updateIvaUseCase, deleteIvaUseCase } from '../../di';
+import type { Iva } from '../../domain/entities/Iva';
 
 export function useIvas() {
     const ivas = ref<Iva[]>([]);
-    const isLoading = ref(false);
+    const loading = ref(false);
     const error = ref<string | null>(null);
 
     const loadIvas = async () => {
-        isLoading.value = true;
-        error.value = null;
+        loading.value = true;
         try {
-            ivas.value = await repository.getAll();
+            ivas.value = await getIvasUseCase.execute();
         } catch (e: any) {
-            error.value = e.message || 'Error cargando condiciones de IVA';
+            error.value = e.message;
         } finally {
-            isLoading.value = false;
+            loading.value = false;
+        }
+    };
+
+    const createIva = async (entity: Iva) => {
+        loading.value = true;
+        try {
+            await createIvaUseCase.execute(entity);
+            await loadIvas();
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const updateIva = async (entity: Iva) => {
+        loading.value = true;
+        try {
+            await updateIvaUseCase.execute(entity.id, entity);
+            await loadIvas();
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const deleteIva = async (id: number) => {
+        loading.value = true;
+        try {
+            await deleteIvaUseCase.execute(id);
+            await loadIvas();
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            loading.value = false;
         }
     };
 
     return {
         ivas,
-        isLoading,
+        loading,
         error,
-        loadIvas
+        loadIvas,
+        createIva,
+        updateIva,
+        deleteIva
     };
 }

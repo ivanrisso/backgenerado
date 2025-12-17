@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useUbicacion } from '../../composables/useUbicacion';
 import ProvinciaForm from './ProvinciaForm.vue';
 import type { Provincia } from '../../../domain/entities/Provincia';
 
 const { 
     paises, provincias, selectedPaisId, loading, error, 
-    handlePaisChange, createProvincia, updateProvincia, deleteProvincia 
+    handlePaisChange, createProvincia, updateProvincia, deleteProvincia, loadPaises 
 } = useUbicacion();
+
+onMounted(() => {
+    loadPaises();
+});
 
 const showForm = ref(false);
 const editingEntity = ref<Provincia | null>(null);
@@ -71,7 +75,13 @@ const handleSubmit = async (entity: Provincia) => {
 
     <!-- Form Area -->
     <div v-if="showForm">
-        <ProvinciaForm :modelValue="editingEntity" :initialPaisId="selectedPaisId" @submit="handleSubmit" @cancel="showForm = false" />
+        <ProvinciaForm 
+            :modelValue="editingEntity" 
+            :initialPaisId="selectedPaisId" 
+            :paises="paises"
+            @submit="handleSubmit" 
+            @cancel="showForm = false" 
+        />
     </div>
 
     <div v-if="loading" class="text-blue-500">Cargando...</div>

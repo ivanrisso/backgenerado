@@ -1,118 +1,112 @@
-<script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router';
-import { logoutUseCase } from '../../di';
-import { ref } from 'vue';
-
-const router = useRouter();
-const route = useRoute();
-// Accordion state. Default to closed unless we are in a sub-route.
-const isMaestrosOpen = ref(false);
-
-const handleLogout = async () => {
-  try {
-    await logoutUseCase.execute();
-    router.push('/login');
-  } catch (error) {
-    console.error('Error logging out:', error);
-    router.push('/login'); // Force redirect anyway
-  }
-};
-
-// Auto-expand if current route is in maestros
-if (route.path.includes('/maestros')) {
-    isMaestrosOpen.value = true;
-}
-
-import { onMounted } from 'vue';
-onMounted(() => {
-    console.log('MainLayout Mounted');
-});
-</script>
-
 <template>
-  <div class="flex min-h-screen bg-gray-50 font-sans">
+  <div class="min-h-screen bg-gray-100 flex">
     <!-- Sidebar -->
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full z-10">
-      <div class="px-6 py-8 flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white font-bold">F</div>
-        <span class="text-lg font-semibold tracking-tight text-gray-900">Facturación</span>
+    <aside class="w-64 bg-white shadow-md flex-shrink-0 hidden md:flex md:flex-col">
+      <div class="p-6 border-b border-gray-200">
+        <h1 class="text-xl font-bold text-gray-800">Facturación</h1>
       </div>
-
-      <nav class="flex-1 px-4 space-y-1">
-        <RouterLink to="/" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" active-class="bg-gray-100 text-gray-900">
-          Inicio
-        </RouterLink>
-        <RouterLink to="/clientes" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" active-class="bg-gray-100 text-gray-900">
-          Clientes
-        </RouterLink>
-        <RouterLink to="/comprobantes" class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" active-class="bg-gray-100 text-gray-900">
-          Comprobantes
-        </RouterLink>
-
-        <!-- Maestros Accordion -->
-        <div class="space-y-1">
-            <button @click="isMaestrosOpen = !isMaestrosOpen" class="w-full flex items-center justify-between gap-3 px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
-                <span class="flex items-center gap-3">Maestros</span>
-                <span :class="isMaestrosOpen ? 'rotate-90' : ''" class="transition-transform duration-200 text-xs">▶</span>
-            </button>
-            
-            <div v-show="isMaestrosOpen" class="pl-6 space-y-1">
-                <RouterLink to="/maestros/tipos-doc" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Tipos Documento
-                </RouterLink>
-                <RouterLink to="/maestros/tipos-dom" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Tipos Domicilio
-                </RouterLink>
-                <RouterLink to="/maestros/tipos-tel" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Tipos Teléfono
-                </RouterLink>
-                <div class="border-t border-gray-100 my-1"></div>
-                <RouterLink to="/maestros/paises" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Países
-                </RouterLink>
-                <RouterLink to="/maestros/provincias" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Provincias
-                </RouterLink>
-                <RouterLink to="/maestros/localidades" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Localidades
-                </RouterLink>
-                <div class="border-t border-gray-100 my-1"></div>
-                <!-- Auth / Admin -->
-                <RouterLink to="/usuarios" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Usuarios
-                </RouterLink>
-                <RouterLink to="/roles" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Roles
-                </RouterLink>
-                <RouterLink to="/menu" class="block px-3 py-2 text-sm text-gray-500 hover:text-gray-900 rounded-md transition-colors" active-class="text-blue-600 bg-blue-50 font-medium">
-                    Menú
-                </RouterLink>
+      <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+        <template v-for="item in menuTree" :key="item.id">
+            <!-- Parent Item with Children -->
+            <div v-if="item.children && item.children.length > 0" class="space-y-1">
+                <button @click="toggleGroup(item.id)" class="w-full flex items-center justify-between px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 group focus:outline-none">
+                    <span class="flex items-center gap-2">
+                        <!-- Icon placeholder could go here -->
+                        {{ item.nombre }}
+                    </span>
+                    <svg :class="{'rotate-90': openGroups.includes(item.id)}" class="w-4 h-4 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+                <div v-show="openGroups.includes(item.id)" class="pl-4 space-y-1">
+                    <router-link 
+                        v-for="child in item.children" 
+                        :key="child.id"
+                        :to="child.path || '#'" 
+                        class="flex items-center px-2 py-2 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50 group"
+                        active-class="bg-blue-50 text-blue-700"
+                    >
+                        {{ child.nombre }}
+                    </router-link>
+                </div>
             </div>
+            
+            <!-- Single Item -->
+            <router-link 
+                v-else
+                :to="item.path || '#'" 
+                class="flex items-center px-2 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 group"
+                active-class="bg-gray-100 text-gray-900"
+            >
+                {{ item.nombre }}
+            </router-link>
+        </template>
+        
+        <!-- Fallback/loading state -->
+        <div v-if="loading" class="px-4 py-2 text-sm text-gray-400">
+            Cargando menú...
         </div>
       </nav>
-
-      <div class="p-4 border-t border-gray-100">
-        <div class="flex flex-col gap-3">
-          <div class="flex items-center gap-3 px-2">
-            <div class="w-8 h-8 rounded-full bg-gray-200"></div>
-            <div class="text-sm">
-              <div class="font-medium text-gray-900">Admin</div>
-              <div class="text-xs text-gray-500">admin@facturacion.com</div>
-            </div>
-          </div>
-          <button @click="handleLogout" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+      <div class="p-4 border-t border-gray-200">
+        <button @click="handleLogout" class="w-full flex items-center px-2 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 group">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
             Cerrar Sesión
-          </button>
-        </div>
+        </button>
       </div>
     </aside>
 
+    <!-- Mobile Header (Visible on small screens) -->
+    <div class="md:hidden flex flex-col flex-1">
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+             <h1 class="text-lg font-bold text-gray-800">Facturación</h1>
+             <!-- Mobile menu toggle could go here -->
+        </header>
+         <main class="flex-1 p-6">
+            <router-view></router-view>
+        </main>
+    </div>
+
     <!-- Main Content -->
-    <main class="flex-1 ml-64 p-8 max-w-7xl mx-auto w-full">
-      <RouterView />
+    <main class="flex-1 p-6 hidden md:block">
+      <router-view></router-view>
     </main>
   </div>
 </template>
 
-<style scoped>
-</style>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useMenuItems } from '../composables/auth/useMenuItems';
+import { logoutUseCase } from '../../di';
+
+const router = useRouter();
+const { menuTree, isLoading: loading, loadMenuTree } = useMenuItems();
+const openGroups = ref<number[]>([]);
+
+const toggleGroup = (id: number) => {
+    if (openGroups.value.includes(id)) {
+        openGroups.value = openGroups.value.filter(g => g !== id);
+    } else {
+        openGroups.value.push(id);
+    }
+};
+
+const handleLogout = async () => {
+    if (confirm('¿Cerrar sesión?')) {
+        try {
+            await logoutUseCase.execute();
+            router.push('/login');
+        } catch (error) {
+            console.error('Error logging out:', error);
+            // Force redirect even on error
+            router.push('/login');
+        }
+    }
+};
+
+onMounted(async () => {
+    await loadMenuTree();
+});
+</script>

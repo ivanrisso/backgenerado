@@ -4,7 +4,7 @@ import { PaisMapper } from '../mappers/PaisMapper';
 import { httpClient } from '../api/httpClient';
 
 export class AxiosPaisRepository implements IPaisRepository {
-    private readonly resource = '/paiss';
+    private readonly resource = '/paises';
 
     async getAll(): Promise<Pais[]> {
         const response = await httpClient.get(this.resource);

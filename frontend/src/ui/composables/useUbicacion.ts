@@ -1,8 +1,17 @@
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import {
-    getPaisesUseCase, createPaisUseCase, updatePaisUseCase, deletePaisUseCase,
-    getProvinciasByPaisUseCase, createProvinciaUseCase, updateProvinciaUseCase, deleteProvinciaUseCase,
-    getLocalidadesByProvinciaUseCase, createLocalidadUseCase, updateLocalidadUseCase, deleteLocalidadUseCase
+    getPaisesUseCase,
+    getProvinciasByPaisUseCase,
+    getLocalidadesByProvinciaUseCase,
+    createPaisUseCase,
+    updatePaisUseCase,
+    deletePaisUseCase,
+    createProvinciaUseCase,
+    updateProvinciaUseCase,
+    deleteProvinciaUseCase,
+    createLocalidadUseCase,
+    updateLocalidadUseCase,
+    deleteLocalidadUseCase
 } from '../../di';
 import type { Pais } from '../../domain/entities/Pais';
 import type { Provincia } from '../../domain/entities/Provincia';
@@ -12,111 +21,188 @@ export function useUbicacion() {
     const paises = ref<Pais[]>([]);
     const provincias = ref<Provincia[]>([]);
     const localidades = ref<Localidad[]>([]);
+    const isLoading = ref(false);
+    const error = ref<string | null>(null);
 
-    // Selection state
+    // State for selections
     const selectedPaisId = ref<number | null>(null);
     const selectedProvinciaId = ref<number | null>(null);
 
-    const loading = ref(false);
-    const error = ref<string | null>(null);
-
-    const fetchPaises = async () => {
-        loading.value = true;
+    const loadPaises = async () => {
+        isLoading.value = true;
         try {
             paises.value = await getPaisesUseCase.execute();
-        } catch (e) {
-            error.value = 'Error al cargar países';
+            // If we have a selected pais, reload its provinces too
+            if (selectedPaisId.value) {
+                await loadProvincias(selectedPaisId.value);
+            }
+        } catch (e: any) {
+            error.value = e.message || 'Error loading countries';
+            console.error(e);
         } finally {
-            loading.value = false;
+            isLoading.value = false;
         }
     };
 
-    const fetchProvincias = async (paisId: number) => {
+    const loadProvincias = async (paisId: number) => {
         if (!paisId) {
             provincias.value = [];
             return;
         }
-        loading.value = true;
+        isLoading.value = true;
         try {
             provincias.value = await getProvinciasByPaisUseCase.execute(paisId);
-        } catch (e) {
-            error.value = 'Error al cargar provincias';
+        } catch (e: any) {
+            error.value = e.message || 'Error loading provinces';
+            console.error(e);
         } finally {
-            loading.value = false;
+            isLoading.value = false;
         }
     };
 
-    const fetchLocalidades = async (provinciaId: number) => {
+    const loadLocalidades = async (provinciaId: number) => {
         if (!provinciaId) {
             localidades.value = [];
             return;
         }
-        loading.value = true;
+        isLoading.value = true;
         try {
             localidades.value = await getLocalidadesByProvinciaUseCase.execute(provinciaId);
-        } catch (e) {
-            error.value = 'Error al cargar localidades';
+        } catch (e: any) {
+            error.value = e.message || 'Error loading localities';
+            console.error(e);
         } finally {
-            loading.value = false;
+            isLoading.value = false;
         }
     };
 
-    const handlePaisChange = (paisId: number) => {
-        selectedPaisId.value = paisId;
-        selectedProvinciaId.value = null; // Reset child
-        localidades.value = []; // Reset grand-child
-        fetchProvincias(paisId);
+    const handlePaisChange = async (id: number) => {
+        selectedPaisId.value = id;
+        selectedProvinciaId.value = null; // Reset provincia
+        localidades.value = []; // Clear localidades
+        await loadProvincias(id);
     };
 
-    const handleProvinciaChange = (provinciaId: number) => {
-        selectedProvinciaId.value = provinciaId;
-        fetchLocalidades(provinciaId);
+    const handleProvinciaChange = async (id: number) => {
+        selectedProvinciaId.value = id;
+        await loadLocalidades(id);
     };
 
-    onMounted(() => {
-        fetchPaises();
-    });
-
-    // Pais CRUD
     const createPais = async (entity: Pais) => {
-        await createPaisUseCase.execute(entity);
-        await fetchPaises();
+        isLoading.value = true;
+        try {
+            await createPaisUseCase.execute(entity);
+            await loadPaises();
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
     };
+
     const updatePais = async (entity: Pais) => {
-        await updatePaisUseCase.execute(entity);
-        await fetchPaises();
+        isLoading.value = true;
+        try {
+            await updatePaisUseCase.execute(entity);
+            await loadPaises();
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
     };
+
     const deletePais = async (id: number) => {
-        await deletePaisUseCase.execute(id);
-        await fetchPaises();
+        isLoading.value = true;
+        try {
+            await deletePaisUseCase.execute(id);
+            await loadPaises();
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
     };
 
-    // Provincia CRUD
     const createProvincia = async (entity: Provincia) => {
-        await createProvinciaUseCase.execute(entity);
-        if (selectedPaisId.value) await fetchProvincias(selectedPaisId.value);
-    };
-    const updateProvincia = async (entity: Provincia) => {
-        await updateProvinciaUseCase.execute(entity);
-        if (selectedPaisId.value) await fetchProvincias(selectedPaisId.value);
-    };
-    const deleteProvincia = async (id: number) => {
-        await deleteProvinciaUseCase.execute(id);
-        if (selectedPaisId.value) await fetchProvincias(selectedPaisId.value);
+        isLoading.value = true;
+        try {
+            await createProvinciaUseCase.execute(entity);
+            if (selectedPaisId.value) await loadProvincias(selectedPaisId.value);
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
     };
 
-    // Localidad CRUD
+    const updateProvincia = async (entity: Provincia) => {
+        isLoading.value = true;
+        try {
+            await updateProvinciaUseCase.execute(entity);
+            if (selectedPaisId.value) await loadProvincias(selectedPaisId.value);
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    const deleteProvincia = async (id: number) => {
+        isLoading.value = true;
+        try {
+            await deleteProvinciaUseCase.execute(id);
+            if (selectedPaisId.value) await loadProvincias(selectedPaisId.value);
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
     const createLocalidad = async (entity: Localidad) => {
-        await createLocalidadUseCase.execute(entity);
-        if (selectedProvinciaId.value) await fetchLocalidades(selectedProvinciaId.value);
+        isLoading.value = true;
+        try {
+            await createLocalidadUseCase.execute(entity);
+            if (selectedProvinciaId.value) await loadLocalidades(selectedProvinciaId.value);
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
     };
+
     const updateLocalidad = async (entity: Localidad) => {
-        await updateLocalidadUseCase.execute(entity);
-        if (selectedProvinciaId.value) await fetchLocalidades(selectedProvinciaId.value);
+        isLoading.value = true;
+        try {
+            await updateLocalidadUseCase.execute(entity);
+            if (selectedProvinciaId.value) await loadLocalidades(selectedProvinciaId.value);
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
     };
+
     const deleteLocalidad = async (id: number) => {
-        await deleteLocalidadUseCase.execute(id);
-        if (selectedProvinciaId.value) await fetchLocalidades(selectedProvinciaId.value);
+        isLoading.value = true;
+        try {
+            await deleteLocalidadUseCase.execute(id);
+            if (selectedProvinciaId.value) await loadLocalidades(selectedProvinciaId.value);
+        } catch (e: any) {
+            error.value = e.message;
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
     };
 
     return {
@@ -125,13 +211,21 @@ export function useUbicacion() {
         localidades,
         selectedPaisId,
         selectedProvinciaId,
-        loading,
+        loading: isLoading,
         error,
         handlePaisChange,
         handleProvinciaChange,
-        fetchPaises, fetchProvincias, fetchLocalidades,
-        createPais, updatePais, deletePais,
-        createProvincia, updateProvincia, deleteProvincia,
-        createLocalidad, updateLocalidad, deleteLocalidad
+        loadPaises,
+        loadProvincias,
+        loadLocalidades,
+        createPais,
+        updatePais,
+        deletePais,
+        createProvincia,
+        updateProvincia,
+        deleteProvincia,
+        createLocalidad,
+        updateLocalidad,
+        deleteLocalidad
     };
 }

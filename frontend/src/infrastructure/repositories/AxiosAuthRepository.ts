@@ -6,10 +6,16 @@ export class AxiosAuthRepository {
 
     async login(email: string, password: string): Promise<void> {
         await httpClient.post(`${this.resource}/login`, { usuario_email: email, usuario_password: password });
+        // Backend sets HttpOnly cookie. We just set a flag for UI state.
+        localStorage.setItem('isLoggedIn', 'true');
     }
 
     async logout(): Promise<void> {
-        await httpClient.post(`${this.resource}/logout`);
+        try {
+            await httpClient.post(`${this.resource}/logout`);
+        } finally {
+            localStorage.removeItem('isLoggedIn');
+        }
     }
 
     async getProfile(): Promise<Usuario> {

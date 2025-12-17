@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useUbicacion } from '../../composables/useUbicacion';
 import LocalidadForm from './LocalidadForm.vue';
 import type { Localidad } from '../../../domain/entities/Localidad';
@@ -9,8 +9,12 @@ const {
     selectedPaisId, selectedProvinciaId, 
     loading, error, 
     handlePaisChange, handleProvinciaChange,
-    createLocalidad, updateLocalidad, deleteLocalidad 
+    createLocalidad, updateLocalidad, deleteLocalidad, loadPaises
 } = useUbicacion();
+
+onMounted(() => {
+    loadPaises();
+});
 
 const showForm = ref(false);
 const editingEntity = ref<Localidad | null>(null);
@@ -92,9 +96,12 @@ const handleSubmit = async (entity: Localidad) => {
         <LocalidadForm 
             :modelValue="editingEntity" 
             :initialProvinciaId="selectedProvinciaId" 
+            :initialPaisId="selectedPaisId"
             :provincias="provincias"
+            :paises="paises"
             @submit="handleSubmit" 
             @cancel="showForm = false" 
+            @change-pais="handlePaisChange"
         />
     </div>
 

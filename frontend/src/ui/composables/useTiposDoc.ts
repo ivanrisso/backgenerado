@@ -1,4 +1,5 @@
-import { ref, onMounted } from 'vue';
+
+import { ref } from 'vue';
 import { getTiposDocUseCase, createTipoDocUseCase, updateTipoDocUseCase, deleteTipoDocUseCase } from '../../di';
 import type { TipoDoc } from '../../domain/entities/TipoDoc';
 
@@ -7,50 +8,53 @@ export function useTiposDoc() {
     const loading = ref(false);
     const error = ref<string | null>(null);
 
-    const fetchTiposDoc = async () => {
+    const loadTiposDoc = async () => {
         loading.value = true;
-        error.value = null;
         try {
             tiposDoc.value = await getTiposDocUseCase.execute();
-        } catch (e) {
-            error.value = 'Error al cargar tipos de documento';
-            console.error(e);
+        } catch (e: any) {
+            error.value = e.message;
         } finally {
             loading.value = false;
         }
     };
 
-    onMounted(() => {
-        fetchTiposDoc();
-    });
-
     const createTipoDoc = async (entity: TipoDoc) => {
+        loading.value = true;
         try {
             await createTipoDocUseCase.execute(entity);
-            await fetchTiposDoc();
-        } catch (e) {
-            error.value = 'Error al crear tipo de documento';
+            await loadTiposDoc();
+        } catch (e: any) {
+            error.value = e.message;
             throw e;
+        } finally {
+            loading.value = false;
         }
     };
 
     const updateTipoDoc = async (entity: TipoDoc) => {
+        loading.value = true;
         try {
             await updateTipoDocUseCase.execute(entity);
-            await fetchTiposDoc();
-        } catch (e) {
-            error.value = 'Error al actualizar tipo de documento';
+            await loadTiposDoc();
+        } catch (e: any) {
+            error.value = e.message;
             throw e;
+        } finally {
+            loading.value = false;
         }
     };
 
     const deleteTipoDoc = async (id: number) => {
+        loading.value = true;
         try {
             await deleteTipoDocUseCase.execute(id);
-            await fetchTiposDoc();
-        } catch (e) {
-            error.value = 'Error al eliminar tipo de documento';
+            await loadTiposDoc();
+        } catch (e: any) {
+            error.value = e.message;
             throw e;
+        } finally {
+            loading.value = false;
         }
     };
 
@@ -58,7 +62,7 @@ export function useTiposDoc() {
         tiposDoc,
         loading,
         error,
-        fetchTiposDoc,
+        loadTiposDoc,
         createTipoDoc,
         updateTipoDoc,
         deleteTipoDoc

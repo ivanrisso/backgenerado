@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUbicacion } from '../../composables/useUbicacion';
 import PaisForm from './PaisForm.vue';
 import type { Pais } from '../../../domain/entities/Pais';
 
-const { paises, loading, error, createPais, updatePais, deletePais } = useUbicacion();
+const { paises, loading, error, createPais, updatePais, deletePais, loadPaises } = useUbicacion();
+
+onMounted(() => {
+    loadPaises();
+});
 
 const showForm = ref(false);
 const editingEntity = ref<Pais | null>(null);

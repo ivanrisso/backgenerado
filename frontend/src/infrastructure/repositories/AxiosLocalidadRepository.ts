@@ -4,7 +4,7 @@ import { LocalidadMapper } from '../mappers/LocalidadMapper';
 import { httpClient } from '../api/httpClient';
 
 export class AxiosLocalidadRepository implements ILocalidadRepository {
-    private readonly resource = '/localidads';
+    private readonly resource = '/localidades';
 
     async getAll(): Promise<Localidad[]> {
         const response = await httpClient.get(this.resource);
