@@ -50,7 +50,7 @@ class Rol(Base):
     es_admin: Mapped[bool] = mapped_column(nullable=False)
 
     usuarios: Mapped[List["Usuario"]] = relationship(secondary="rolesusuario", back_populates="roles")
-    menuitems: Mapped[List["MenuItem"]] = relationship(secondary="rolmenuitem", back_populates="menuitems")
+    menuitems: Mapped[List["MenuItem"]] = relationship(secondary="rolmenuitem", back_populates="roles")
 
 
 class MenuItem(Base):
@@ -128,7 +128,7 @@ class Localidad(Base):
     provincia_id: Mapped[int] = mapped_column(ForeignKey("provincia.id"), nullable=False)
 
     provincia: Mapped["Provincia"] = relationship(back_populates="localidades")
-    domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="localidades")
+    domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="localidad")
 
 
 
@@ -248,8 +248,8 @@ class TipoImpuesto(Base):
     __tablename__ = "tipoimpuesto"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    codigo_afip: Mapped[str] = mapped_column(String(3), nullable=False, unique=True)
-    nombre: Mapped[str] = mapped_column(String(50), nullable=False)
+    codigo_afip: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     descripcion: Mapped[str] = mapped_column(String(100), nullable=False)
     tipo_aplicacion: Mapped[TipoAplicacionEnum] = mapped_column(nullable=False)
     base_calculo: Mapped[BaseTributarioEnum] = mapped_column(nullable=False)
