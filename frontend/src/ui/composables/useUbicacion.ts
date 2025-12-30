@@ -11,7 +11,9 @@ import {
     deleteProvinciaUseCase,
     createLocalidadUseCase,
     updateLocalidadUseCase,
-    deleteLocalidadUseCase
+    deleteLocalidadUseCase,
+    getLocalidadByIdUseCase,
+    getProvinciaByIdUseCase
 } from '../../di';
 import type { Pais } from '../../domain/entities/Pais';
 import type { Provincia } from '../../domain/entities/Provincia';
@@ -120,7 +122,11 @@ export function useUbicacion() {
             await deletePaisUseCase.execute(id);
             await loadPaises();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar el País porque tiene Provincias o está referenciado en Domicilios.";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             isLoading.value = false;
@@ -159,7 +165,11 @@ export function useUbicacion() {
             await deleteProvinciaUseCase.execute(id);
             if (selectedPaisId.value) await loadProvincias(selectedPaisId.value);
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar la Provincia porque tiene Localidades o está referenciada en Domicilios.";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             isLoading.value = false;
@@ -198,8 +208,35 @@ export function useUbicacion() {
             await deleteLocalidadUseCase.execute(id);
             if (selectedProvinciaId.value) await loadLocalidades(selectedProvinciaId.value);
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar la Localidad porque está referenciada en Domicilios.";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    const getLocationDetails = async (localidadId: number) => {
+        if (!localidadId) return null;
+        isLoading.value = true;
+        try {
+            const localidad = await getLocalidadByIdUseCase.execute(localidadId);
+            if (!localidad) return null;
+
+            const provincia = await getProvinciaByIdUseCase.execute(localidad.provinciaId);
+            if (!provincia) return null;
+
+            return {
+                paisId: provincia.paisId,
+                provinciaId: provincia.id,
+                localidadId: localidad.id
+            };
+        } catch (e: any) {
+            console.error(e);
+            return null;
         } finally {
             isLoading.value = false;
         }
@@ -218,6 +255,7 @@ export function useUbicacion() {
         loadPaises,
         loadProvincias,
         loadLocalidades,
+        getLocationDetails,
         createPais,
         updatePais,
         deletePais,

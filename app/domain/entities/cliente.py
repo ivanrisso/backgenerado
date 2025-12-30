@@ -1,6 +1,5 @@
-#app/domain/entities/cliente.py
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Any
 
 @dataclass
 class Cliente:
@@ -11,4 +10,8 @@ class Cliente:
     cuit: Optional[str] = None
     email: Optional[str] = None
     tipo_doc_id: Optional[int] = None
-    iva_id: Optional[int] = None
+    condicion_iva_id: Optional[int] = None
+    condicion_iibb_id: Optional[int] = None
+    nro_iibb: Optional[str] = None
+    condicion_iva: Optional[Any] = None
+    condicion_iibb: Optional[Any] = None

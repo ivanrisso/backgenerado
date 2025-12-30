@@ -1,40 +1,88 @@
-# app/core/afip_client.py
-
-from afip import Afip
 from app.core.config import settings
+from .afip.wsaa import WSAAClient
+from .afip.wsfe import WSFEClient
+from .afip.wspadron import WSPadronClient
+
 import logging
+import os
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
-def get_afip_client() -> Afip:
+
+_wsaa_instance = None
+_wsfe_instance = None
+_wspadron_instance = None
+
+def _get_wsaa_client() -> WSAAClient:
+    global _wsaa_instance
+    if _wsaa_instance:
+        return _wsaa_instance
+
+    
+    # 1. Rutas de certificados
+    cert_path = settings.AFIP_CERT_CRT_PATH
+    key_path = settings.AFIP_KEY_CRT_PATH
+
+    # Fallback logic because .env might be wrong
+    if not os.path.exists(cert_path):
+        logger.warning(f"Cert path {cert_path} not found. Trying app/certificado/group.crt")
+        if os.path.exists("app/certificado/group.crt"):
+            cert_path = "app/certificado/group.crt"
+    
+    if not os.path.exists(key_path):
+        logger.warning(f"Key path {key_path} not found. Trying app/certificado/clave")
+        if os.path.exists("app/certificado/clave"):
+            key_path = "app/certificado/clave"
+            
+    logger.info(f"Using Native AFIP Cert: {cert_path}")
+    logger.info(f"Using Native AFIP Key: {key_path}")
+    import sys
+    # Prevent duplicated logs on reload
+    if not hasattr(sys, "_afip_cuit_logged"): 
+        logger.info(f"Using Native AFIP CUIT: {settings.AFIP_CUIT}")
+        sys._afip_cuit_logged = True
+
+    # 2. Inicializar WSAA (Auth)
+    _wsaa_instance = WSAAClient(
+        key_path=key_path,
+        cert_path=cert_path,
+        production=settings.AFIP_ENVIRONMENT.lower() == "production"
+    )
+
+    return _wsaa_instance
+
+def get_afip_client() -> WSFEClient:
     """
-    Instancia el cliente Afip SDK con un dict de opciones:
-      - CUIT: tu CUIT
-      - production: True/False según entorno
-      - cert: ruta al PEM (o .p12 convertido a PEM)
-      - key: ruta a la clave privada PEM
-      - access_token: None -> se generará internamente
+    Returns Singleton WSFEClient (E-billing)
     """
-    # Si estás usando .p12, primero conviértelo a PEM con openssl:
-    # openssl pkcs12 -in afip.p12 -clcerts -nokeys -out certificado.pem
-    # openssl pkcs12 -in afip.p12 -nocerts -out clave.pem -nodes
+    global _wsfe_instance
+    if _wsfe_instance:
+        return _wsfe_instance
+        
+    wsaa = _get_wsaa_client()
+    _wsfe_instance = WSFEClient(
+        wsaa_client=wsaa,
+        cuit=settings.AFIP_CUIT,
+        production=settings.AFIP_ENVIRONMENT.lower() == "production"
+    )
+    return _wsfe_instance
 
-   # 1. Leer el PEM del certificado
-    with open(settings.AFIP_CERT_CRT_PATH, "r") as f:
-        cert_pem = f.read()
-    # 2. Leer el PEM de la clave
-    with open(settings.AFIP_KEY_CRT_PATH, "r") as f:
-        key_pem = f.read()
+def get_padron_client() -> WSPadronClient:
+    """
+    Returns Singleton WSPadronClient (A5)
+    """
+    global _wspadron_instance
+    if _wspadron_instance:
+        return _wspadron_instance
+        
+    wsaa = _get_wsaa_client()
+    _wspadron_instance = WSPadronClient(
+        wsaa_client=wsaa,
+        cuit=settings.AFIP_CUIT,
+        production=settings.AFIP_ENVIRONMENT.lower() == "production"
+    )
+    return _wspadron_instance
 
-
-    return Afip({
-        "CUIT": settings.AFIP_CUIT,
-        "production": settings.AFIP_ENVIRONMENT.lower() == "production",
-        "cert": cert_pem, #settings.AFIP_CERT_CRT_PATH,  # define en settings
-        "key":  key_pem, #settings.AFIP_KEY_CRT_PATH,   # define en settings
-        "access_token": None
-    })
 
 
 

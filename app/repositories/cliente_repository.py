@@ -2,6 +2,7 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 from typing import Optional, List
 
@@ -23,13 +24,26 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
         self.db = db
 
     async def get_by_id(self, cliente_id: int) -> Optional[Cliente]:
-        stmt = select(ClienteSQL).where(ClienteSQL.id == cliente_id)
+        stmt = (
+            select(ClienteSQL)
+            .options(
+                joinedload(ClienteSQL.condicion_iva),
+                joinedload(ClienteSQL.condicion_iibb)
+            )
+            .where(ClienteSQL.id == cliente_id)
+        )
         result = await self.db.execute(stmt)
         cliente_sql = result.scalar_one_or_none()
         return self._to_domain(cliente_sql) if cliente_sql else None
 
     async def get_all(self) -> List[Cliente]:
-        stmt = select(ClienteSQL)
+        stmt = (
+            select(ClienteSQL)
+            .options(
+                joinedload(ClienteSQL.condicion_iva),
+                joinedload(ClienteSQL.condicion_iibb)
+            )
+        )
         result = await self.db.execute(stmt)
         clientes_sql = result.scalars().all()
         return [self._to_domain(c) for c in clientes_sql]
@@ -56,9 +70,7 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
                         raise ClienteDuplicado("desconocido", "valor duplicado")
 
                 elif error_code == 1452:
-                    if "iva_id" in msg:
-                        raise ClaveForaneaInvalida("iva_id", str(cliente.iva_id))
-                    elif "tipo_doc_id" in msg:
+                    if "tipo_doc_id" in msg:
                         raise ClaveForaneaInvalida("tipo_doc_id", str(cliente.tipo_doc_id))
                     else:
                         raise ClaveForaneaInvalida("campo_desconocido")
@@ -106,9 +118,7 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
                         raise ClienteDuplicado("desconocido", "valor duplicado")
 
                 elif error_code == 1452:
-                    if "iva_id" in msg:
-                        raise ClaveForaneaInvalida("iva_id", str(cliente.iva_id))
-                    elif "tipo_doc_id" in msg:
+                    if "tipo_doc_id" in msg:
                         raise ClaveForaneaInvalida("tipo_doc_id", str(cliente.tipo_doc_id))
                     else:
                         raise ClaveForaneaInvalida("campo_desconocido")
@@ -129,7 +139,10 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             cliente_sql = await self.db.get(ClienteSQL, cliente_id)
             if not cliente_sql:
                 return
-
+            
+            # TODO: Handle cascading deletes or updates for impuestos if needed, 
+            # though DB constraints usually handle blocking.
+            
             await self.db.delete(cliente_sql)
             await self.db.commit()
 
@@ -147,7 +160,9 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             raise ErrorDeRepositorio("Error inesperado al eliminar cliente")
 
     def _to_domain(self, cliente_sql: ClienteSQL) -> Cliente:
-        return Cliente(
+        from app.domain.entities.condiciontributaria import CondicionTributaria as CondicionTributariaDomain
+        
+        cliente = Cliente(
             id=cliente_sql.id,
             nombre=cliente_sql.nombre,
             apellido=cliente_sql.apellido,
@@ -155,8 +170,30 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             cuit=cliente_sql.cuit,
             email=cliente_sql.email,
             tipo_doc_id=cliente_sql.tipo_doc_id,
-            iva_id=cliente_sql.iva_id,
+            condicion_iva_id=cliente_sql.condicion_iva_id,
+            condicion_iibb_id=cliente_sql.condicion_iibb_id,
+            nro_iibb=cliente_sql.nro_iibb
         )
+
+        if hasattr(cliente_sql, 'condicion_iva') and cliente_sql.condicion_iva:
+            cliente.condicion_iva = CondicionTributariaDomain(
+                id=cliente_sql.condicion_iva.id,
+                nombre=cliente_sql.condicion_iva.nombre,
+                descripcion=cliente_sql.condicion_iva.descripcion,
+                ambito=cliente_sql.condicion_iva.ambito,
+                tipo_impuesto_id=cliente_sql.condicion_iva.tipo_impuesto_id
+            )
+            
+        if hasattr(cliente_sql, 'condicion_iibb') and cliente_sql.condicion_iibb:
+            cliente.condicion_iibb = CondicionTributariaDomain(
+                id=cliente_sql.condicion_iibb.id,
+                nombre=cliente_sql.condicion_iibb.nombre,
+                descripcion=cliente_sql.condicion_iibb.descripcion,
+                ambito=cliente_sql.condicion_iibb.ambito,
+                tipo_impuesto_id=cliente_sql.condicion_iibb.tipo_impuesto_id
+            )
+
+        return cliente
 
     def _to_orm(self, cliente: Cliente) -> ClienteSQL:
         return ClienteSQL(
@@ -167,5 +204,7 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             cuit=cliente.cuit,
             email=cliente.email,
             tipo_doc_id=cliente.tipo_doc_id,
-            iva_id=cliente.iva_id,
+            condicion_iva_id=cliente.condicion_iva_id,
+            condicion_iibb_id=cliente.condicion_iibb_id,
+            nro_iibb=cliente.nro_iibb
         )

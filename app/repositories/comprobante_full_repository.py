@@ -55,3 +55,10 @@ class ComprobanteFullUOW:
         if self._comprobante_impuesto_repo is None:
             self._comprobante_impuesto_repo = ComprobanteImpuestoRepositoryImpl(self.session)
         return self._comprobante_impuesto_repo
+
+    @property
+    def imputacion_repo(self):
+        from app.repositories.imputacion_repository import ImputacionRepositoryImpl
+        if not hasattr(self, '_imputacion_repo') or self._imputacion_repo is None:
+            self._imputacion_repo = ImputacionRepositoryImpl(self.session)
+        return self._imputacion_repo

@@ -31,6 +31,7 @@ class Comprobante:
     observaciones: Optional[str] = None
     cae: Optional[str] = None
     cae_vencimiento: Optional[date] = None
+    saldo: Optional[float] = None
 
     @classmethod
     def from_dto(cls, dto: ComprobanteDTO) -> "Comprobante":
@@ -54,5 +55,6 @@ class Comprobante:
             total_iva=dto.total_iva,
             total_impuestos=dto.total_impuestos,
             total=dto.total,
-            observaciones=dto.observaciones
+            observaciones=dto.observaciones,
+            saldo=dto.total # Default balance is full amount
         )

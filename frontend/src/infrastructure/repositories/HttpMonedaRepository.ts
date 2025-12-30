@@ -4,7 +4,7 @@ import type { Moneda } from '../../domain/entities/Moneda';
 import { axiosClient } from '../api/axiosClient';
 
 export class HttpMonedaRepository implements IMonedaRepository {
-    private readonly baseUrl = '/monedas';
+    private readonly baseUrl = '/monedas/';
 
     async getAll(): Promise<Moneda[]> {
         const response = await axiosClient.get<Moneda[]>(this.baseUrl);
@@ -13,7 +13,7 @@ export class HttpMonedaRepository implements IMonedaRepository {
 
     async getById(id: number): Promise<Moneda | null> {
         try {
-            const response = await axiosClient.get<Moneda>(`${this.baseUrl}/${id}`);
+            const response = await axiosClient.get<Moneda>(`${this.baseUrl}${id}`);
             return response.data;
         } catch (error: any) {
             if (error.response?.status === 404) return null;
@@ -27,11 +27,11 @@ export class HttpMonedaRepository implements IMonedaRepository {
     }
 
     async update(id: number, entity: Partial<Moneda>): Promise<Moneda> {
-        const response = await axiosClient.patch<Moneda>(`${this.baseUrl}/${id}`, entity);
+        const response = await axiosClient.patch<Moneda>(`${this.baseUrl}${id}`, entity);
         return response.data;
     }
 
     async delete(id: number): Promise<void> {
-        await axiosClient.delete(`${this.baseUrl}/${id}`);
+        await axiosClient.delete(`${this.baseUrl}${id}`);
     }
 }

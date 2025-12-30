@@ -1,33 +1,78 @@
-
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useTiposImpuesto } from '../../composables/useTiposImpuesto';
 import TipoImpuestoForm from './TipoImpuestoForm.vue';
+import TipoImpuestoCondicionesTab from './TipoImpuestoCondicionesTab.vue';
+import PageHeader from '../../components/common/PageHeader.vue';
+import DataTable from '../../components/common/DataTable.vue';
 import type { TipoImpuesto } from '../../../domain/entities/TipoImpuesto';
+import { TipoUsoImpuestoEnum } from '../../../domain/enums/TipoUsoImpuestoEnum';
 
 const { tiposImpuesto, loading, error, loadTiposImpuesto, createTipoImpuesto, updateTipoImpuesto, deleteTipoImpuesto } = useTiposImpuesto();
 
 const showForm = ref(false);
+const isDeleteMode = ref(false);
 const editingEntity = ref<TipoImpuesto | null>(null);
+const activeTab = ref<'generales' | 'condiciones'>('generales');
+
+// Filter state
+const usageFilter = ref<string>('all');
+const searchQuery = ref<string>('');
 
 onMounted(() => {
     loadTiposImpuesto();
 });
 
+const filteredTipos = computed(() => {
+    return tiposImpuesto.value.filter(t => {
+        const matchesUsage = usageFilter.value === 'all' || t.tipo_uso === usageFilter.value;
+        const matchesSearch = !searchQuery.value || 
+            t.nombre.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            t.etiqueta_factura?.toLowerCase().includes(searchQuery.value.toLowerCase());
+        return matchesUsage && matchesSearch;
+    });
+});
+
 const handleNew = () => {
     editingEntity.value = null;
+    isDeleteMode.value = false;
+    error.value = null;
     showForm.value = true;
+    activeTab.value = 'generales';
 };
 
 const handleEdit = (entity: TipoImpuesto) => {
     editingEntity.value = entity;
+    isDeleteMode.value = false;
+    error.value = null;
+    showForm.value = true;
+    activeTab.value = 'generales';
+};
+
+// Triggered from Table Delete Icon
+const handlePreDelete = (entity: TipoImpuesto) => {
+    editingEntity.value = entity;
+    isDeleteMode.value = true;
+    error.value = null; // Reset errors
     showForm.value = true;
 };
 
-const handleDelete = async (id: number) => {
-    if(confirm('¿Está seguro de eliminar este registro?')) {
+// Confirmation Action from Form
+const handleConfirmDelete = async (id: number) => {
+    try {
         await deleteTipoImpuesto(id);
+        showForm.value = false;
+        error.value = null; // Clear error on success
+    } catch (e) {
+        // Error is set in 'error' ref by composable and passed to form via prop
     }
+};
+
+const handleCancel = () => {
+    showForm.value = false;
+    error.value = null; // Clear error on cancel
+    isDeleteMode.value = false;
+    activeTab.value = 'generales';
 };
 
 const handleSubmit = async (entity: TipoImpuesto) => {
@@ -38,6 +83,7 @@ const handleSubmit = async (entity: TipoImpuesto) => {
            await updateTipoImpuesto(entity);
         }
         showForm.value = false;
+        error.value = null; // Clear error on success
     } catch (e) {
         // Error handled in composable
     }
@@ -46,38 +92,144 @@ const handleSubmit = async (entity: TipoImpuesto) => {
 
 <template>
   <div class="space-y-6">
-    <div class="flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Tipos de Impuesto</h1>
-        <p class="text-gray-600">Catálogo de impuestos y tributos.</p>
-      </div>
-      <button @click="handleNew" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-        + Nuevo
-      </button>
+    <PageHeader title="Impuestos" subtitle="Configuración fiscal alineada con Odoo.">
+        <template #actions>
+            <button @click="handleNew" class="btn btn-primary shadow-blue-100">
+                <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                Nuevo Impuesto
+            </button>
+        </template>
+    </PageHeader>
+
+    <div v-if="showForm" class="space-y-4">
+        <!-- Tabs Selector -->
+        <div v-if="editingEntity?.id && !isDeleteMode" class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button 
+                    @click="activeTab = 'generales'"
+                    :class="[
+                        activeTab === 'generales' 
+                        ? 'border-blue-500 text-blue-600' 
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                        'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
+                    ]"
+                >
+                    Definición del Impuesto
+                </button>
+                <button 
+                    @click="activeTab = 'condiciones'"
+                    :class="[
+                        activeTab === 'condiciones' 
+                        ? 'border-blue-500 text-blue-600' 
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                        'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
+                    ]"
+                >
+                    Condiciones Asociadas
+                </button>
+            </nav>
+        </div>
+
+        <!-- Generales Tab -->
+        <div v-if="activeTab === 'generales'">
+            <TipoImpuestoForm 
+                :modelValue="editingEntity" 
+                :isDeleteMode="isDeleteMode"
+                :serverError="error"
+                @submit="handleSubmit" 
+                @delete="handleConfirmDelete"
+                @cancel="handleCancel" 
+            />
+        </div>
+
+        <!-- Condiciones Tab -->
+        <div v-if="activeTab === 'condiciones' && editingEntity?.id">
+            <TipoImpuestoCondicionesTab 
+                :tipoImpuestoId="editingEntity.id" 
+                :fixedTipoImpuestoId="editingEntity.id"
+            />
+            <div class="mt-4 flex justify-end">
+                <button @click="handleCancel" class="btn btn-secondary">
+                    Cerrar y Volver
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div v-if="showForm">
-        <TipoImpuestoForm :modelValue="editingEntity" @submit="handleSubmit" @cancel="showForm = false" />
-    </div>
+    <div v-if="!showForm" class="space-y-4">
+        <!-- Odoo-Style Filter Bar -->
+        <div class="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+             <div class="flex-1 relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                </div>
+                <input v-model="searchQuery" type="text" placeholder="Buscar impuesto o etiqueta..." 
+                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all" />
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-medium text-gray-500">Filtrar por:</span>
+                <select v-model="usageFilter" class="rounded-lg border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    <option value="all">Venta o Compras</option>
+                    <option :value="TipoUsoImpuestoEnum.VENTAS">Solo Ventas</option>
+                    <option :value="TipoUsoImpuestoEnum.COMPRAS">Solo Compras</option>
+                    <option :value="TipoUsoImpuestoEnum.RETENCION_PAGO_PROVEEDOR">Retenciones</option>
+                </select>
+            </div>
+        </div>
 
-    <div v-if="loading" class="text-blue-500">Cargando...</div>
-    <div v-if="error" class="text-red-500">{{ error }}</div>
+        <div v-if="loading" class="flex justify-center p-12">
+            <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full shadow-lg shadow-blue-100"></div>
+        </div>
+        <!-- Only show global error if form is closed -->
+        <div v-if="error && !showForm" class="p-4 bg-red-50 text-red-700 rounded-xl border border-red-200">{{ error }}</div>
 
-    <div v-if="!loading && !error" class="bg-white shadow overflow-hidden sm:rounded-md">
-      <ul class="divide-y divide-gray-200">
-        <li v-for="item in tiposImpuesto" :key="item.id" class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
-          <div>
-            <span class="font-medium text-gray-900">{{ item.nombre }}</span>
-            <span class="ml-2 px-2 py-0.5 text-xs bg-gray-100 text-gray-600 rounded-full select-all">{{ item.codigo_afip }}</span>
-             <span v-if="!item.activo" class="ml-2 text-xs text-red-600">INACTIVO</span>
-          </div>
-          <div class="flex space-x-2">
-             <button @click="handleEdit(item)" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">Editar</button>
-             <button @click="handleDelete(item.id)" class="text-red-600 hover:text-red-900 text-sm font-medium">Borrar</button>
-          </div>
-        </li>
-        <li v-if="tiposImpuesto.length === 0" class="px-6 py-4 text-gray-500 italic">No hay registros</li>
-      </ul>
+        <DataTable 
+            v-if="!loading && (!error || showForm)"
+            :columns="[
+                { key: 'nombre', label: 'Nombre del impuesto' },
+                { key: 'descripcion', label: 'Descripción' },
+                { key: 'tipo_uso', label: 'Tipo de impuesto', class: 'w-40' },
+                { key: 'ambito_uso', label: 'Ámbito de impuesto', class: 'w-40' },
+                { key: 'etiqueta_factura', label: 'Etiqueta en facturas', class: 'w-40' },
+                { key: 'activo', label: 'Activo', class: 'w-24 text-center' },
+            ]" 
+            :items="filteredTipos" 
+            actions
+        >
+            <template #cell-tipo_uso="{ item }">
+                 <span :class="[
+                    item.tipo_uso === 'ventas' ? 'bg-blue-50 text-blue-700 border-blue-100' : 
+                    item.tipo_uso === 'compras' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-gray-50 text-gray-700 border-gray-100',
+                    'px-2 py-0.5 text-xs font-semibold rounded-full border shadow-sm capitalize'
+                 ]">
+                    {{ item.tipo_uso }}
+                 </span>
+            </template>
+            <template #cell-ambito_uso="{ item }">
+                 <span class="text-xs text-gray-600 capitalize">{{ item.ambito_uso }}</span>
+            </template>
+            <template #cell-etiqueta_factura="{ item }">
+                 <span class="text-sm font-medium text-gray-900 italic">{{ item.etiqueta_factura || '-' }}</span>
+            </template>
+            <template #cell-activo="{ item }">
+                 <div class="flex justify-center">
+                    <div :class="[item.activo ? 'bg-green-400' : 'bg-gray-300', 'w-10 h-5 rounded-full relative transition-colors duration-200']">
+                        <div :class="[item.activo ? 'right-1' : 'left-1', 'absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-200']"></div>
+                    </div>
+                 </div>
+            </template>
+            
+            <template #actions="{ item }">
+                <div class="flex justify-center space-x-1">
+                    <button @click="handleEdit(item)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    </button>
+                    <button @click="handlePreDelete(item)" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Borrar">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                </div>
+            </template>
+        </DataTable>
     </div>
   </div>
 </template>

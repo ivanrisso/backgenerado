@@ -51,7 +51,11 @@ export function useTiposDoc() {
             await deleteTipoDocUseCase.execute(id);
             await loadTiposDoc();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar el Tipo de Documento porque está referenciado en otros registros (Clientes o Proveedores).";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             loading.value = false;

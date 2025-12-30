@@ -4,7 +4,7 @@ import { httpClient } from '../api/httpClient';
 import { ComprobanteMapper } from '../mappers/ComprobanteMapper';
 
 export class AxiosComprobanteRepository implements IComprobanteRepository {
-    private readonly resource = '/comprobantes';
+    private readonly resource = '/comprobantes/';
 
     async getAll(): Promise<Comprobante[]> {
         const response = await httpClient.get(this.resource);
@@ -13,7 +13,7 @@ export class AxiosComprobanteRepository implements IComprobanteRepository {
 
     async getById(id: number): Promise<Comprobante | null> {
         try {
-            const response = await httpClient.get(`${this.resource}/${id}`);
+            const response = await httpClient.get(`${this.resource}${id}`);
             return ComprobanteMapper.toDomain(response.data);
         } catch (error: any) {
             if (error.response?.status === 404) {
@@ -31,7 +31,7 @@ export class AxiosComprobanteRepository implements IComprobanteRepository {
 
     async update(comprobante: Comprobante): Promise<Comprobante> {
         const payload = ComprobanteMapper.toApi(comprobante);
-        const response = await httpClient.put(`${this.resource}/${comprobante.id}`, payload);
+        const response = await httpClient.put(`${this.resource}${comprobante.id}`, payload);
         return ComprobanteMapper.toDomain(response.data);
     }
 }

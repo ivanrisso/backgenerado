@@ -92,6 +92,16 @@ const router = createRouter({
                     name: 'maestros-localidades',
                     component: () => import('@ui/views/maestros/LocalidadView.vue')
                 },
+                {
+                    path: 'maestros/tipos-impuesto',
+                    name: 'maestros-tipos-impuesto',
+                    component: () => import('@ui/views/maestros/TipoImpuestoView.vue')
+                },
+                {
+                    path: 'maestros/articulos',
+                    name: 'maestros-articulos',
+                    component: () => import('@ui/views/maestros/ArticuloView.vue')
+                },
             ]
         }
     ]

@@ -4,7 +4,8 @@ import {
     getDomiciliosUseCase,
     createDomicilioUseCase,
     updateDomicilioUseCase,
-    deleteDomicilioUseCase
+    deleteDomicilioUseCase,
+    getDomicilioByIdUseCase
 } from '../../di';
 import type { Domicilio } from '../../domain/entities/Domicilio';
 
@@ -70,11 +71,27 @@ export function useDomicilios() {
         }
     };
 
+    const currentDomicilio = ref<Domicilio | null>(null);
+
+    const loadDomicilioById = async (id: number) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            currentDomicilio.value = await getDomicilioByIdUseCase.execute(id);
+        } catch (e: any) {
+            error.value = e.message || 'Error loading domicilio';
+        } finally {
+            loading.value = false;
+        }
+    };
+
     return {
         domicilios,
+        currentDomicilio, // Exported
         loading,
         error,
         loadDomicilios,
+        loadDomicilioById, // Exported
         createDomicilio,
         updateDomicilio,
         deleteDomicilio

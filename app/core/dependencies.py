@@ -8,16 +8,16 @@ from app.infrastructure.security.jwt_handler import decode_token
 from app.repositories.usuario_repository import UsuarioRepositoryImpl
 from app.infrastructure.db.orm_models import Usuario
 from typing import AsyncGenerator
-from app.core.afip_auth import AfipAuthService
 from app.core.afip_client import get_afip_client
-from afip import Afip
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
 
-def get_afip_client_dep() -> Afip:
+from app.core.afip.wsfe import WSFEClient
+
+def get_afip_client_dep() -> WSFEClient:
     try:
         return get_afip_client()
     except Exception as e:
@@ -38,9 +38,7 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    # DEBUG: Print headers to debug 401
-    print(f"DEBUG Headers: {request.headers}")
-    print(f"DEBUG Cookies: {request.cookies}")
+
 
     token = request.cookies.get("access_token")
     if not token:
@@ -83,17 +81,25 @@ def require_roles(*allowed_roles: str):
     return role_dependency
 
 
+
 async def get_afip_credentials() -> dict:
     """
     Inyecta credenciales AFIP: token, sign y cuit.
     Renueva automáticamente si expiran; en caso de error devuelve 503.
     """
     try:
-        service = AfipAuthService()
-        return await service.get_credentials()
-    except RuntimeError as e:
+        # Use native client refactored in core/afip_client.py
+        from app.core.afip_client import get_afip_client
+        client = get_afip_client()
+        token, sign = client.wsaa_client.get_token_and_sign()
+        
+        return {
+            "token": token,
+            "sign": sign,
+            "cuit": client.cuit
+        }
+    except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Error en credenciales AFIP: {e}"
         )
-

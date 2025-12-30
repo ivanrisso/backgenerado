@@ -14,7 +14,9 @@ class ComprobanteDetalle:
     precio_unitario: Optional[float] = None
     importe: Optional[float] = None
     alicuota_iva: Optional[float] = None
+    alicuota_iva: Optional[float] = None
     importe_iva: Optional[float] = None
+    datos_extra: Optional[dict] = None
 
     @classmethod
     def from_dto(cls, dto: ComprobanteDetalleDTO) -> "ComprobanteDetalle":
@@ -28,4 +30,5 @@ class ComprobanteDetalle:
             importe=dto.importe,
             alicuota_iva=dto.alicuota_iva,
             importe_iva=dto.importe_iva,
+            datos_extra=getattr(dto, 'datos_extra', None)
         )

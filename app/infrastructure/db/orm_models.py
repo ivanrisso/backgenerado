@@ -1,10 +1,15 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Integer, Boolean, Float, Date, DateTime, Text, Numeric
+from sqlalchemy import ForeignKey, String, Integer, Boolean, Float, Date, DateTime, Text, Numeric, JSON, Table, Column
 from typing import Optional, List
 from decimal import Decimal
 from datetime import date, datetime
 from enum import Enum
-from app.domain.entities.enums import TipoAplicacionEnum, BaseTributarioEnum
+from app.domain.entities.enums import (
+    TipoAplicacionEnum, BaseTributarioEnum, AmbitoImpuestoEnum,
+    CategoriaImpuestoEnum, TipoUsoImpuestoEnum, MetodoCalculoImpuestoEnum,
+    AmbitoUsoImpuestoEnum,    CategoriaFiscalImpuestoEnum, TipoArticuloEnum,
+    TipoDistribucionImpuestoEnum, TipoReparticionBaseImpuestoEnum
+)
 
 class Base(DeclarativeBase):
     pass
@@ -45,7 +50,7 @@ class Rol(Base):
     es_admin: Mapped[bool] = mapped_column(nullable=False)
 
     usuarios: Mapped[List["Usuario"]] = relationship(secondary="rolesusuario", back_populates="roles")
-    menuitems: Mapped[List["MenuItem"]] = relationship(secondary="rolmenuitem", back_populates="roles")
+    menuitems: Mapped[List["MenuItem"]] = relationship(secondary="rolmenuitem", back_populates="menuitems")
 
 
 class MenuItem(Base):
@@ -61,7 +66,7 @@ class MenuItem(Base):
 
     roles: Mapped[List["Rol"]] = relationship(secondary="rolmenuitem", back_populates="menuitems")
 
-    
+
 
 class TipoDoc(Base):
     __tablename__ = "tipodoc"
@@ -74,7 +79,7 @@ class TipoDoc(Base):
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="tipo_doc")
     clientes: Mapped[List["Cliente"]] = relationship(back_populates="tipo_doc")
-    
+
 class TipoDom(Base):
     __tablename__ = "tipodom"
 
@@ -82,8 +87,8 @@ class TipoDom(Base):
     nombre: Mapped[str] = mapped_column(String(30), nullable=False)
 
     domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="tipo_dom")
-    
-    
+
+
 class TipoTel(Base):
     __tablename__ = "tipotel"
 
@@ -91,8 +96,8 @@ class TipoTel(Base):
     nombre: Mapped[str] = mapped_column(String(30), nullable=False)
 
     telefonos: Mapped[List["Telefono"]] = relationship(back_populates="tipo_tel")
-    
-    
+
+
 class Pais(Base):
     __tablename__ = "pais"
 
@@ -123,9 +128,9 @@ class Localidad(Base):
     provincia_id: Mapped[int] = mapped_column(ForeignKey("provincia.id"), nullable=False)
 
     provincia: Mapped["Provincia"] = relationship(back_populates="localidades")
-    domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="localidad")
+    domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="localidades")
 
-    
+
 
 class Cliente(Base):
     __tablename__ = "cliente"
@@ -138,18 +143,22 @@ class Cliente(Base):
     email: Mapped[Optional[str]] = mapped_column(String(100))
 
     tipo_doc_id: Mapped[int] = mapped_column(ForeignKey("tipodoc.id"), nullable=False)
-    iva_id: Mapped[int] = mapped_column(ForeignKey("iva.id"), nullable=False)
+
+    # Tax fields
+    condicion_iva_id: Mapped[Optional[int]] = mapped_column(ForeignKey("condiciontributaria.id"))
+    condicion_iibb_id: Mapped[Optional[int]] = mapped_column(ForeignKey("condiciontributaria.id"))
+    nro_iibb: Mapped[Optional[str]] = mapped_column(String(20))
 
     tipo_doc: Mapped["TipoDoc"] = relationship(back_populates="clientes")
-    iva: Mapped["Iva"] = relationship(back_populates="clientes")
+    condicion_iva: Mapped[Optional["CondicionTributaria"]] = relationship(foreign_keys=[condicion_iva_id])
+    condicion_iibb: Mapped[Optional["CondicionTributaria"]] = relationship(foreign_keys=[condicion_iibb_id])
 
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="cliente")
     domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="cliente")
-    impuestos: Mapped[List["ClienteImpuesto"]] = relationship(back_populates="cliente")
     movimientos_cc: Mapped[List["CuentaCorriente"]] = relationship(back_populates="cliente")
     operadores: Mapped[List["Operador"]] = relationship(back_populates="cliente")
-    
-    
+
+
 class Domicilio(Base):
     __tablename__ = "domicilio"
 
@@ -166,8 +175,8 @@ class Domicilio(Base):
     localidad: Mapped["Localidad"] = relationship(back_populates="domicilios")
 
     telefonos: Mapped[List["Telefono"]] = relationship(back_populates="domicilio")
-    
-    
+
+
 class Telefono(Base):
     __tablename__ = "telefono"
 
@@ -179,7 +188,7 @@ class Telefono(Base):
 
     tipo_tel: Mapped["TipoTel"] = relationship(back_populates="telefonos")
     domicilio: Mapped["Domicilio"] = relationship(back_populates="telefonos")
-    
+
 class Operador(Base):
     __tablename__ = "operador"
 
@@ -232,7 +241,6 @@ class Iva(Base):
     discriminado: Mapped[bool] = mapped_column(nullable=False, default=False)
     porcentaje_sobre: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False, default=Decimal("0.00"))
 
-    clientes: Mapped[List["Cliente"]] = relationship(back_populates="iva")
     detalles: Mapped[List["ComprobanteDetalle"]] = relationship(back_populates="iva")
 
 
@@ -241,19 +249,68 @@ class TipoImpuesto(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     codigo_afip: Mapped[str] = mapped_column(String(3), nullable=False, unique=True)
-    nombre: Mapped[str] = mapped_column(String(20), nullable=False)
+    nombre: Mapped[str] = mapped_column(String(50), nullable=False)
     descripcion: Mapped[str] = mapped_column(String(100), nullable=False)
     tipo_aplicacion: Mapped[TipoAplicacionEnum] = mapped_column(nullable=False)
     base_calculo: Mapped[BaseTributarioEnum] = mapped_column(nullable=False)
+    ambito: Mapped[AmbitoImpuestoEnum] = mapped_column(nullable=False, default=AmbitoImpuestoEnum.NACIONAL)
+    categoria: Mapped[CategoriaImpuestoEnum] = mapped_column(nullable=False, default=CategoriaImpuestoEnum.IMPUESTO_DIRECTO)
     porcentaje: Mapped[Optional[float]] = mapped_column()
     editable: Mapped[bool] = mapped_column(nullable=False, default=True)
     obligatorio: Mapped[bool] = mapped_column(nullable=False, default=False)
     activo: Mapped[bool] = mapped_column(nullable=False, default=True)
 
-    clientes: Mapped[List["ClienteImpuesto"]] = relationship(back_populates="tipo_impuesto")
+    # Odoo alignment fields
+    tipo_uso: Mapped[TipoUsoImpuestoEnum] = mapped_column(nullable=False, default=TipoUsoImpuestoEnum.VENTAS)
+    metodo_calculo: Mapped[MetodoCalculoImpuestoEnum] = mapped_column(nullable=False, default=MetodoCalculoImpuestoEnum.PORCENTAJE)
+    ambito_uso: Mapped[AmbitoUsoImpuestoEnum] = mapped_column(nullable=False, default=AmbitoUsoImpuestoEnum.AMBOS)
+    importe: Mapped[float] = mapped_column(nullable=False, default=0.0)
+
+    # Advanced options
+    etiqueta_factura: Mapped[Optional[str]] = mapped_column(String(50))
+    incluido_precio: Mapped[bool] = mapped_column(nullable=False, default=False)
+    afecta_base_subsecuente: Mapped[bool] = mapped_column(nullable=False, default=False)
+    categoria_fiscal: Mapped[Optional[CategoriaFiscalImpuestoEnum]] = mapped_column()
+    notas_legales: Mapped[Optional[str]] = mapped_column(Text)
+
+    # Accounting placeholders
+    cuenta_impuesto_vta: Mapped[Optional[str]] = mapped_column(String(100))
+    cuenta_impuesto_com: Mapped[Optional[str]] = mapped_column(String(100))
+
+    # Rediseño Odoo Distribución
+    reparticiones: Mapped[List["TipoImpuestoDistribucion"]] = relationship(back_populates="tipo_impuesto", cascade="all, delete-orphan")
+
     comprobantes: Mapped[List["ComprobanteImpuesto"]] = relationship(back_populates="tipo_impuesto")
-    
-    
+
+    # 1-to-Many
+    condiciones_asociadas: Mapped[List["CondicionTributaria"]] = relationship(back_populates="tipo_impuesto")
+
+    def __repr__(self):
+        return f"<TipoImpuesto(nombre='{self.nombre}', id={self.id})>"
+
+
+class Articulo(Base):
+    __tablename__ = "articulo"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    codigo: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
+    nombre: Mapped[str] = mapped_column(String(100), nullable=False)
+    descripcion: Mapped[Optional[str]] = mapped_column(Text)
+
+    precio_venta: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    precio_costo: Mapped[float] = mapped_column(nullable=False, default=0.0)
+
+    tipo: Mapped[TipoArticuloEnum] = mapped_column(nullable=False, default=TipoArticuloEnum.SERVICIO)
+    activo: Mapped[bool] = mapped_column(nullable=False, default=True)
+
+    # Tax configuration (Odoo style)
+    impuesto_venta_id: Mapped[Optional[int]] = mapped_column(ForeignKey("tipoimpuesto.id"))
+    impuesto_compra_id: Mapped[Optional[int]] = mapped_column(ForeignKey("tipoimpuesto.id"))
+
+    impuesto_venta: Mapped[Optional["TipoImpuesto"]] = relationship(foreign_keys=[impuesto_venta_id])
+    impuesto_compra: Mapped[Optional["TipoImpuesto"]] = relationship(foreign_keys=[impuesto_compra_id])
+
+
 class Comprobante(Base):
     __tablename__ = "comprobante"
 
@@ -282,6 +339,7 @@ class Comprobante(Base):
     total_iva: Mapped[float] = mapped_column(nullable=False)
     total_impuestos: Mapped[float] = mapped_column(nullable=False)
     total: Mapped[float] = mapped_column(nullable=False)
+    saldo: Mapped[float] = mapped_column(nullable=False, default=0.0)
     observaciones: Mapped[Optional[str]] = mapped_column(String(255))
     cae: Mapped[str] = mapped_column(String(50), nullable=False)
     cae_vencimiento: Mapped[date] = mapped_column(nullable=False)
@@ -297,6 +355,9 @@ class Comprobante(Base):
     registro_cc: Mapped[Optional["CuentaCorriente"]] = relationship(back_populates="comprobante")
     auditorias: Mapped[List["AuditoriaComprobante"]] = relationship(back_populates="comprobante")
 
+    imputaciones_credito: Mapped[List["Imputacion"]] = relationship("Imputacion", foreign_keys="Imputacion.comprobante_credito_id", back_populates="credito")
+    imputaciones_debito: Mapped[List["Imputacion"]] = relationship("Imputacion", foreign_keys="Imputacion.comprobante_debito_id", back_populates="debito")
+
 
 class ComprobanteDetalle(Base):
     __tablename__ = "comprobantedetalle"
@@ -311,6 +372,7 @@ class ComprobanteDetalle(Base):
     importe: Mapped[float] = mapped_column(nullable=False)
     alicuota_iva: Mapped[float] = mapped_column(nullable=False)
     importe_iva: Mapped[float] = mapped_column(nullable=False)
+    datos_extra: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
 
     comprobante: Mapped["Comprobante"] = relationship(back_populates="detalles")
     iva: Mapped["Iva"] = relationship(back_populates="detalles")
@@ -331,21 +393,58 @@ class ComprobanteImpuesto(Base):
     comprobante: Mapped["Comprobante"] = relationship(back_populates="impuestos")
     tipo_impuesto: Mapped["TipoImpuesto"] = relationship(back_populates="comprobantes")
 
-    
-class ClienteImpuesto(Base):
-    __tablename__ = "clienteimpuesto"
+
+class TipoImpuestoEtiqueta(Base):
+    __tablename__ = 'tipo_impuesto_etiqueta'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nombre: Mapped[str] = mapped_column(String(100), nullable=False)
+    descripcion: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+
+    # Relación inversa (opcional)
+    distribuciones: Mapped[List["TipoImpuestoDistribucion"]] = relationship(back_populates="etiqueta")
+
+    def __repr__(self):
+        return f"<TipoImpuestoEtiqueta(nombre='{self.nombre}')>"
+
+class TipoImpuestoDistribucion(Base):
+    __tablename__ = 'tipo_impuesto_distribucion'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tipo_impuesto_id: Mapped[int] = mapped_column(ForeignKey('tipoimpuesto.id'), nullable=False)
+
+    tipo_reparticion: Mapped[TipoDistribucionImpuestoEnum] = mapped_column(nullable=False, default=TipoDistribucionImpuestoEnum.FACTURA)
+    factor_porcentaje: Mapped[float] = mapped_column(nullable=False, default=100.0)
+    basado_en: Mapped[TipoReparticionBaseImpuestoEnum] = mapped_column(nullable=False, default=TipoReparticionBaseImpuestoEnum.IMPUESTO)
+
+    # Para el Libro de IVA / Reportes
+    etiqueta_id: Mapped[Optional[int]] = mapped_column(ForeignKey('tipo_impuesto_etiqueta.id'), nullable=True)
+
+    # Para Contabilidad
+    cuenta_contable: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+
+    # Relaciones
+    tipo_impuesto: Mapped["TipoImpuesto"] = relationship(back_populates="reparticiones")
+    etiqueta: Mapped[Optional["TipoImpuestoEtiqueta"]] = relationship(back_populates="distribuciones")
+
+    def __repr__(self):
+        return f"<TipoImpuestoDistribucion(id={self.id}, factor={self.factor_porcentaje}%)>"
+
+
+class CondicionTributaria(Base):
+    __tablename__ = "condiciontributaria"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    cliente_id: Mapped[int] = mapped_column(ForeignKey("cliente.id"), nullable=False)
-    tipo_impuesto_id: Mapped[int] = mapped_column(ForeignKey("tipoimpuesto.id"), nullable=False)
-
-    aplica: Mapped[bool] = mapped_column(default=True, nullable=False)
-    alicuota: Mapped[Optional[float]] = mapped_column()
-    observaciones: Mapped[Optional[str]] = mapped_column(String(255))
-
-    cliente: Mapped["Cliente"] = relationship(back_populates="impuestos")
-    tipo_impuesto: Mapped["TipoImpuesto"] = relationship(back_populates="clientes")
+    nombre: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
+    descripcion: Mapped[Optional[str]] = mapped_column(String(100))
+    ambito: Mapped[AmbitoImpuestoEnum] = mapped_column(nullable=False, default=AmbitoImpuestoEnum.NACIONAL)
     
+    # FK a TipoImpuesto (1-a-N)
+    tipo_impuesto_id: Mapped[Optional[int]] = mapped_column(ForeignKey("tipoimpuesto.id"))
+
+    tipo_impuesto: Mapped[Optional["TipoImpuesto"]] = relationship(back_populates="condiciones_asociadas")
+
+
+
+
 class CuentaCorriente(Base):
     __tablename__ = "cuentacorriente"
 
@@ -379,3 +478,16 @@ class AuditoriaComprobante(Base):
     comprobante: Mapped["Comprobante"] = relationship(back_populates="auditorias")
     usuario: Mapped["Usuario"] = relationship(back_populates="auditorias")
 
+
+class Imputacion(Base):
+    __tablename__ = "imputacion"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    comprobante_credito_id: Mapped[int] = mapped_column(ForeignKey("comprobante.id"), nullable=False)
+    comprobante_debito_id: Mapped[int] = mapped_column(ForeignKey("comprobante.id"), nullable=False)
+    
+    importe: Mapped[float] = mapped_column(nullable=False)
+    fecha: Mapped[date] = mapped_column(nullable=False)
+
+    credito: Mapped["Comprobante"] = relationship("Comprobante", foreign_keys=[comprobante_credito_id], back_populates="imputaciones_credito")
+    debito: Mapped["Comprobante"] = relationship("Comprobante", foreign_keys=[comprobante_debito_id], back_populates="imputaciones_debito")

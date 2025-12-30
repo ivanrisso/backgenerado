@@ -4,8 +4,11 @@ import {
     createClienteUseCase,
     updateClienteUseCase,
     getClienteByIdUseCase,
-    deleteClienteUseCase
+    deleteClienteUseCase,
+    getAfipTaxComparisonUseCase,
+    syncAfipTaxesUseCase
 } from '../../di';
+
 import type { Cliente } from '../../domain/entities/Cliente';
 
 export function useClientes() {
@@ -63,12 +66,43 @@ export function useClientes() {
             await deleteClienteUseCase.execute(id);
             await loadClientes();
         } catch (e: any) {
-            error.value = e.message || 'Error deleting cliente';
+            if (e.response?.status === 409 || e.message?.includes('409')) {
+                error.value = 'No se puede eliminar el cliente porque tiene registros asociados (comprobantes, etc.).';
+            } else {
+                error.value = e.message || 'Error deleting cliente';
+            }
             throw e;
         } finally {
             isLoading.value = false;
         }
     };
+
+    const getAfipTaxComparison = async (id: number) => {
+        isLoading.value = true;
+        error.value = null;
+        try {
+            return await getAfipTaxComparisonUseCase.execute(id);
+        } catch (e: any) {
+            error.value = e.message || 'Error getting AFIP comparison';
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    const syncAfipTaxes = async (id: number, afipIds: string[]) => {
+        isLoading.value = true;
+        error.value = null;
+        try {
+            return await syncAfipTaxesUseCase.execute(id, afipIds);
+        } catch (e: any) {
+            error.value = e.message || 'Error syncing AFIP taxes';
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
 
     return {
         clientes,
@@ -78,6 +112,9 @@ export function useClientes() {
         loadClientes,
         loadClienteById,
         saveCliente,
-        deleteCliente
+        deleteCliente,
+        getAfipTaxComparison,
+        syncAfipTaxes
     };
 }
+

@@ -19,6 +19,6 @@ class Cliente(Base):
     tipo_doc: Mapped[TipoDoc] = mapped_column()
     comprobantes: Mapped[List[""Comprobante""]] = relationship(back_populates="cliente")
     domicilios: Mapped[List[""Domicilio""]] = relationship(back_populates="cliente")
-    impuestos: Mapped[List[""ClienteImpuesto""]] = relationship(back_populates="cliente")
+
     movimientos_cc: Mapped[List[""CuentaCorriente""]] = relationship(back_populates="cliente")
     operadores: Mapped[List[""Operador""]] = relationship(back_populates="cliente")

@@ -2,7 +2,6 @@ from fastapi import FastAPI, APIRouter
 from app.routes.auth_routes import router as auth_router
 from app.routes.auditoriacomprobante_routes import router as auditoriacomprobante_router
 from app.routes.cliente_routes import router as cliente_router
-from app.routes.clienteimpuesto_routes import router as clienteimpuesto_router
 from app.routes.comprobante_routes import router as comprobante_router
 from app.routes.comprobantedetalle_routes import router as comprobantedetalle_router
 from app.routes.comprobanteimpuesto_routes import router as comprobanteimpuesto_router
@@ -27,7 +26,8 @@ from app.routes.tipoimpuesto_routes import router as tipoimpuesto_router
 from app.routes.tipotel_routes import router as tipotel_router
 from app.routes.usuario_routes import router as usuario_router
 from app.routes.comprobante_full_routes import router as comprobante_full_router
-
+from app.routes.condiciontributaria_routes import router as condiciontributaria_router
+from app.routes.articulo_routes import router as articulo_router
 
 # Router principal para agrupar todo bajo /api/v1
 api_router = APIRouter(prefix="/api/v1")
@@ -35,7 +35,6 @@ api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(auth_router)
 api_router.include_router(auditoriacomprobante_router)
 api_router.include_router(cliente_router)
-api_router.include_router(clienteimpuesto_router)
 api_router.include_router(comprobante_router)
 api_router.include_router(comprobantedetalle_router)
 api_router.include_router(comprobanteimpuesto_router)
@@ -60,7 +59,8 @@ api_router.include_router(tipoimpuesto_router)
 api_router.include_router(tipotel_router)
 api_router.include_router(usuario_router)
 api_router.include_router(comprobante_full_router)
-
+api_router.include_router(condiciontributaria_router)
+api_router.include_router(articulo_router)
 
 def include_all_routes(app: FastAPI):
     app.include_router(api_router)

@@ -4,7 +4,7 @@ import { TipoTelMapper } from '../mappers/TipoTelMapper';
 import { httpClient } from '../api/httpClient';
 
 export class AxiosTipoTelRepository implements ITipoTelRepository {
-    private readonly resource = '/tipotels';
+    private readonly resource = '/tipotels/';
 
     async getAll(): Promise<TipoTel[]> {
         const response = await httpClient.get(this.resource);
@@ -13,7 +13,7 @@ export class AxiosTipoTelRepository implements ITipoTelRepository {
 
     async getById(id: number): Promise<TipoTel | null> {
         try {
-            const response = await httpClient.get(`${this.resource}/${id}`);
+            const response = await httpClient.get(`${this.resource}${id}`);
             return TipoTelMapper.toDomain(response.data);
         } catch (error) {
             return null;
@@ -27,10 +27,10 @@ export class AxiosTipoTelRepository implements ITipoTelRepository {
 
     async update(entity: TipoTel): Promise<void> {
         const dto = { nombre: entity.nombre };
-        await httpClient.patch(`${this.resource}/${entity.id}`, dto);
+        await httpClient.patch(`${this.resource}${entity.id}`, dto);
     }
 
     async delete(id: number): Promise<void> {
-        await httpClient.delete(`${this.resource}/${id}`);
+        await httpClient.delete(`${this.resource}${id}`);
     }
 }

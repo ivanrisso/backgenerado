@@ -9,12 +9,20 @@ import { AxiosProvinciaRepository } from '@infra/repositories/AxiosProvinciaRepo
 import { AxiosLocalidadRepository } from '@infra/repositories/AxiosLocalidadRepository';
 import { AxiosTipoDomRepository } from '@infra/repositories/AxiosTipoDomRepository';
 import { AxiosTipoTelRepository } from '@infra/repositories/AxiosTipoTelRepository';
+import { HttpCondicionTributariaRepository } from '@infra/repositories/HttpCondicionTributariaRepository';
+
+
 
 import { GetClientesUseCase } from '@app/use-cases/GetClientesUseCase';
 import { CreateClienteUseCase } from '@app/use-cases/CreateClienteUseCase';
 import { UpdateClienteUseCase } from '@app/use-cases/UpdateClienteUseCase';
 import { GetClienteByIdUseCase } from '@app/use-cases/GetClienteByIdUseCase';
 import { DeleteClienteUseCase } from '@app/use-cases/DeleteClienteUseCase';
+import { GetAfipTaxComparisonUseCase } from '@app/use-cases/GetAfipTaxComparisonUseCase';
+import { SyncAfipTaxesUseCase } from '@app/use-cases/SyncAfipTaxesUseCase';
+import { GetCondicionesTributariasUseCase } from '@app/use-cases/condiciontributaria/GetCondicionesTributariasUseCase';
+
+
 
 import { GetComprobantesUseCase } from '@app/use-cases/GetComprobantesUseCase';
 import { CreateComprobanteUseCase } from '@app/use-cases/CreateComprobanteUseCase';
@@ -67,6 +75,8 @@ const provinciaRepository = new AxiosProvinciaRepository();
 const localidadRepository = new AxiosLocalidadRepository();
 const tipoDomRepository = new AxiosTipoDomRepository();
 const tipoTelRepository = new AxiosTipoTelRepository();
+const condicionTributariaRepository = new HttpCondicionTributariaRepository();
+
 
 // Use Cases
 export const getClientesUseCase = new GetClientesUseCase(clienteRepository);
@@ -74,6 +84,9 @@ export const createClienteUseCase = new CreateClienteUseCase(clienteRepository);
 export const updateClienteUseCase = new UpdateClienteUseCase(clienteRepository);
 export const getClienteByIdUseCase = new GetClienteByIdUseCase(clienteRepository);
 export const deleteClienteUseCase = new DeleteClienteUseCase(clienteRepository);
+export const getAfipTaxComparisonUseCase = new GetAfipTaxComparisonUseCase(clienteRepository);
+export const syncAfipTaxesUseCase = new SyncAfipTaxesUseCase(clienteRepository);
+
 
 export const getComprobantesUseCase = new GetComprobantesUseCase(comprobanteRepository);
 export const createComprobanteUseCase = new CreateComprobanteUseCase(comprobanteRepository);
@@ -89,6 +102,12 @@ export const createTipoDocUseCase = new CreateTipoDocUseCase(tipoDocRepository);
 export const updateTipoDocUseCase = new UpdateTipoDocUseCase(tipoDocRepository);
 export const deleteTipoDocUseCase = new DeleteTipoDocUseCase(tipoDocRepository);
 
+import { GetLocalidadByIdUseCase } from '@app/use-cases/ubicacion/GetLocalidadByIdUseCase';
+import { GetProvinciaByIdUseCase } from '@app/use-cases/ubicacion/GetProvinciaByIdUseCase';
+
+// ... existing code ...
+export const getLocalidadByIdUseCase = new GetLocalidadByIdUseCase(localidadRepository);
+export const getProvinciaByIdUseCase = new GetProvinciaByIdUseCase(provinciaRepository);
 export const getPaisesUseCase = new GetPaisesUseCase(paisRepository);
 export const createPaisUseCase = new CreatePaisUseCase(paisRepository);
 export const updatePaisUseCase = new UpdatePaisUseCase(paisRepository);
@@ -188,11 +207,18 @@ import { HttpConceptoRepository } from '@infra/repositories/HttpConceptoReposito
 import { HttpMonedaRepository } from '@infra/repositories/HttpMonedaRepository';
 import { HttpIvaRepository } from '@infra/repositories/HttpIvaRepository';
 import { HttpTipoImpuestoRepository } from '@infra/repositories/HttpTipoImpuestoRepository';
+import { HttpArticuloRepository } from '@infra/repositories/HttpArticuloRepository';
+
+import { GetArticulosUseCase } from '@app/use-cases/articulo/GetArticulosUseCase';
+import { CreateArticuloUseCase } from '@app/use-cases/articulo/CreateArticuloUseCase';
+import { UpdateArticuloUseCase } from '@app/use-cases/articulo/UpdateArticuloUseCase';
+import { DeleteArticuloUseCase } from '@app/use-cases/articulo/DeleteArticuloUseCase';
 
 import { GetDomiciliosUseCase } from '@app/use-cases/domicilio/GetDomiciliosUseCase';
 import { CreateDomicilioUseCase } from '@app/use-cases/domicilio/CreateDomicilioUseCase';
 import { UpdateDomicilioUseCase } from '@app/use-cases/domicilio/UpdateDomicilioUseCase';
 import { DeleteDomicilioUseCase } from '@app/use-cases/domicilio/DeleteDomicilioUseCase';
+import { GetDomicilioByIdUseCase } from '@app/use-cases/domicilio/GetDomicilioByIdUseCase';
 
 import { GetTelefonosUseCase } from '@app/use-cases/telefono/GetTelefonosUseCase';
 import { CreateTelefonoUseCase } from '@app/use-cases/telefono/CreateTelefonoUseCase';
@@ -212,15 +238,13 @@ import { GetTiposImpuestoUseCase } from '@app/use-cases/tipoimpuesto/GetTiposImp
 import { CreateTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/CreateTipoImpuestoUseCase';
 import { UpdateTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/UpdateTipoImpuestoUseCase';
 import { DeleteTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/DeleteTipoImpuestoUseCase';
-
 import { CreateIvaUseCase } from '@app/use-cases/iva/CreateIvaUseCase';
 import { UpdateIvaUseCase } from '@app/use-cases/iva/UpdateIvaUseCase';
 import { DeleteIvaUseCase } from '@app/use-cases/iva/DeleteIvaUseCase';
-// Note: imports might be separate files, checking file creation... yes separate files.
-// Need separate imports.
 
 
 import { CreateMonedaUseCase } from '@app/use-cases/moneda/CreateMonedaUseCase';
+
 import { UpdateMonedaUseCase } from '@app/use-cases/moneda/UpdateMonedaUseCase';
 import { DeleteMonedaUseCase } from '@app/use-cases/moneda/DeleteMonedaUseCase';
 
@@ -242,6 +266,10 @@ const conceptoRepository = new HttpConceptoRepository();
 const monedaRepository = new HttpMonedaRepository();
 const ivaRepository = new HttpIvaRepository();
 const tipoImpuestoRepository = new HttpTipoImpuestoRepository();
+const articuloRepository = new HttpArticuloRepository();
+import { AxiosComprobanteFullRepository } from '@infra/repositories/AxiosComprobanteFullRepository';
+import { CreateComprobanteFullUseCase } from '@app/use-cases/comprobante/CreateComprobanteFullUseCase';
+
 
 // Use Cases Exports
 
@@ -249,6 +277,7 @@ export const getDomiciliosUseCase = new GetDomiciliosUseCase(domicilioRepository
 export const createDomicilioUseCase = new CreateDomicilioUseCase(domicilioRepository);
 export const updateDomicilioUseCase = new UpdateDomicilioUseCase(domicilioRepository);
 export const deleteDomicilioUseCase = new DeleteDomicilioUseCase(domicilioRepository);
+export const getDomicilioByIdUseCase = new GetDomicilioByIdUseCase(domicilioRepository);
 
 export const getTelefonosUseCase = new GetTelefonosUseCase(telefonoRepository);
 export const createTelefonoUseCase = new CreateTelefonoUseCase(telefonoRepository);
@@ -266,7 +295,6 @@ export const getIvasUseCase = new GetIvasUseCase(ivaRepository);
 export const createIvaUseCase = new CreateIvaUseCase(ivaRepository);
 export const updateIvaUseCase = new UpdateIvaUseCase(ivaRepository);
 export const deleteIvaUseCase = new DeleteIvaUseCase(ivaRepository);
-
 export const createMonedaUseCase = new CreateMonedaUseCase(monedaRepository);
 export const updateMonedaUseCase = new UpdateMonedaUseCase(monedaRepository);
 export const deleteMonedaUseCase = new DeleteMonedaUseCase(monedaRepository);
@@ -285,3 +313,21 @@ export const updateTipoImpuestoUseCase = new UpdateTipoImpuestoUseCase(tipoImpue
 export const deleteTipoImpuestoUseCase = new DeleteTipoImpuestoUseCase(tipoImpuestoRepository);
 
 export const updateOperadorUseCase = new UpdateOperadorUseCase(operadorRepository);
+
+const comprobanteFullRepository = new AxiosComprobanteFullRepository();
+export const createComprobanteFullUseCase = new CreateComprobanteFullUseCase(comprobanteFullRepository);
+
+import { CreateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/CreateCondicionTributariaUseCase';
+import { UpdateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/UpdateCondicionTributariaUseCase';
+import { DeleteCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/DeleteCondicionTributariaUseCase';
+
+export const getCondicionesTributariasUseCase = new GetCondicionesTributariasUseCase(condicionTributariaRepository);
+export const createCondicionTributariaUseCase = new CreateCondicionTributariaUseCase(condicionTributariaRepository);
+export const updateCondicionTributariaUseCase = new UpdateCondicionTributariaUseCase(condicionTributariaRepository);
+export const deleteCondicionTributariaUseCase = new DeleteCondicionTributariaUseCase(condicionTributariaRepository);
+
+export const getArticulosUseCase = new GetArticulosUseCase(articuloRepository);
+export const createArticuloUseCase = new CreateArticuloUseCase(articuloRepository);
+export const updateArticuloUseCase = new UpdateArticuloUseCase(articuloRepository);
+export const deleteArticuloUseCase = new DeleteArticuloUseCase(articuloRepository);
+

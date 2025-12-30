@@ -51,7 +51,11 @@ export function useOperadores() {
             await deleteOperadorUseCase.execute(id);
             await loadOperadores();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar el Operador porque está referenciado en otros registros.";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             loading.value = false;

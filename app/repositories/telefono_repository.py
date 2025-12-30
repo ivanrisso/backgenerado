@@ -34,6 +34,12 @@ class TelefonoRepositoryImpl(TelefonoRepositoryInterface):
         telefonos_sql = result.scalars().all()
         return [self._to_domain(c) for c in telefonos_sql]
 
+    async def get_by_domicilio(self, domicilio_id: int) -> List[Telefono]:
+        stmt = select(TelefonoSQL).where(TelefonoSQL.domicilio_id == domicilio_id)
+        result = await self.db.execute(stmt)
+        telefonos_sql = result.scalars().all()
+        return [self._to_domain(c) for c in telefonos_sql]
+
     async def create(self, telefono: Telefono) -> Telefono:
         try:
             telefono_sql = self._to_orm(telefono)

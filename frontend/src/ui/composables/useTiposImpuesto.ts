@@ -51,7 +51,11 @@ export function useTiposImpuesto() {
             await deleteTipoImpuestoUseCase.execute(id);
             await loadTiposImpuesto();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar el impuesto porque está referenciado en otros registros (Clientes o Comprobantes).";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             loading.value = false;

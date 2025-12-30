@@ -25,7 +25,8 @@ async def seed():
         # We will create groups first
         groups = [
             ("Configuración", None),
-            ("Seguridad", None)
+            ("Seguridad", None),
+            ("Comprobantes", None)
         ]
         
         group_map = {}
@@ -62,6 +63,9 @@ async def seed():
             ("Usuarios", "/usuarios", "Seguridad"),
             ("Roles", "/roles", "Seguridad"),
             ("Menús", "/menus", "Seguridad"),
+            
+            # Comprobantes
+            ("Facturas", "/comprobantes", "Comprobantes"),
         ]
 
         for name, path, parent_name in items:

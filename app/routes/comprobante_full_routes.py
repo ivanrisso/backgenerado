@@ -6,7 +6,7 @@ from app.core.dependencies import get_db_session, require_roles
 
 from app.adapters.afip_adapter import AfipAdapter
 from app.core.afip_client import get_afip_client  
-from afip.electronic_billing import ElectronicBilling
+
 
 from app.schemas.comprobante_full import ComprobanteFullCreate, ComprobanteFullResponse
 from app.services.comprobante_full_service import ComprobanteFullService
@@ -21,12 +21,16 @@ from app.repositories.tipocomprobante_repository import TipoComprobanteRepositor
 from app.repositories.concepto_repository import ConceptoRepositoryImpl
 from app.repositories.tipodoc_repository import TipoDocRepositoryImpl
 from app.repositories.moneda_repository import MonedaRepositoryImpl
+from app.repositories.cliente_repository import ClienteRepositoryImpl
+from app.repositories.iva_repository import IvaRepositoryImpl
 
 
 from app.use_cases.tipocomprobante_use_case import TipoComprobanteUseCase
 from app.use_cases.concepto_use_case import ConceptoUseCase
 from app.use_cases.tipodoc_use_case import TipoDocUseCase
 from app.use_cases.moneda_use_case import MonedaUseCase
+from app.use_cases.cliente_use_case import ClienteUseCase
+from app.use_cases.iva_use_case import IvaUseCase
 
 import logging
 
@@ -46,17 +50,23 @@ def get_comprobante_full_service(
     concepto_uc = ConceptoUseCase(ConceptoRepositoryImpl(session))
     tipodoc_uc = TipoDocUseCase(TipoDocRepositoryImpl(session))
     moneda_uc = MonedaUseCase(MonedaRepositoryImpl(session))
+    
+    # Dependencies for Adapter (RG 5616)
+    cliente_uc = ClienteUseCase(ClienteRepositoryImpl(session))
+    iva_uc = IvaUseCase(IvaRepositoryImpl(session))
 
     # 👉 Instanciar el cliente AFIP y ElectronicBilling
-    afip_sdk = get_afip_client()
-    ebilling = ElectronicBilling(afip_sdk)
+    # 👉 Instanciar el cliente AFIP (Nativo WSFEClient)
+    wsfe_client = get_afip_client()
 
     afip_adapter = AfipAdapter(
-        ebilling=ebilling,
+        ebilling=wsfe_client,
         tipo_comprobante_uc=tipo_comprobante_uc,
         concepto_uc=concepto_uc,
         tipodoc_uc=tipodoc_uc,
-        moneda_uc=moneda_uc
+        moneda_uc=moneda_uc,
+        cliente_uc=cliente_uc,
+        iva_uc=iva_uc
     )
 
     use_case = ComprobanteFullUseCase(uow=uow, afip_adapter=afip_adapter)
@@ -86,5 +96,11 @@ async def create_comprobante_full(
     except BaseDeDatosNoDisponible:
         raise HTTPException(status_code=503, detail="Base de datos no disponible")
 
-    except ErrorDeRepositorio:
-        raise HTTPException(status_code=500, detail="Error inesperado en el backend")
+    except ErrorDeRepositorio as e:
+        logger.error(f"Error creating comprobante: {e}")
+        # Temporary for debugging:
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
+
+    except Exception as e:
+         logger.error(f"UNHANDLED EXCEPTION: {e}")
+         raise HTTPException(status_code=500, detail=f"Unhandled: {str(e)}")

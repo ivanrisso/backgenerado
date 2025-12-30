@@ -1,11 +1,12 @@
 # ✅ app/repositories/comprobante_repository.py
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, OperationalError, DataError
+from sqlalchemy.future import select
+from sqlalchemy.exc import IntegrityError, DataError, OperationalError
+from sqlalchemy import func
 from typing import Optional, List
 
-from app.infrastructure.db.orm_models import Comprobante as ComprobanteSQL
+from app.infrastructure.db.orm_models import Comprobante as ComprobanteSQL, TipoComprobante, ComprobanteDetalle
 from app.domain.entities.comprobante import Comprobante
 from app.domain.repository.comprobante_repository_interfase import ComprobanteRepositoryInterface
 from app.domain.exceptions.comprobante import ComprobanteDuplicado, ComprobanteInvalido
@@ -29,10 +30,38 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
         return self._to_domain(comprobante_sql) if comprobante_sql else None
 
     async def get_all(self) -> List[Comprobante]:
-        stmt = select(ComprobanteSQL)
+        result = await self.db.execute(select(ComprobanteSQL))
+        return [self._to_domain(c) for c in result.scalars().all()]
+
+    async def get_by_cliente(self, cliente_id: int) -> List[Comprobante]:
+        stmt = select(ComprobanteSQL).where(ComprobanteSQL.cliente_id == cliente_id).order_by(ComprobanteSQL.fecha_emision, ComprobanteSQL.id)
         result = await self.db.execute(stmt)
-        comprobantes_sql = result.scalars().all()
-        return [self._to_domain(c) for c in comprobantes_sql]
+        return [self._to_domain(c) for c in result.scalars().all()]
+        
+    async def get_by_afip_data(self, codigo_arca: str, punto_venta: int, numero: int) -> Comprobante | None:
+        stmt = (
+            select(ComprobanteSQL)
+            .join(ComprobanteSQL.tipo_comprobante)
+            .where(
+                TipoComprobante.codigo_arca == str(codigo_arca),
+                ComprobanteSQL.punto_venta == punto_venta,
+                ComprobanteSQL.numero == numero
+            )
+        )
+        result = await self.db.execute(stmt)
+        sql_obj = result.scalar_one_or_none()
+        return self._to_domain(sql_obj) if sql_obj else None
+
+    async def get_by_voucher_id(self, voucher_id: str) -> Optional[Comprobante]:
+        """Busca si existe un comprobante que contenga el voucher_id en sus detalles (campo JSON extra_data)"""
+        stmt = (
+            select(ComprobanteSQL)
+            .join(ComprobanteSQL.detalles)
+            .where(func.json_extract(ComprobanteDetalle.datos_extra, '$.voucher_id') == voucher_id)
+        )
+        result = await self.db.execute(stmt)
+        sql_obj = result.scalar_one_or_none()
+        return self._to_domain(sql_obj) if sql_obj else None
 
     async def create(self, comprobante: Comprobante, commit: bool = True) -> Comprobante:
         try:
@@ -70,8 +99,10 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
                     else:
                         raise ClaveForaneaInvalida("campo_desconocido")
                                                 
+            logger.error(f"RAW INTEGRITY ERROR: {e.orig.args if hasattr(e.orig, 'args') else str(e)}")
+            print(f"RAW INTEGRITY ERROR: {e}")
             logger.info("Error de integridad al crear comprobante")
-            raise ErrorDeRepositorio("Error de integridad al crear comprobante")
+            raise ErrorDeRepositorio(f"Error de integridad al crear comprobante: {e}")
         
         except DataError as da:
             
@@ -184,7 +215,10 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
             total_iva=comprobante_sql.total_iva,
             total_impuestos=comprobante_sql.total_impuestos,
             total=comprobante_sql.total,
-            observaciones=comprobante_sql.observaciones            
+            observaciones=comprobante_sql.observaciones,
+            cae=comprobante_sql.cae,
+            cae_vencimiento=comprobante_sql.cae_vencimiento,
+            saldo=comprobante_sql.saldo
         )
 
 
@@ -211,7 +245,8 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
             total_iva=comprobante.total_iva,
             total_impuestos=comprobante.total_impuestos,
             total=comprobante.total,
-            observaciones=comprobante.observaciones            
-            
+            observaciones=comprobante.observaciones,
+            cae=comprobante.cae,
+            cae_vencimiento=comprobante.cae_vencimiento,
+            saldo=comprobante.saldo if comprobante.saldo is not None else comprobante.total
         )
-        

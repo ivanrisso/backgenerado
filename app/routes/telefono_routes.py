@@ -40,6 +40,15 @@ async def get_all(service: TelefonoService = Depends(get_telefono_service)):
     except ErrorDeRepositorio:
         raise HTTPException(status_code=500, detail="Error inesperado")
 
+@router.get("/domicilio/{domicilio_id}", response_model=List[TelefonoResponse], dependencies=[Depends(require_roles("admin"))])
+async def get_by_domicilio(domicilio_id: int, service: TelefonoService = Depends(get_telefono_service)):
+    try:
+        return await service.get_by_domicilio(domicilio_id)
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
+
 @router.get("/{id}", response_model=TelefonoResponse,dependencies=[Depends(require_roles("admin"))])
 async def get_by_id(id: int, service: TelefonoService = Depends(get_telefono_service)):
     try:

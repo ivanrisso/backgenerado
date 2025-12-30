@@ -39,6 +39,15 @@ class ComprobanteService:
             raise e
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al listar comprobantes")
+        
+    async def get_by_cliente(self, cliente_id: int) -> List[ComprobanteResponse]:
+        try:
+            comprobantes = await self.use_case.get_by_cliente(cliente_id)
+            return [self.to_response(c) for c in comprobantes]
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al listar comprobantes por cliente")
 
     async def create(self, data: ComprobanteCreate) -> ComprobanteResponse:
         try:

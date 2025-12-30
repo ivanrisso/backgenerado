@@ -51,7 +51,11 @@ export function useIvas() {
             await deleteIvaUseCase.execute(id);
             await loadIvas();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar el IVA porque está referenciado en otros registros (Clientes, Comprobantes o Productos).";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             loading.value = false;

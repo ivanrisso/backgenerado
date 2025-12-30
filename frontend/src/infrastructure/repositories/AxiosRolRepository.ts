@@ -5,7 +5,7 @@ import { RolMapper } from '../mappers/RolMapper';
 import type { RolDTO } from '../dtos/UsuarioDTO';
 
 export class AxiosRolRepository implements IRolRepository {
-    private readonly resource = '/rols';
+    private readonly resource = '/rols/';
 
     async getAll(): Promise<Rol[]> {
         const { data } = await httpClient.get<RolDTO[]>(this.resource);
@@ -14,7 +14,7 @@ export class AxiosRolRepository implements IRolRepository {
 
     async getById(id: number): Promise<Rol | null> {
         try {
-            const { data } = await httpClient.get<RolDTO>(`${this.resource}/${id}`);
+            const { data } = await httpClient.get<RolDTO>(`${this.resource}${id}`);
             return RolMapper.toDomain(data);
         } catch (e: any) {
             if (e.response && e.response.status === 404) return null;
@@ -27,10 +27,10 @@ export class AxiosRolRepository implements IRolRepository {
     }
 
     async update(rol: Rol): Promise<void> {
-        await httpClient.patch(`${this.resource}/${rol.id}`, RolMapper.toDTO(rol));
+        await httpClient.patch(`${this.resource}${rol.id}`, RolMapper.toDTO(rol));
     }
 
     async delete(id: number): Promise<void> {
-        await httpClient.delete(`${this.resource}/${id}`);
+        await httpClient.delete(`${this.resource}${id}`);
     }
 }

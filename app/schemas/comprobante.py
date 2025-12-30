@@ -63,14 +63,15 @@ class ComprobanteResponse(BaseModel):
     cuit_cliente: str
     domicilio_cliente: str
     localidad_cliente: str
-    cod_postal_cliente: str
+    cod_postal_cliente: Optional[str]
     provincia_cliente: str
     cotizacion_moneda: float
     total_neto: float
     total_iva: float
     total_impuestos: float
     total: float
-    observaciones: str
+    saldo: float
+    observaciones: Optional[str]
 
     class Config:
         from_attributes = True

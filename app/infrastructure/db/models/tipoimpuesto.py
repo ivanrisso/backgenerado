@@ -17,5 +17,5 @@ class TipoImpuesto(Base):
     editable: Mapped[bool] = mapped_column()
     obligatorio: Mapped[bool] = mapped_column()
     activo: Mapped[bool] = mapped_column()
-    clientes: Mapped[List[""ClienteImpuesto""]] = relationship(back_populates="tipoimpuesto")
+
     comprobantes: Mapped[List[""ComprobanteImpuesto""]] = relationship(back_populates="tipoimpuesto")

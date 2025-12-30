@@ -26,6 +26,7 @@ export class ComprobanteMapper {
             total_iva: new Money(raw.total_iva),
             total_impuestos: new Money(raw.total_impuestos),
             total: new Money(raw.total),
+            saldo: new Money(raw.saldo ?? raw.total), // Default to total if undefined
             observaciones: raw.observaciones,
             cae: raw.cae,
             cae_vencimiento: raw.cae_vencimiento ? new Date(raw.cae_vencimiento) : undefined,

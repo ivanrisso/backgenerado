@@ -58,20 +58,17 @@
     </aside>
 
     <!-- Mobile Header (Visible on small screens) -->
-    <div class="md:hidden flex flex-col flex-1">
-        <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+    <div class="flex flex-col flex-1 min-w-0">
+        <header class="md:hidden bg-white shadow-sm p-4 flex justify-between items-center">
              <h1 class="text-lg font-bold text-gray-800">Facturación</h1>
              <!-- Mobile menu toggle could go here -->
         </header>
-         <main class="flex-1 p-6">
-            <router-view></router-view>
+
+        <!-- Main Content (Shared) -->
+        <main class="flex-1 p-6 overflow-y-auto">
+          <router-view></router-view>
         </main>
     </div>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-6 hidden md:block">
-      <router-view></router-view>
-    </main>
   </div>
 </template>
 

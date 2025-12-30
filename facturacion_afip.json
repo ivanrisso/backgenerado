@@ -1,0 +1,204 @@
+{
+    "info": {
+        "_postman_id": "afip-collection-v1",
+        "name": "Facturacion AFIP",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set(\"token\", jsonData.access_token);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "username",
+                                    "value": "admin@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "admin123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Metadata",
+            "item": [
+                {
+                    "name": "Listar Clientes",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/clientes/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "clientes",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Listar Tipos de IVA",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/ivas/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ivas",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Listar Tipos Comprobante",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tipocomprobantes/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "tipocomprobantes",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Listar Conceptos",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/conceptos/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "conceptos",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Facturacion",
+            "item": [
+                {
+                    "name": "Crear Factura Full (AFIP)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"cliente_id\": 1,\n  \"tipo_comprobante_id\": 1,\n  \"concepto_id\": 1,\n  \"tipo_doc_id\": 1,\n  \"moneda_id\": 7,\n  \"punto_venta\": 5,\n  \"numero\": 0,\n  \"fecha_emision\": \"2024-05-22\",\n  \"doc_nro\": \"20304050607\",\n  \"nombre_cliente\": \"Cliente Test\",\n  \"cuit_cliente\": \"20304050607\",\n  \"domicilio_cliente\": \"Calle Falsa 123\",\n  \"localidad_cliente\": \"CABA\",\n  \"cod_postal_cliente\": \"1000\",\n  \"provincia_cliente\": \"CABA\",\n  \"cotizacion_moneda\": 1.0,\n  \"total_neto\": 100.0,\n  \"total_iva\": 21.0,\n  \"total_impuestos\": 0.0,\n  \"total\": 121.0,\n  \"observaciones\": \"Factura de prueba\",\n  \"detalles\": [\n    {\n      \"comprobante_id\": 0,\n      \"concepto_id\": 1,\n      \"cantidad\": 1.0,\n      \"precio_unitario\": 100.0,\n      \"importe\": 100.0,\n      \"iva_id\": 21,\n      \"importe_iva\": 21.0\n    }\n  ],\n  \"impuestos\": []\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/comprobantes/full/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "comprobantes",
+                                "full",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000"
+        }
+    ]
+}

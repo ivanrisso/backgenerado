@@ -4,7 +4,7 @@ import type { TipoDoc } from '../../domain/entities/TipoDoc';
 import { axiosClient } from '../api/axiosClient';
 
 export class AxiosTipoDocRepository implements ITipoDocRepository {
-    private readonly resource = '/tipodocs';
+    private readonly resource = '/tipodocs/';
 
     async getAll(): Promise<TipoDoc[]> {
         const { data } = await axiosClient.get<any[]>(this.resource);
@@ -13,7 +13,7 @@ export class AxiosTipoDocRepository implements ITipoDocRepository {
 
     async getById(id: number): Promise<TipoDoc | null> {
         try {
-            const { data } = await axiosClient.get<any>(`${this.resource}/${id}`);
+            const { data } = await axiosClient.get<any>(`${this.resource}${id}`);
             return this.mapToEntity(data);
         } catch (error: any) {
             if (error.response?.status === 404) return null;
@@ -29,11 +29,11 @@ export class AxiosTipoDocRepository implements ITipoDocRepository {
 
     async update(entity: TipoDoc): Promise<void> {
         const dto = { tipo_doc_nombre: entity.nombre, codigo_arca: entity.codigoArca?.value, habilitado: entity.habilitado };
-        await axiosClient.patch(`${this.resource}/${entity.id}`, dto);
+        await axiosClient.patch(`${this.resource}${entity.id}`, dto);
     }
 
     async delete(id: number): Promise<void> {
-        await axiosClient.delete(`${this.resource}/${id}`);
+        await axiosClient.delete(`${this.resource}${id}`);
     }
 
     private mapToEntity(d: any): TipoDoc {

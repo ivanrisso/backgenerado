@@ -1,13 +1,15 @@
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useMonedas } from '../../composables/useMonedas';
 import MonedaForm from './MonedaForm.vue';
+import PageHeader from '../../components/common/PageHeader.vue';
+import DataTable from '../../components/common/DataTable.vue';
 import type { Moneda } from '../../../domain/entities/Moneda';
 
 const { monedas, loading, error, loadMonedas, createMoneda, updateMoneda, deleteMoneda } = useMonedas();
 
 const showForm = ref(false);
+const isDeleteMode = ref(false);
 const editingEntity = ref<Moneda | null>(null);
 
 onMounted(() => {
@@ -16,17 +18,32 @@ onMounted(() => {
 
 const handleNew = () => {
     editingEntity.value = null;
+    isDeleteMode.value = false;
+    error.value = null;
     showForm.value = true;
 };
 
 const handleEdit = (entity: Moneda) => {
     editingEntity.value = entity;
+    isDeleteMode.value = false;
+    error.value = null;
     showForm.value = true;
 };
 
-const handleDelete = async (id: number) => {
-    if(confirm('¿Está seguro de eliminar este registro?')) {
+const handlePreDelete = (entity: Moneda) => {
+    editingEntity.value = entity;
+    isDeleteMode.value = true;
+    error.value = null;
+    showForm.value = true;
+};
+
+const handleConfirmDelete = async (id: number) => {
+    try {
         await deleteMoneda(id);
+        showForm.value = false;
+        error.value = null;
+    } catch (e) {
+        // Error set in composable
     }
 };
 
@@ -38,45 +55,70 @@ const handleSubmit = async (entity: Moneda) => {
            await updateMoneda(entity);
         }
         showForm.value = false;
+        error.value = null;
     } catch (e) {
         // Error handled in composable
     }
+};
+
+const handleCancel = () => {
+    showForm.value = false;
+    error.value = null;
+    isDeleteMode.value = false;
 };
 </script>
 
 <template>
   <div class="space-y-6">
-    <div class="flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Monedas</h1>
-        <p class="text-gray-600">Catálogo de monedas.</p>
-      </div>
-      <button @click="handleNew" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-        + Nueva
-      </button>
+    <PageHeader title="Monedas" subtitle="Catálogo de monedas aceptadas en el sistema.">
+        <template #actions>
+            <button @click="handleNew" class="btn btn-primary">
+                + Nueva Moneda
+            </button>
+        </template>
+    </PageHeader>
+
+    <div v-if="showForm" class="mb-8">
+        <MonedaForm 
+            :modelValue="editingEntity" 
+            :isDeleteMode="isDeleteMode"
+            :serverError="error"
+            @submit="handleSubmit" 
+            @delete="handleConfirmDelete"
+            @cancel="handleCancel" 
+        />
     </div>
 
-    <div v-if="showForm">
-        <MonedaForm :modelValue="editingEntity" @submit="handleSubmit" @cancel="showForm = false" />
-    </div>
+    <div v-if="!showForm">
+        <div v-if="loading" class="text-blue-500 p-4">Cargando...</div>
+        <div v-if="error && !showForm" class="text-red-500 p-4">{{ error }}</div>
 
-    <div v-if="loading" class="text-blue-500">Cargando...</div>
-    <div v-if="error" class="text-red-500">{{ error }}</div>
-
-    <div v-if="!loading && !error" class="bg-white shadow overflow-hidden sm:rounded-md">
-      <ul class="divide-y divide-gray-200">
-        <li v-for="item in monedas" :key="item.id" class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
-          <div>
-            <span class="font-medium text-gray-900">{{ item.descripcion }}</span>
-            <span class="ml-2 px-2 py-0.5 text-xs bg-gray-100 text-gray-600 rounded-full select-all">{{ item.codigo }}</span>
-          </div>
-          <div class="flex space-x-2">
-             <button @click="handleEdit(item)" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">Editar</button>
-             <button @click="handleDelete(item.id)" class="text-red-600 hover:text-red-900 text-sm font-medium">Borrar</button>
-          </div>
-        </li>
-        <li v-if="monedas.length === 0" class="px-6 py-4 text-gray-500 italic">No hay registros</li>
-      </ul>
+        <DataTable 
+            v-if="!loading && (!error || showForm)"
+            :columns="[
+                { key: 'descripcion', label: 'Descripción' },
+                { key: 'codigo', label: 'Código', class: 'w-24' },
+                { key: 'codigo_arca', label: 'Cód. ARCA', class: 'w-24' },
+            ]" 
+            :items="monedas" 
+            actions
+        >
+            <template #cell-codigo="{ item }">
+                 <span class="px-2 py-1 text-xs font-mono bg-gray-100 text-gray-600 rounded-md">{{ item.codigo }}</span>
+            </template>
+            <template #cell-codigo_arca="{ item }">
+                 <span class="text-gray-500 text-sm">{{ item.codigo_arca || '-' }}</span>
+            </template>
+            
+            <template #actions="{ item }">
+                 <button @click="handleEdit(item)" class="btn-icon" title="Editar">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                </button>
+                <button @click="handlePreDelete(item)" class="btn-icon text-red-400 hover:text-red-600 hover:bg-red-50" title="Borrar">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+            </template>
+        </DataTable>
     </div>
   </div>
 </template>

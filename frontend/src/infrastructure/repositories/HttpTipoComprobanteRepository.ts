@@ -4,7 +4,7 @@ import type { TipoComprobante } from '../../domain/entities/TipoComprobante';
 import { axiosClient } from '../api/axiosClient';
 
 export class HttpTipoComprobanteRepository implements ITipoComprobanteRepository {
-    private readonly baseUrl = '/tipocomprobantes';
+    private readonly baseUrl = '/tipocomprobantes/';
 
     async getAll(): Promise<TipoComprobante[]> {
         const response = await axiosClient.get<TipoComprobante[]>(this.baseUrl);
@@ -13,7 +13,7 @@ export class HttpTipoComprobanteRepository implements ITipoComprobanteRepository
 
     async getById(id: number): Promise<TipoComprobante | null> {
         try {
-            const response = await axiosClient.get<TipoComprobante>(`${this.baseUrl}/${id}`);
+            const response = await axiosClient.get<TipoComprobante>(`${this.baseUrl}${id}`);
             return response.data;
         } catch (error: any) {
             if (error.response?.status === 404) return null;
@@ -27,11 +27,11 @@ export class HttpTipoComprobanteRepository implements ITipoComprobanteRepository
     }
 
     async update(id: number, entity: Partial<TipoComprobante>): Promise<TipoComprobante> {
-        const response = await axiosClient.patch<TipoComprobante>(`${this.baseUrl}/${id}`, entity);
+        const response = await axiosClient.patch<TipoComprobante>(`${this.baseUrl}${id}`, entity);
         return response.data;
     }
 
     async delete(id: number): Promise<void> {
-        await axiosClient.delete(`${this.baseUrl}/${id}`);
+        await axiosClient.delete(`${this.baseUrl}${id}`);
     }
 }

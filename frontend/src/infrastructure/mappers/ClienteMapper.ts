@@ -23,7 +23,7 @@ export class ClienteMapper {
             apellido: domain.apellido,
             razon_social: domain.razon_social,
             cuit: domain.cuit?.value,
-            email: domain.email?.value,
+            email: domain.email?.getValue(),
             tipo_doc_id: domain.tipo_doc_id,
             iva_id: domain.iva_id,
         };

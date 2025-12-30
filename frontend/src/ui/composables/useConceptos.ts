@@ -51,7 +51,11 @@ export function useConceptos() {
             await deleteConceptoUseCase.execute(id);
             await loadConceptos();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar el Concepto porque está referenciado en Comprobantes.";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             loading.value = false;

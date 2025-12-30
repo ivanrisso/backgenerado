@@ -1,6 +1,6 @@
-# ✅ app/schemas/cliente.py
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from app.schemas.condicion_tributaria import CondicionTributariaResponse
 
 class ClienteCreate(BaseModel):
     nombre: str
@@ -9,7 +9,9 @@ class ClienteCreate(BaseModel):
     cuit: Optional[str] = None
     email: EmailStr
     tipo_doc_id: int
-    iva_id: int
+    condicion_iva_id: Optional[int] = None
+    condicion_iibb_id: Optional[int] = None
+    nro_iibb: Optional[str] = None
 
 class ClienteUpdate(BaseModel):
     nombre: Optional[str] = None
@@ -18,7 +20,9 @@ class ClienteUpdate(BaseModel):
     cuit: Optional[str] = None
     email: Optional[EmailStr] = None
     tipo_doc_id: Optional[int] = None
-    iva_id: Optional[int] = None
+    condicion_iva_id: Optional[int] = None
+    condicion_iibb_id: Optional[int] = None
+    nro_iibb: Optional[str] = None
 
 class ClienteResponse(BaseModel):
     id: int
@@ -28,7 +32,12 @@ class ClienteResponse(BaseModel):
     cuit: Optional[str]
     email: EmailStr
     tipo_doc_id: int
-    iva_id: int
+    condicion_iva_id: Optional[int] = None
+    condicion_iibb_id: Optional[int] = None
+    nro_iibb: Optional[str] = None
+    
+    condicion_iva: Optional[CondicionTributariaResponse] = None
+    condicion_iibb: Optional[CondicionTributariaResponse] = None
 
     class Config:
         from_attributes = True

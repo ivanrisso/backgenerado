@@ -4,7 +4,7 @@ import { httpClient } from '../api/httpClient';
 import { ClienteMapper } from '../mappers/ClienteMapper';
 
 export class AxiosClienteRepository implements IClienteRepository {
-    private readonly resource = '/clientes';
+    private readonly resource = '/clientes/';
 
     async getAll(): Promise<Cliente[]> {
         const response = await httpClient.get(this.resource);
@@ -14,7 +14,7 @@ export class AxiosClienteRepository implements IClienteRepository {
     async getById(id: number): Promise<Cliente | null> {
         try {
             console.log(`[AxiosClienteRepository] getById called with id: ${id} (type: ${typeof id})`);
-            const response = await httpClient.get(`${this.resource}/${id}`);
+            const response = await httpClient.get(`${this.resource}${id}`);
             return ClienteMapper.toDomain(response.data);
         } catch (error: any) {
             if (error.response?.status === 404) {
@@ -32,11 +32,22 @@ export class AxiosClienteRepository implements IClienteRepository {
 
     async update(cliente: Cliente): Promise<Cliente> {
         const payload = ClienteMapper.toApi(cliente);
-        const response = await httpClient.patch(`${this.resource}/${cliente.id}`, payload);
+        const response = await httpClient.patch(`${this.resource}${cliente.id}`, payload);
         return ClienteMapper.toDomain(response.data);
     }
 
     async delete(id: number): Promise<void> {
-        await httpClient.delete(`${this.resource}/${id}`);
+        await httpClient.delete(`${this.resource}${id}`);
+    }
+
+    async getAfipTaxComparison(id: number): Promise<any> {
+        const response = await httpClient.get(`${this.resource}${id}/sync-afip-taxes`);
+        return response.data;
+    }
+
+    async syncAfipTaxes(id: number, afipIds: string[]): Promise<any> {
+        const response = await httpClient.post(`${this.resource}${id}/sync-afip-taxes`, afipIds);
+        return response.data;
     }
 }
+

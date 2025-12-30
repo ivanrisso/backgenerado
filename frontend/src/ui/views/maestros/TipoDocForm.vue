@@ -5,10 +5,13 @@ import { CodigoArca } from '../../../domain/value-objects/CodigoArca';
 
 const props = defineProps<{
     modelValue: TipoDoc | null; // If null, assume creation
+    isDeleteMode?: boolean;
+    serverError?: string | null;
 }>();
 
 const emit = defineEmits<{
     (e: 'submit', entity: TipoDoc): void;
+    (e: 'delete', id: number): void;
     (e: 'cancel'): void;
 }>();
 
@@ -35,25 +38,12 @@ watch(() => props.modelValue, (newVal) => {
 }, { immediate: true });
 
 const handleSubmit = () => {
-    // Construct domain entity
-    // Note: ID 0 for creation, handled by backend usually, but for update we need it.
-    // We recreate the entity using the class constructor or factory logic
-    // But since the entity has immutable props, we might need a DTO approach or just mock it here.
-    // A simpler way for UI is to emit the data and let the Parent/Composable construct the Entity.
-    // However, the Use Cases expect an Entity. So we must construct it here.
-    
-    // Warning: Validation logic inside ValueObjects might throw errors.
+    if (props.isDeleteMode) {
+        emit('delete', form.value.id);
+        return;
+    }
+
     try {
-        // We create a "plain" object that mimics the Entity structure or use a factory method if available.
-        // Since we don't have a factory, we can instantiate it if we have access to constructor.
-        // Or we pass a plain object to a mapper.
-        
-        // Let's import the Class and instantiate it.
-        // We need to import TipoDoc class.
-        // We assume ID 0 is for new.
-        
-        // This requires strict coupling to Domain in UI, which is fine for Forms.
-        
         // Create the Value Object instance
         const codigoArcaVo = new CodigoArca(form.value.codigoArca);
         
@@ -74,24 +64,44 @@ const handleSubmit = () => {
 
 <template>
   <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">{{ modelValue ? 'Editar' : 'Nuevo' }} Tipo de Documento</h3>
+    <h3 class="text-lg font-medium text-gray-900 mb-4">
+        {{ isDeleteMode ? 'Eliminar' : (modelValue ? 'Editar' : 'Nuevo') }} Tipo de Documento
+    </h3>
+
+    <div v-if="serverError" class="mb-4 p-3 bg-red-100 text-red-700 border border-red-200 rounded-md">
+        {{ serverError }}
+    </div>
+
+    <div v-if="isDeleteMode" class="mb-4 p-3 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-md">
+        ¿Está seguro que desea eliminar este registro? Esta acción no se puede deshacer.
+    </div>
+
     <form @submit.prevent="handleSubmit" class="space-y-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Nombre</label>
-            <input v-model="form.nombre" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Código ARCA</label>
-            <input v-model="form.codigoArca" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
-            <p class="text-xs text-gray-500 mt-1">Opcional. Máx 3 caracteres.</p>
-        </div>
-        <div class="flex items-center">
-            <input v-model="form.habilitado" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-            <label class="ml-2 block text-sm text-gray-900">Habilitado</label>
-        </div>
+        <fieldset :disabled="isDeleteMode" class="disabled:opacity-75 space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                <input v-model="form.nombre" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Código ARCA</label>
+                <input v-model="form.codigoArca" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100" />
+                <p class="text-xs text-gray-500 mt-1">Opcional. Máx 3 caracteres.</p>
+            </div>
+            <div class="flex items-center">
+                <input v-model="form.habilitado" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:bg-gray-100" />
+                <label class="ml-2 block text-sm text-gray-900">Habilitado</label>
+            </div>
+        </fieldset>
+
         <div class="flex justify-end gap-2">
             <button type="button" @click="$emit('cancel')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">Cancelar</button>
-            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">Guardar</button>
+            
+            <button v-if="isDeleteMode" type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:ring-red-500">
+                Eliminar
+            </button>
+            <button v-else type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
+                Guardar
+            </button>
         </div>
     </form>
   </div>

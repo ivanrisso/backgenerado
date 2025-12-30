@@ -87,8 +87,7 @@ def orm_to_comprobanteimpuesto(orm: ComprobanteImpuesto) -> ComprobanteImpuesto:
     return ComprobanteImpuesto(**{k: getattr(orm, k) for k in orm.__table__.columns.keys()})
 
 
-def orm_to_clienteimpuesto(orm: ClienteImpuesto) -> ClienteImpuesto:
-    return ClienteImpuesto(**{k: getattr(orm, k) for k in orm.__table__.columns.keys()})
+
 
 
 def orm_to_cuentacorriente(orm: CuentaCorriente) -> CuentaCorriente:
@@ -186,8 +185,7 @@ def comprobanteimpuesto_to_orm(domain: ComprobanteImpuesto) -> ComprobanteImpues
     return ComprobanteImpuesto(**domain.__dict__)
 
 
-def clienteimpuesto_to_orm(domain: ClienteImpuesto) -> ClienteImpuesto:
-    return ClienteImpuesto(**domain.__dict__)
+
 
 
 def cuentacorriente_to_orm(domain: CuentaCorriente) -> CuentaCorriente:

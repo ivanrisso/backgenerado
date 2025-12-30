@@ -28,3 +28,8 @@ SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 async def create_db_and_tables() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+# Dependencia para obtener la sesión de la base de datos
+async def get_db():
+    async with SessionLocal() as session:
+        yield session

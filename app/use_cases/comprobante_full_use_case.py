@@ -44,6 +44,16 @@ class ComprobanteFullUseCase:
                 # Solicita CAE
                 cae_info = await self.afip_adapter.solicitar_cae(payload, cabecera)
 
+                # Asignar CAE antes de persistir
+                cabecera.cae = cae_info["CAE"]
+                from datetime import datetime
+                # AFIP returns YYYYMMDD string
+                vto = cae_info["CAEFchVto"]
+                if isinstance(vto, str):
+                    cabecera.cae_vencimiento = datetime.strptime(vto, "%Y%m%d").date()
+                else:
+                    cabecera.cae_vencimiento = vto
+
                 # Persistencia de cabecera
                 cabecera = await self.uow.comprobante_repo.create(cabecera, commit=False)
                 await self.uow.flush()
@@ -71,7 +81,55 @@ class ComprobanteFullUseCase:
                 # Actualización CAE
                 cabecera.cae = cae_info["CAE"]
                 cabecera.cae_vencimiento = cae_info["CAEFchVto"]
-                await self.uow.comprobante_repo.update(cabecera.id, cabecera, commit=False)
+                # Note: We already set this before create, so this update is technically redundant unless we want to be safe.
+                # But since we use same obj... 
+                
+                # ------ Lógica de Imputación Automática (Cuenta Corriente) ------
+                if hasattr(payload, "cbtes_asociados") and payload.cbtes_asociados:
+                    from app.domain.entities.imputacion import Imputacion
+                    
+                    for assoc in payload.cbtes_asociados:
+                        # 1. Buscar Comprobante Local
+                        try:
+                            invoice = await self.uow.comprobante_repo.get_by_afip_data(
+                                codigo_arca=str(assoc.Tipo).zfill(2) if len(str(assoc.Tipo)) < 3 else str(assoc.Tipo), # Code 01, 06..
+                                punto_venta=assoc.PtoVta,
+                                numero=assoc.Nro
+                            )
+                            
+                            if invoice:
+                                # 2. Calcular importe a imputar
+                                # Por defecto, tomamos el total de la NC (o lo que quede de saldo)
+                                # Si la NC es total, tomamos todo.
+                                # TODO: Manejar imputación parcial si el usuario lo especificara.
+                                # Por ahora asumimos que la NC imputa hasta su total.
+                                
+                                monto_imputar = min(invoice.saldo, cabecera.saldo)
+                                
+                                if monto_imputar > 0:
+                                    # 3. Crear Imputacion
+                                    imputacion = Imputacion(
+                                        id=None,
+                                        comprobante_credito_id=cabecera.id, # La NC que acabamos de crear
+                                        comprobante_debito_id=invoice.id,
+                                        importe=monto_imputar,
+                                        fecha=cabecera.fecha_emision
+                                    )
+                                    await self.uow.imputacion_repo.create(imputacion, commit=False)
+                                    
+                                    # 4. Actualizar Saldos
+                                    invoice.saldo -= monto_imputar
+                                    cabecera.saldo -= monto_imputar
+                                    
+                                    # Persistir cambios en saldos
+                                    await self.uow.comprobante_repo.update(invoice.id, invoice, commit=False)
+                                    await self.uow.comprobante_repo.update(cabecera.id, cabecera, commit=False)
+                                    
+                                    logger.info(f"Imputación creada: NC {cabecera.id} -> Factura {invoice.id} por {monto_imputar}")
+                                    
+                        except Exception as integrity_ex:
+                             logger.error(f"Error al imputar comprobante asociado: {integrity_ex}")
+                             # No bloqueamos la creación de la NC, solo logueamos.
 
                 await self.uow.commit()
                 
@@ -90,6 +148,6 @@ class ComprobanteFullUseCase:
         ) as ex:
             raise ex
 
-        except Exception:
+        except Exception as e:
             logger.exception("Error inesperado al crear comprobante completo")
-            raise ErrorDeRepositorio("Error inesperado al crear comprobante completo")
+            raise ErrorDeRepositorio(f"Error inesperado al crear comprobante completo: {str(e)}")

@@ -8,4 +8,8 @@ export class GetTelefonosUseCase {
     async execute(): Promise<Telefono[]> {
         return this.repository.getAll();
     }
+
+    async executeByDomicilio(domicilioId: number): Promise<Telefono[]> {
+        return this.repository.getByDomicilio(domicilioId);
+    }
 }

@@ -5,7 +5,7 @@ import { MenuItemMapper } from '../mappers/MenuItemMapper';
 import type { MenuItemDTO } from '../dtos/MenuItemDTO';
 
 export class AxiosMenuItemRepository implements IMenuItemRepository {
-    private readonly resource = '/menuitems';
+    private readonly resource = '/menuitems/';
 
     async getTree(): Promise<MenuItem[]> {
         // Backend doesn't support /tree, fetching all and building tree locally
@@ -41,14 +41,14 @@ export class AxiosMenuItemRepository implements IMenuItemRepository {
     }
 
     async update(item: MenuItem): Promise<void> {
-        await httpClient.patch(`${this.resource}/${item.id}`, MenuItemMapper.toDTO(item));
+        await httpClient.patch(`${this.resource}${item.id}`, MenuItemMapper.toDTO(item));
     }
 
     async delete(id: number): Promise<void> {
-        await httpClient.delete(`${this.resource}/${id}`);
+        await httpClient.delete(`${this.resource}${id}`);
     }
 
     async assignRoles(menuItemId: number, roleIds: number[]): Promise<void> {
-        await httpClient.post(`${this.resource}/${menuItemId}/roles`, { role_ids: roleIds });
+        await httpClient.post(`${this.resource}${menuItemId}/roles`, { role_ids: roleIds });
     }
 }

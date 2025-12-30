@@ -14,6 +14,10 @@ class TelefonoRepositoryInterface(ABC):
         pass
 
     @abstractmethod
+    async def get_by_domicilio(self, domicilio_id: int) -> List[Telefono]:
+        pass
+
+    @abstractmethod
     async def create(self, telefono: Telefono) -> Telefono:
         pass
 

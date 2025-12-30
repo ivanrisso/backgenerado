@@ -3,7 +3,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, OperationalError
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 from typing import Optional, List
 
 from app.infrastructure.db.orm_models import Usuario as UsuarioSQL
@@ -24,16 +24,16 @@ class UsuarioRepositoryImpl(UsuarioRepositoryInterface):
         self.db = db
 
     async def get_by_id(self, usuario_id: int) -> Optional[Usuario]:
-        stmt = select(UsuarioSQL).options(selectinload(UsuarioSQL.roles)).where(UsuarioSQL.id == usuario_id)
+        stmt = select(UsuarioSQL).options(joinedload(UsuarioSQL.roles)).where(UsuarioSQL.id == usuario_id)
         result = await self.db.execute(stmt)
-        usuario_sql = result.scalar_one_or_none()
+        usuario_sql = result.unique().scalar_one_or_none()
         return self._to_domain(usuario_sql) if usuario_sql else None
 
     async def get_by_email(self, usuario_mail: str) -> Optional[Usuario]:
         #stmt = select(UsuarioSQL).where(UsuarioSQL.usuario_email == usuario_mail)        
-        stmt = (select(UsuarioSQL).options(selectinload(UsuarioSQL.roles)).where(UsuarioSQL.usuario_email == usuario_mail))
+        stmt = (select(UsuarioSQL).options(joinedload(UsuarioSQL.roles)).where(UsuarioSQL.usuario_email == usuario_mail))
         result = await self.db.execute(stmt)
-        usuario_sql = result.scalar_one_or_none()                
+        usuario_sql = result.unique().scalar_one_or_none()                
         return self._to_domain(usuario_sql) if usuario_sql else None
 
     async def get_all(self) -> List[Usuario]:

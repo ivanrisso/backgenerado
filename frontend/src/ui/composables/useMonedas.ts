@@ -51,7 +51,11 @@ export function useMonedas() {
             await deleteMonedaUseCase.execute(id);
             await loadMonedas();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar la Moneda porque está referenciada en Comprobantes o Listas de Precios.";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             loading.value = false;

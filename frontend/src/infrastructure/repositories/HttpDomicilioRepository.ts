@@ -4,7 +4,7 @@ import type { Domicilio } from '../../domain/entities/Domicilio';
 import { axiosClient } from '../api/axiosClient';
 
 export class HttpDomicilioRepository implements IDomicilioRepository {
-    private readonly baseUrl = '/domicilios';
+    private readonly baseUrl = '/domicilios/';
 
     async getAll(): Promise<Domicilio[]> {
         const response = await axiosClient.get<Domicilio[]>(this.baseUrl);
@@ -13,7 +13,7 @@ export class HttpDomicilioRepository implements IDomicilioRepository {
 
     async getById(id: number): Promise<Domicilio | null> {
         try {
-            const response = await axiosClient.get<Domicilio>(`${this.baseUrl}/${id}`);
+            const response = await axiosClient.get<Domicilio>(`${this.baseUrl}${id}`);
             return response.data;
         } catch (error: any) {
             if (error.response?.status === 404) return null;
@@ -27,11 +27,11 @@ export class HttpDomicilioRepository implements IDomicilioRepository {
     }
 
     async update(id: number, domicilio: Partial<Domicilio>): Promise<Domicilio> {
-        const response = await axiosClient.patch<Domicilio>(`${this.baseUrl}/${id}`, domicilio);
+        const response = await axiosClient.patch<Domicilio>(`${this.baseUrl}${id}`, domicilio);
         return response.data;
     }
 
     async delete(id: number): Promise<void> {
-        await axiosClient.delete(`${this.baseUrl}/${id}`);
+        await axiosClient.delete(`${this.baseUrl}${id}`);
     }
 }

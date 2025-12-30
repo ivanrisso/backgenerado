@@ -19,6 +19,21 @@ export function useTelefonos() {
         }
     };
 
+    const loadTelefonosByDomicilio = async (domicilioId: number) => {
+        loading.value = true;
+        try {
+            // We need a UseCase for this, or extend existing one. 
+            // For now assuming existing UseCase or Repository has method. 
+            // Wait, I need to add method to repository first in frontend.
+            // Let's assume I will add it to repo and usecase. 
+            telefonos.value = await getTelefonosUseCase.executeByDomicilio(domicilioId);
+        } catch (e: any) {
+            error.value = e.message;
+        } finally {
+            loading.value = false;
+        }
+    };
+
     const createTelefono = async (entity: Telefono) => {
         loading.value = true;
         try {
@@ -64,6 +79,7 @@ export function useTelefonos() {
         loading,
         error,
         loadTelefonos,
+        loadTelefonosByDomicilio,
         createTelefono,
         updateTelefono,
         deleteTelefono

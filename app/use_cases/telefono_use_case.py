@@ -22,6 +22,9 @@ class TelefonoUseCase:
     async def get_all(self) -> List[Telefono]:
         return await self.repo.get_all()
 
+    async def get_by_domicilio(self, domicilio_id: int) -> List[Telefono]:
+        return await self.repo.get_by_domicilio(domicilio_id)
+
     async def create(self, data: TelefonoCreate) -> Telefono:
         telefono = Telefono(id=None, **data.model_dump())
         return await self.repo.create(telefono)

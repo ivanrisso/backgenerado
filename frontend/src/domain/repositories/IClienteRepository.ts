@@ -6,4 +6,7 @@ export interface IClienteRepository {
     save(cliente: Cliente): Promise<Cliente>;
     update(cliente: Cliente): Promise<Cliente>;
     delete(id: number): Promise<void>;
+    getAfipTaxComparison(id: number): Promise<any>;
+    syncAfipTaxes(id: number, afipIds: string[]): Promise<any>;
 }
+

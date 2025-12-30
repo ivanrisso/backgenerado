@@ -1,6 +1,6 @@
 # app/schemas/comprobante_full.py
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 from .comprobante import ComprobanteCreate, ComprobanteResponse
 from .comprobante_detalle import ComprobanteDetalleCreate, ComprobanteDetalleResponse
@@ -8,9 +8,15 @@ from .comprobante_impuesto import ComprobanteImpuestoCreate, ComprobanteImpuesto
 from app.domain.entities.comprobante_full import ComprobanteFull
 
 
+class CbteAsoc(BaseModel):
+    Tipo: int
+    PtoVta: int
+    Nro: int
+
 class ComprobanteFullCreate(ComprobanteCreate):
     detalles: List[ComprobanteDetalleCreate]
     impuestos: List[ComprobanteImpuestoCreate]
+    cbtes_asociados: Optional[List[CbteAsoc]] = []
 
 class ComprobanteFullResponse(ComprobanteResponse):
     detalles: List[ComprobanteDetalleResponse]

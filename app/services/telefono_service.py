@@ -40,6 +40,15 @@ class TelefonoService:
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al listar telefonos")
 
+    async def get_by_domicilio(self, domicilio_id: int) -> List[TelefonoResponse]:
+        try:
+            telefonos = await self.use_case.get_by_domicilio(domicilio_id)
+            return [self.to_response(c) for c in telefonos]
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al listar telefonos por domicilio")
+
     async def create(self, data: TelefonoCreate) -> TelefonoResponse:
         try:
             telefono = await self.use_case.create(data)

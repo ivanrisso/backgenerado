@@ -4,7 +4,7 @@ import type { Concepto } from '../../domain/entities/Concepto';
 import { axiosClient } from '../api/axiosClient';
 
 export class HttpConceptoRepository implements IConceptoRepository {
-    private readonly baseUrl = '/conceptos';
+    private readonly baseUrl = '/conceptos/';
 
     async getAll(): Promise<Concepto[]> {
         const response = await axiosClient.get<Concepto[]>(this.baseUrl);
@@ -13,7 +13,7 @@ export class HttpConceptoRepository implements IConceptoRepository {
 
     async getById(id: number): Promise<Concepto | null> {
         try {
-            const response = await axiosClient.get<Concepto>(`${this.baseUrl}/${id}`);
+            const response = await axiosClient.get<Concepto>(`${this.baseUrl}${id}`);
             return response.data;
         } catch (error: any) {
             if (error.response?.status === 404) return null;
@@ -27,11 +27,11 @@ export class HttpConceptoRepository implements IConceptoRepository {
     }
 
     async update(id: number, entity: Partial<Concepto>): Promise<Concepto> {
-        const response = await axiosClient.patch<Concepto>(`${this.baseUrl}/${id}`, entity);
+        const response = await axiosClient.patch<Concepto>(`${this.baseUrl}${id}`, entity);
         return response.data;
     }
 
     async delete(id: number): Promise<void> {
-        await axiosClient.delete(`${this.baseUrl}/${id}`);
+        await axiosClient.delete(`${this.baseUrl}${id}`);
     }
 }

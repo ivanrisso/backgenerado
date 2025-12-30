@@ -4,7 +4,7 @@ import { TipoDomMapper } from '../mappers/TipoDomMapper';
 import { httpClient } from '../api/httpClient';
 
 export class AxiosTipoDomRepository implements ITipoDomRepository {
-    private readonly resource = '/tipodoms';
+    private readonly resource = '/tipodoms/';
 
     async getAll(): Promise<TipoDom[]> {
         const response = await httpClient.get(this.resource);
@@ -13,7 +13,7 @@ export class AxiosTipoDomRepository implements ITipoDomRepository {
 
     async getById(id: number): Promise<TipoDom | null> {
         try {
-            const response = await httpClient.get(`${this.resource}/${id}`);
+            const response = await httpClient.get(`${this.resource}${id}`);
             return TipoDomMapper.toDomain(response.data);
         } catch (error) {
             return null;
@@ -27,10 +27,10 @@ export class AxiosTipoDomRepository implements ITipoDomRepository {
 
     async update(entity: TipoDom): Promise<void> {
         const dto = { nombre: entity.nombre };
-        await httpClient.patch(`${this.resource}/${entity.id}`, dto);
+        await httpClient.patch(`${this.resource}${entity.id}`, dto);
     }
 
     async delete(id: number): Promise<void> {
-        await httpClient.delete(`${this.resource}/${id}`);
+        await httpClient.delete(`${this.resource}${id}`);
     }
 }

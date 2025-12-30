@@ -1,7 +1,14 @@
 
 import { TipoAplicacionEnum } from '../enums/TipoAplicacionEnum';
 import { BaseTributarioEnum } from '../enums/BaseTributarioEnum';
-import { Porcentaje } from '../value-objects/Porcentaje';
+import { AmbitoImpuestoEnum } from '../enums/AmbitoImpuestoEnum';
+import { CategoriaImpuestoEnum } from '../enums/CategoriaImpuestoEnum';
+import { TipoUsoImpuestoEnum } from '../enums/TipoUsoImpuestoEnum';
+import { MetodoCalculoImpuestoEnum } from '../enums/MetodoCalculoImpuestoEnum';
+import { AmbitoUsoImpuestoEnum } from '../enums/AmbitoUsoImpuestoEnum';
+import { CategoriaFiscalImpuestoEnum } from '../enums/CategoriaFiscalImpuestoEnum';
+import type { CondicionTributaria } from './CondicionTributaria';
+import type { TipoImpuestoDistribucion } from './TipoImpuestoDistribucion';
 
 export interface TipoImpuesto {
     id: number;
@@ -10,15 +17,27 @@ export interface TipoImpuesto {
     descripcion: string;
     tipo_aplicacion: TipoAplicacionEnum;
     base_calculo: BaseTributarioEnum;
-    porcentaje?: number; // Could be Porcentaje | null, but interface generally uses primitives or simple objects. If strictly using VO:
-    // porcentaje?: Porcentaje; 
-    // Keeping it simple as number for the interface, assuming VOs are used in Domain Services or Class Entities.
-    // However, user requested "Domain Entities... Value Objects".
-    // If I use 'interface', I can't easily force VO usage unless checking types.
-    // If I want to enforce rules, I should use Classes or type alias.
-    // Let's stick to interface but import Enums. For props like porcentaje, keeping number is standard for DTO/Interface, but for "Pure Domain", VO is better.
-    // Let's use the explicit types where possible.
+    ambito: AmbitoImpuestoEnum;
+    categoria: CategoriaImpuestoEnum;
+    porcentaje?: number;
     editable: boolean;
     obligatorio: boolean;
     activo: boolean;
+
+    // Odoo fields
+    tipo_uso: TipoUsoImpuestoEnum;
+    metodo_calculo: MetodoCalculoImpuestoEnum;
+    ambito_uso: AmbitoUsoImpuestoEnum;
+    importe: number;
+    etiqueta_factura?: string;
+    incluido_precio: boolean;
+    afecta_base_subsecuente: boolean;
+    categoria_fiscal?: CategoriaFiscalImpuestoEnum;
+    notas_legales?: string;
+    cuenta_impuesto_vta?: string;
+    cuenta_impuesto_com?: string;
+
+    condiciones_asociadas?: CondicionTributaria[];
+    reparticiones?: TipoImpuestoDistribucion[];
 }
+

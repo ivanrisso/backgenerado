@@ -4,7 +4,7 @@ import type { TipoImpuesto } from '../../domain/entities/TipoImpuesto';
 import { axiosClient } from '../api/axiosClient';
 
 export class HttpTipoImpuestoRepository implements ITipoImpuestoRepository {
-    private readonly baseUrl = '/tipoimpuestos';
+    private readonly baseUrl = '/tipoimpuestos/';
 
     async getAll(): Promise<TipoImpuesto[]> {
         const response = await axiosClient.get<TipoImpuesto[]>(this.baseUrl);
@@ -13,7 +13,7 @@ export class HttpTipoImpuestoRepository implements ITipoImpuestoRepository {
 
     async getById(id: number): Promise<TipoImpuesto | null> {
         try {
-            const response = await axiosClient.get<TipoImpuesto>(`${this.baseUrl}/${id}`);
+            const response = await axiosClient.get<TipoImpuesto>(`${this.baseUrl}${id}`);
             return response.data;
         } catch (error: any) {
             if (error.response?.status === 404) return null;
@@ -27,11 +27,11 @@ export class HttpTipoImpuestoRepository implements ITipoImpuestoRepository {
     }
 
     async update(id: number, tipoImpuesto: Partial<TipoImpuesto>): Promise<TipoImpuesto> {
-        const response = await axiosClient.patch<TipoImpuesto>(`${this.baseUrl}/${id}`, tipoImpuesto);
+        const response = await axiosClient.patch<TipoImpuesto>(`${this.baseUrl}${id}`, tipoImpuesto);
         return response.data;
     }
 
     async delete(id: number): Promise<void> {
-        await axiosClient.delete(`${this.baseUrl}/${id}`);
+        await axiosClient.delete(`${this.baseUrl}${id}`);
     }
 }

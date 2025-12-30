@@ -24,3 +24,8 @@ class TipoImpuestoRepositoryInterface(ABC):
     @abstractmethod
     async def delete(self, tipoimpuesto_id: int) -> None:
         pass
+
+    @abstractmethod
+    async def get_by_afip_code(self, code: str) -> Optional[TipoImpuesto]:
+        pass
+

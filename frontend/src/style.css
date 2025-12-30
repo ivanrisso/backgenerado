@@ -4,6 +4,8 @@
   --font-sans: 'Inter', system-ui, sans-serif;
   --color-apple-gray: #f5f5f7;
   --color-apple-blue: #0071e3;
+  --color-brand-blue: #092e6a; /* Dark blue from header screenshot */
+  --color-action-blue: #0050ff; /* Bright blue for main buttons */
 }
 
 /* Custom Base Components */
@@ -13,27 +15,62 @@
   }
 
   .btn-primary {
-    @apply bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-500 shadow-sm active:transform active:scale-95;
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm active:transform active:scale-95;
+    background-color: var(--color-action-blue);
   }
 
   .btn-secondary {
     @apply bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 focus:ring-gray-200 shadow-sm;
   }
 
+  .btn-icon {
+      @apply p-2 text-gray-400 hover:text-blue-600 transition-colors rounded-full hover:bg-blue-50;
+  }
+
   .card {
     @apply bg-white rounded-xl border border-gray-100 shadow-sm;
   }
 
+  .input-label {
+      @apply block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5;
+  }
+
   .input-field {
-    @apply w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-colors;
+    @apply w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-colors shadow-sm;
+  }
+
+  .input-helper {
+      @apply mt-1 text-xs text-gray-400;
+  }
+
+  /* Table Styles */
+  .table-container {
+      @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden;
   }
 
   .table-header {
-    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100;
+    @apply px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 bg-white;
+  }
+
+  .table-row {
+      @apply hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0;
   }
 
   .table-cell {
-    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-700 border-b border-gray-50;
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-700;
+  }
+  
+  .page-header {
+      @apply mb-8;
+  }
+
+  .page-title {
+      @apply text-3xl font-bold text-gray-900 mb-1;
+      color: var(--color-brand-blue);
+  }
+
+  .page-subtitle {
+      @apply text-gray-500 text-sm;
   }
 }
 

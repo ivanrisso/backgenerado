@@ -29,6 +29,11 @@ const router = createRouter({
                     component: () => import('../ui/views/clientes/ClienteList.vue')
                 },
                 {
+                    path: '/clientes/:clienteId/domicilios/:domicilioId/telefonos',
+                    name: 'cliente-domicilio-telefonos',
+                    component: () => import('../ui/views/clientes/ClienteTelefonosView.vue')
+                },
+                {
                     path: '/roles',
                     name: 'roles',
                     component: () => import('../ui/views/auth/RolList.vue')
@@ -53,12 +58,20 @@ const router = createRouter({
                 { path: '/domicilios', name: 'domicilios', component: () => import('../ui/views/maestros/DomicilioView.vue') },
                 { path: '/telefonos', name: 'telefonos', component: () => import('../ui/views/maestros/TelefonoView.vue') },
                 { path: '/tipodocs', name: 'tipodocs', component: () => import('../ui/views/maestros/TipoDocView.vue') },
+                { path: '/condiciones-tributarias', name: 'condiciones-tributarias', component: () => import('../ui/views/maestros/CondicionTributariaView.vue') },
+
+                // Comprobantes
+                { path: '/comprobantes/nuevo', name: 'comprobante-nuevo', component: () => import('../ui/views/comprobantes/InvoiceCreateView.vue') },
+                { path: '/comprobantes', name: 'comprobantes', component: () => import('../ui/views/comprobantes/InvoiceListView.vue') },
+
+                // Cliente - Cuenta Corriente
+                { path: '/cuentacorriente', name: 'cuentacorriente', component: () => import('../ui/views/clientes/CurrentAccountView.vue') },
             ]
         }
     ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
     const isAuthenticated = localStorage.getItem('isLoggedIn') === 'true';
     if (to.meta.requiresAuth && !isAuthenticated) {
         next({ name: 'login' });

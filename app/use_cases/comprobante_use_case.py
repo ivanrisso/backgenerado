@@ -21,6 +21,9 @@ class ComprobanteUseCase:
 
     async def get_all(self) -> List[Comprobante]:
         return await self.repo.get_all()
+        
+    async def get_by_cliente(self, cliente_id: int) -> List[Comprobante]:
+        return await self.repo.get_by_cliente(cliente_id)
 
     async def create(self, data: ComprobanteCreate) -> Comprobante:
         

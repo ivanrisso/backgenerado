@@ -5,7 +5,7 @@ import { UsuarioMapper } from '../mappers/UsuarioMapper';
 import type { UsuarioDTO } from '../dtos/UsuarioDTO';
 
 export class AxiosUsuarioRepository implements IUsuarioRepository {
-    private readonly resource = '/usuarios'; // Based on routes file name 'usuario_routes.py' usually /usuarios or /users. Checking... routes file says prefix="/usuarios" ? or /users?
+    private readonly resource = '/usuarios/'; // Based on routes file name 'usuario_routes.py' usually /usuarios or /users. Checking... routes file says prefix="/usuarios" ? or /users?
     // Let's assume /usuarios based on naming convention or verify. 
     // Wait, tipodoc_routes was /tipodocs. usuario_routes is likely /usuarios.
     // I will use /usuarios.
@@ -22,7 +22,7 @@ export class AxiosUsuarioRepository implements IUsuarioRepository {
 
     async getById(id: number): Promise<Usuario | null> {
         try {
-            const { data } = await httpClient.get<UsuarioDTO>(`${this.resource}/${id}`);
+            const { data } = await httpClient.get<UsuarioDTO>(`${this.resource}${id}`);
             return UsuarioMapper.toDomain(data);
         } catch (e: any) {
             if (e.response && e.response.status === 404) return null;
@@ -41,14 +41,14 @@ export class AxiosUsuarioRepository implements IUsuarioRepository {
     }
 
     async update(usuario: Usuario): Promise<void> {
-        await httpClient.patch(`${this.resource}/${usuario.id}`, UsuarioMapper.toDTO(usuario));
+        await httpClient.patch(`${this.resource}${usuario.id}`, UsuarioMapper.toDTO(usuario));
     }
 
     async delete(id: number): Promise<void> {
-        await httpClient.delete(`${this.resource}/${id}`);
+        await httpClient.delete(`${this.resource}${id}`);
     }
 
     async assignRoles(usuarioId: number, roleIds: number[]): Promise<void> {
-        await httpClient.post(`${this.resource}/${usuarioId}/roles`, { role_ids: roleIds });
+        await httpClient.post(`${this.resource}${usuarioId}/roles`, { role_ids: roleIds });
     }
 }

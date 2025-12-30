@@ -28,6 +28,7 @@ export interface Comprobante {
     total_iva: Money;
     total_impuestos: Money;
     total: Money;
+    saldo: Money;
 
     observaciones?: string;
     cae?: string;

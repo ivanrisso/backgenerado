@@ -4,7 +4,7 @@ import type { Iva } from '../../domain/entities/Iva';
 import { axiosClient } from '../api/axiosClient';
 
 export class HttpIvaRepository implements IIvaRepository {
-    private readonly baseUrl = '/ivas';
+    private readonly baseUrl = '/ivas/';
 
     async getAll(): Promise<Iva[]> {
         const response = await axiosClient.get<Iva[]>(this.baseUrl);
@@ -13,7 +13,7 @@ export class HttpIvaRepository implements IIvaRepository {
 
     async getById(id: number): Promise<Iva | null> {
         try {
-            const response = await axiosClient.get<Iva>(`${this.baseUrl}/${id}`);
+            const response = await axiosClient.get<Iva>(`${this.baseUrl}${id}`);
             return response.data;
         } catch (error: any) {
             if (error.response?.status === 404) return null;
@@ -27,11 +27,11 @@ export class HttpIvaRepository implements IIvaRepository {
     }
 
     async update(id: number, entity: Partial<Iva>): Promise<Iva> {
-        const response = await axiosClient.patch<Iva>(`${this.baseUrl}/${id}`, entity);
+        const response = await axiosClient.patch<Iva>(`${this.baseUrl}${id}`, entity);
         return response.data;
     }
 
     async delete(id: number): Promise<void> {
-        await axiosClient.delete(`${this.baseUrl}/${id}`);
+        await axiosClient.delete(`${this.baseUrl}${id}`);
     }
 }

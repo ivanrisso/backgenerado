@@ -10,6 +10,7 @@ class ComprobanteDetalleCreate(BaseModel):
     importe: float
     alicuota_iva: float
     importe_iva: float
+    datos_extra: Optional[dict] = None
 
 class ComprobanteDetalleUpdate(BaseModel):
     comprobante_id: Optional[int] = None
@@ -20,6 +21,7 @@ class ComprobanteDetalleUpdate(BaseModel):
     importe: Optional[float] = None
     alicuota_iva: Optional[float] = None
     importe_iva: Optional[float] = None
+    datos_extra: Optional[dict] = None
 
 
 class ComprobanteDetalleResponse(BaseModel):
@@ -32,6 +34,7 @@ class ComprobanteDetalleResponse(BaseModel):
     importe: float
     alicuota_iva: float
     importe_iva: float
+    datos_extra: Optional[dict]
 
     class Config:
         from_attributes = True

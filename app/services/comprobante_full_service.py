@@ -41,7 +41,7 @@ class ComprobanteFullService:
         ) as e:
             raise e  # Propagar directamente a FastAPI
 
-        except Exception:
+        except Exception as e:
             logger.exception("Error inesperado en servicio de comprobante full")
-            raise ErrorDeRepositorio("Error inesperado al crear comprobante completo")
+            raise ErrorDeRepositorio(f"Error inesperado al crear comprobante completo: {str(e)}")
 

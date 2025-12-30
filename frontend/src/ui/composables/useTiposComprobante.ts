@@ -51,7 +51,11 @@ export function useTiposComprobante() {
             await deleteTipoComprobanteUseCase.execute(id);
             await loadTiposComprobante();
         } catch (e: any) {
-            error.value = e.message;
+            if (e.response && e.response.status === 409) {
+                error.value = "No se puede eliminar el Tipo de Comprobante porque está referenciado en Comprobantes existentes.";
+            } else {
+                error.value = e.response?.data?.detail || e.message || "Error desconocido al eliminar";
+            }
             throw e;
         } finally {
             loading.value = false;

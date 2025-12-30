@@ -4,7 +4,7 @@ import { LocalidadMapper } from '../mappers/LocalidadMapper';
 import { httpClient } from '../api/httpClient';
 
 export class AxiosLocalidadRepository implements ILocalidadRepository {
-    private readonly resource = '/localidades';
+    private readonly resource = '/localidades/';
 
     async getAll(): Promise<Localidad[]> {
         const response = await httpClient.get(this.resource);
@@ -13,7 +13,7 @@ export class AxiosLocalidadRepository implements ILocalidadRepository {
 
     async getById(id: number): Promise<Localidad | null> {
         try {
-            const response = await httpClient.get(`${this.resource}/${id}`);
+            const response = await httpClient.get(`${this.resource}${id}`);
             return LocalidadMapper.toDomain(response.data);
         } catch (error) {
             return null;
@@ -32,10 +32,10 @@ export class AxiosLocalidadRepository implements ILocalidadRepository {
 
     async update(entity: Localidad): Promise<void> {
         const dto = { localidad_nombre: entity.nombre, cod_postal: entity.codPostal, provincia_id: entity.provinciaId };
-        await httpClient.patch(`${this.resource}/${entity.id}`, dto);
+        await httpClient.patch(`${this.resource}${entity.id}`, dto);
     }
 
     async delete(id: number): Promise<void> {
-        await httpClient.delete(`${this.resource}/${id}`);
+        await httpClient.delete(`${this.resource}${id}`);
     }
 }
