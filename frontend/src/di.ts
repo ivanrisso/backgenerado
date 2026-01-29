@@ -63,75 +63,8 @@ import { CreateTipoTelUseCase } from '@app/use-cases/TipoTel/CreateTipoTelUseCas
 import { UpdateTipoTelUseCase } from '@app/use-cases/TipoTel/UpdateTipoTelUseCase';
 import { DeleteTipoTelUseCase } from '@app/use-cases/TipoTel/DeleteTipoTelUseCase';
 
-// Repositories
-const authRepository = new AxiosAuthRepository();
-const clienteRepository = new AxiosClienteRepository();
-const comprobanteRepository = new AxiosComprobanteRepository();
-
-// New Repositories
-const tipoDocRepository = new AxiosTipoDocRepository();
-const paisRepository = new AxiosPaisRepository();
-const provinciaRepository = new AxiosProvinciaRepository();
-const localidadRepository = new AxiosLocalidadRepository();
-const tipoDomRepository = new AxiosTipoDomRepository();
-const tipoTelRepository = new AxiosTipoTelRepository();
-const condicionTributariaRepository = new HttpCondicionTributariaRepository();
-
-
-// Use Cases
-export const getClientesUseCase = new GetClientesUseCase(clienteRepository);
-export const createClienteUseCase = new CreateClienteUseCase(clienteRepository);
-export const updateClienteUseCase = new UpdateClienteUseCase(clienteRepository);
-export const getClienteByIdUseCase = new GetClienteByIdUseCase(clienteRepository);
-export const deleteClienteUseCase = new DeleteClienteUseCase(clienteRepository);
-export const getAfipTaxComparisonUseCase = new GetAfipTaxComparisonUseCase(clienteRepository);
-export const syncAfipTaxesUseCase = new SyncAfipTaxesUseCase(clienteRepository);
-
-
-export const getComprobantesUseCase = new GetComprobantesUseCase(comprobanteRepository);
-export const createComprobanteUseCase = new CreateComprobanteUseCase(comprobanteRepository);
-
-export const loginUseCase = new LoginUseCase(authRepository);
-export const logoutUseCase = new LogoutUseCase(authRepository);
-export const getProfileUseCase = new GetProfileUseCase(authRepository);
-
-// New UseCase Exports
-export const getTiposDocUseCase = new GetTiposDocUseCase(tipoDocRepository);
-export const getTipoDocByIdUseCase = new GetTipoDocByIdUseCase(tipoDocRepository);
-export const createTipoDocUseCase = new CreateTipoDocUseCase(tipoDocRepository);
-export const updateTipoDocUseCase = new UpdateTipoDocUseCase(tipoDocRepository);
-export const deleteTipoDocUseCase = new DeleteTipoDocUseCase(tipoDocRepository);
-
 import { GetLocalidadByIdUseCase } from '@app/use-cases/ubicacion/GetLocalidadByIdUseCase';
 import { GetProvinciaByIdUseCase } from '@app/use-cases/ubicacion/GetProvinciaByIdUseCase';
-
-// ... existing code ...
-export const getLocalidadByIdUseCase = new GetLocalidadByIdUseCase(localidadRepository);
-export const getProvinciaByIdUseCase = new GetProvinciaByIdUseCase(provinciaRepository);
-export const getPaisesUseCase = new GetPaisesUseCase(paisRepository);
-export const createPaisUseCase = new CreatePaisUseCase(paisRepository);
-export const updatePaisUseCase = new UpdatePaisUseCase(paisRepository);
-export const deletePaisUseCase = new DeletePaisUseCase(paisRepository);
-
-export const getProvinciasByPaisUseCase = new GetProvinciasByPaisUseCase(provinciaRepository);
-export const createProvinciaUseCase = new CreateProvinciaUseCase(provinciaRepository);
-export const updateProvinciaUseCase = new UpdateProvinciaUseCase(provinciaRepository);
-export const deleteProvinciaUseCase = new DeleteProvinciaUseCase(provinciaRepository);
-
-export const getLocalidadesByProvinciaUseCase = new GetLocalidadesByProvinciaUseCase(localidadRepository);
-export const createLocalidadUseCase = new CreateLocalidadUseCase(localidadRepository);
-export const updateLocalidadUseCase = new UpdateLocalidadUseCase(localidadRepository);
-export const deleteLocalidadUseCase = new DeleteLocalidadUseCase(localidadRepository);
-
-export const getTiposDomUseCase = new GetTiposDomUseCase(tipoDomRepository);
-export const createTipoDomUseCase = new CreateTipoDomUseCase(tipoDomRepository);
-export const updateTipoDomUseCase = new UpdateTipoDomUseCase(tipoDomRepository);
-export const deleteTipoDomUseCase = new DeleteTipoDomUseCase(tipoDomRepository);
-
-export const getTiposTelUseCase = new GetTiposTelUseCase(tipoTelRepository);
-export const createTipoTelUseCase = new CreateTipoTelUseCase(tipoTelRepository);
-export const updateTipoTelUseCase = new UpdateTipoTelUseCase(tipoTelRepository);
-export const deleteTipoTelUseCase = new DeleteTipoTelUseCase(tipoTelRepository);
 // Auth & RBAC Imports
 import { AxiosUsuarioRepository } from '@infra/repositories/AxiosUsuarioRepository';
 import { AxiosRolRepository } from '@infra/repositories/AxiosRolRepository';
@@ -164,39 +97,6 @@ import {
 } from '@app/usecases/menuitem/MenuItemUseCases';
 
 import { AuthUseCase } from '@app/usecases/auth/AuthUseCase';
-
-// ... existing imports ...
-
-// RBAC Repositories
-const usuarioRepository = new AxiosUsuarioRepository();
-const rolRepository = new AxiosRolRepository();
-const menuItemRepository = new AxiosMenuItemRepository();
-const authService = new AxiosAuthService(); // Service, not Repository in strict sense but fulfills interface
-
-// Auth Use Case
-export const authUseCase = new AuthUseCase(authService);
-
-// Usuario Use Cases
-export const getAllUsuariosUseCase = new GetAllUsuariosUseCase(usuarioRepository);
-export const getUsuarioByIdUseCase = new GetUsuarioByIdUseCase(usuarioRepository);
-export const createUsuarioUseCase = new CreateUsuarioUseCase(usuarioRepository);
-export const updateUsuarioUseCase = new UpdateUsuarioUseCase(usuarioRepository);
-export const deleteUsuarioUseCase = new DeleteUsuarioUseCase(usuarioRepository);
-export const assignRolesToUsuarioUseCase = new AssignRolesToUsuarioUseCase(usuarioRepository);
-
-// Rol Use Cases
-export const getAllRolesUseCase = new GetAllRolesUseCase(rolRepository);
-export const getRolByIdUseCase = new GetRolByIdUseCase(rolRepository);
-export const createRolUseCase = new CreateRolUseCase(rolRepository);
-export const updateRolUseCase = new UpdateRolUseCase(rolRepository);
-export const deleteRolUseCase = new DeleteRolUseCase(rolRepository);
-
-// MenuItem Use Cases
-export const getMenuTreeUseCase = new GetMenuTreeUseCase(menuItemRepository);
-export const createMenuItemUseCase = new CreateMenuItemUseCase(menuItemRepository);
-export const updateMenuItemUseCase = new UpdateMenuItemUseCase(menuItemRepository);
-export const deleteMenuItemUseCase = new DeleteMenuItemUseCase(menuItemRepository);
-export const assignRolesToMenuItemUseCase = new AssignRolesToMenuItemUseCase(menuItemRepository);
 
 // ... existing imports ...
 import { HttpDomicilioRepository } from '@infra/repositories/HttpDomicilioRepository';
@@ -257,6 +157,112 @@ import { UpdateTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/Upd
 import { DeleteTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/DeleteTipoComprobanteUseCase';
 
 import { UpdateOperadorUseCase } from '@app/use-cases/operador/UpdateOperadorUseCase';
+import { AxiosComprobanteFullRepository } from '@infra/repositories/AxiosComprobanteFullRepository';
+import { CreateComprobanteFullUseCase } from '@app/use-cases/comprobante/CreateComprobanteFullUseCase';
+
+import { CreateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/CreateCondicionTributariaUseCase';
+import { UpdateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/UpdateCondicionTributariaUseCase';
+import { DeleteCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/DeleteCondicionTributariaUseCase';
+
+// Repositories
+const authRepository = new AxiosAuthRepository();
+const clienteRepository = new AxiosClienteRepository();
+const comprobanteRepository = new AxiosComprobanteRepository();
+
+// New Repositories
+const tipoDocRepository = new AxiosTipoDocRepository();
+const paisRepository = new AxiosPaisRepository();
+const provinciaRepository = new AxiosProvinciaRepository();
+const localidadRepository = new AxiosLocalidadRepository();
+const tipoDomRepository = new AxiosTipoDomRepository();
+const tipoTelRepository = new AxiosTipoTelRepository();
+const condicionTributariaRepository = new HttpCondicionTributariaRepository();
+
+
+// Use Cases
+export const getClientesUseCase = new GetClientesUseCase(clienteRepository);
+export const createClienteUseCase = new CreateClienteUseCase(clienteRepository);
+export const updateClienteUseCase = new UpdateClienteUseCase(clienteRepository);
+export const getClienteByIdUseCase = new GetClienteByIdUseCase(clienteRepository);
+export const deleteClienteUseCase = new DeleteClienteUseCase(clienteRepository);
+export const getAfipTaxComparisonUseCase = new GetAfipTaxComparisonUseCase(clienteRepository);
+export const syncAfipTaxesUseCase = new SyncAfipTaxesUseCase(clienteRepository);
+
+
+export const getComprobantesUseCase = new GetComprobantesUseCase(comprobanteRepository);
+export const createComprobanteUseCase = new CreateComprobanteUseCase(comprobanteRepository);
+
+export const loginUseCase = new LoginUseCase(authRepository);
+export const logoutUseCase = new LogoutUseCase(authRepository);
+export const getProfileUseCase = new GetProfileUseCase(authRepository);
+
+// New UseCase Exports
+export const getTiposDocUseCase = new GetTiposDocUseCase(tipoDocRepository);
+export const getTipoDocByIdUseCase = new GetTipoDocByIdUseCase(tipoDocRepository);
+export const createTipoDocUseCase = new CreateTipoDocUseCase(tipoDocRepository);
+export const updateTipoDocUseCase = new UpdateTipoDocUseCase(tipoDocRepository);
+export const deleteTipoDocUseCase = new DeleteTipoDocUseCase(tipoDocRepository);
+
+// ... existing code ...
+export const getLocalidadByIdUseCase = new GetLocalidadByIdUseCase(localidadRepository);
+export const getProvinciaByIdUseCase = new GetProvinciaByIdUseCase(provinciaRepository);
+export const getPaisesUseCase = new GetPaisesUseCase(paisRepository);
+export const createPaisUseCase = new CreatePaisUseCase(paisRepository);
+export const updatePaisUseCase = new UpdatePaisUseCase(paisRepository);
+export const deletePaisUseCase = new DeletePaisUseCase(paisRepository);
+
+export const getProvinciasByPaisUseCase = new GetProvinciasByPaisUseCase(provinciaRepository);
+export const createProvinciaUseCase = new CreateProvinciaUseCase(provinciaRepository);
+export const updateProvinciaUseCase = new UpdateProvinciaUseCase(provinciaRepository);
+export const deleteProvinciaUseCase = new DeleteProvinciaUseCase(provinciaRepository);
+
+export const getLocalidadesByProvinciaUseCase = new GetLocalidadesByProvinciaUseCase(localidadRepository);
+export const createLocalidadUseCase = new CreateLocalidadUseCase(localidadRepository);
+export const updateLocalidadUseCase = new UpdateLocalidadUseCase(localidadRepository);
+export const deleteLocalidadUseCase = new DeleteLocalidadUseCase(localidadRepository);
+
+export const getTiposDomUseCase = new GetTiposDomUseCase(tipoDomRepository);
+export const createTipoDomUseCase = new CreateTipoDomUseCase(tipoDomRepository);
+export const updateTipoDomUseCase = new UpdateTipoDomUseCase(tipoDomRepository);
+export const deleteTipoDomUseCase = new DeleteTipoDomUseCase(tipoDomRepository);
+
+export const getTiposTelUseCase = new GetTiposTelUseCase(tipoTelRepository);
+export const createTipoTelUseCase = new CreateTipoTelUseCase(tipoTelRepository);
+export const updateTipoTelUseCase = new UpdateTipoTelUseCase(tipoTelRepository);
+export const deleteTipoTelUseCase = new DeleteTipoTelUseCase(tipoTelRepository);
+
+// ... existing imports ...
+
+// RBAC Repositories
+const usuarioRepository = new AxiosUsuarioRepository();
+const rolRepository = new AxiosRolRepository();
+const menuItemRepository = new AxiosMenuItemRepository();
+const authService = new AxiosAuthService(); // Service, not Repository in strict sense but fulfills interface
+
+// Auth Use Case
+export const authUseCase = new AuthUseCase(authService);
+
+// Usuario Use Cases
+export const getAllUsuariosUseCase = new GetAllUsuariosUseCase(usuarioRepository);
+export const getUsuarioByIdUseCase = new GetUsuarioByIdUseCase(usuarioRepository);
+export const createUsuarioUseCase = new CreateUsuarioUseCase(usuarioRepository);
+export const updateUsuarioUseCase = new UpdateUsuarioUseCase(usuarioRepository);
+export const deleteUsuarioUseCase = new DeleteUsuarioUseCase(usuarioRepository);
+export const assignRolesToUsuarioUseCase = new AssignRolesToUsuarioUseCase(usuarioRepository);
+
+// Rol Use Cases
+export const getAllRolesUseCase = new GetAllRolesUseCase(rolRepository);
+export const getRolByIdUseCase = new GetRolByIdUseCase(rolRepository);
+export const createRolUseCase = new CreateRolUseCase(rolRepository);
+export const updateRolUseCase = new UpdateRolUseCase(rolRepository);
+export const deleteRolUseCase = new DeleteRolUseCase(rolRepository);
+
+// MenuItem Use Cases
+export const getMenuTreeUseCase = new GetMenuTreeUseCase(menuItemRepository);
+export const createMenuItemUseCase = new CreateMenuItemUseCase(menuItemRepository);
+export const updateMenuItemUseCase = new UpdateMenuItemUseCase(menuItemRepository);
+export const deleteMenuItemUseCase = new DeleteMenuItemUseCase(menuItemRepository);
+export const assignRolesToMenuItemUseCase = new AssignRolesToMenuItemUseCase(menuItemRepository);
 
 const domicilioRepository = new HttpDomicilioRepository();
 const telefonoRepository = new HttpTelefonoRepository();
@@ -267,8 +273,6 @@ const monedaRepository = new HttpMonedaRepository();
 const ivaRepository = new HttpIvaRepository();
 const tipoImpuestoRepository = new HttpTipoImpuestoRepository();
 const articuloRepository = new HttpArticuloRepository();
-import { AxiosComprobanteFullRepository } from '@infra/repositories/AxiosComprobanteFullRepository';
-import { CreateComprobanteFullUseCase } from '@app/use-cases/comprobante/CreateComprobanteFullUseCase';
 
 
 // Use Cases Exports
@@ -316,10 +320,6 @@ export const updateOperadorUseCase = new UpdateOperadorUseCase(operadorRepositor
 
 const comprobanteFullRepository = new AxiosComprobanteFullRepository();
 export const createComprobanteFullUseCase = new CreateComprobanteFullUseCase(comprobanteFullRepository);
-
-import { CreateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/CreateCondicionTributariaUseCase';
-import { UpdateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/UpdateCondicionTributariaUseCase';
-import { DeleteCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/DeleteCondicionTributariaUseCase';
 
 export const getCondicionesTributariasUseCase = new GetCondicionesTributariasUseCase(condicionTributariaRepository);
 export const createCondicionTributariaUseCase = new CreateCondicionTributariaUseCase(condicionTributariaRepository);

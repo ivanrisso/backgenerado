@@ -1,5 +1,5 @@
 import type { IMenuItemRepository } from '../../domain/repositories/IMenuItemRepository';
-import { MenuItem } from '../../domain/entities/MenuItem';
+import type { MenuItem } from '../../domain/entities/MenuItem';
 import { httpClient } from '../api/httpClient';
 import { MenuItemMapper } from '../mappers/MenuItemMapper';
 import type { MenuItemDTO } from '../dtos/MenuItemDTO';

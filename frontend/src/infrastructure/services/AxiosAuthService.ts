@@ -1,6 +1,6 @@
 import { httpClient } from '../api/httpClient';
 import type { IAuthService } from '../../application/usecases/auth/AuthUseCase';
-import { Usuario } from '../../domain/entities/Usuario';
+import type { Usuario } from '../../domain/entities/Usuario';
 import { UsuarioMapper } from '../mappers/UsuarioMapper';
 import type { UsuarioDTO } from '../dtos/UsuarioDTO';
 

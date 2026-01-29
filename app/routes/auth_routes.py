@@ -27,13 +27,18 @@ async def register_user(user_data: UsuarioCreate, db: AsyncSession = Depends(get
     auth_service = AuthService(db)
     return await auth_service.registrar_usuario(user_data)
 
+from app.core.config import settings
+
 @router.post("/login", summary="Login de usuario")
 async def login_user(response: Response, form_data: UsuarioLogin, db: AsyncSession = Depends(get_db_session)):    
     auth_service = AuthService(db)
     usuario = await auth_service.autenticar_usuario(email=form_data.usuario_email, password=form_data.usuario_password)
     access_token, refresh_token = auth_service.crear_tokens(usuario)
-    response.set_cookie(key="access_token", value=access_token, path="/", httponly=True, secure=False, samesite="Lax", max_age=15*60)
-    response.set_cookie(key="refresh_token", value=refresh_token, path="/", httponly=True, secure=False, samesite="Lax", max_age=7*24*60*60)
+    
+    secure_flag = settings.IS_PRODUCTION
+    
+    response.set_cookie(key="access_token", value=access_token, path="/", httponly=True, secure=secure_flag, samesite="Lax", max_age=15*60)
+    response.set_cookie(key="refresh_token", value=refresh_token, path="/", httponly=True, secure=secure_flag, samesite="Lax", max_age=7*24*60*60)
     return {"msg": "Inicio de sesión exitoso"}
 
 @router.post("/refresh", summary="Renovación de sesión")
@@ -56,24 +61,28 @@ async def refresh_token(request: Request, response: Response, db: AsyncSession =
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado.")
 
     new_access, new_refresh = auth_service.crear_tokens(usuario)
-    response.set_cookie(key="access_token", value=new_access, path="/", httponly=True, secure=False, samesite="Lax", max_age=15*60)
-    response.set_cookie(key="refresh_token", value=new_refresh, path="/", httponly=True, secure=False, samesite="Lax", max_age=7*24*60*60)
+    
+    secure_flag = settings.IS_PRODUCTION
+
+    response.set_cookie(key="access_token", value=new_access, path="/", httponly=True, secure=secure_flag, samesite="Lax", max_age=15*60)
+    response.set_cookie(key="refresh_token", value=new_refresh, path="/", httponly=True, secure=secure_flag, samesite="Lax", max_age=7*24*60*60)
     return {"msg": "Token renovado con éxito"}
 
 @router.post("/logout", summary="Cerrar sesión")
 async def logout_user(response: Response):
     """Borra cookies para cerrar sesión en el cliente."""
+    secure_flag = settings.IS_PRODUCTION
     response.delete_cookie(
         key="access_token",
         path="/",
-        secure=True,
+        secure=secure_flag,
         httponly=True,
         samesite="Strict"
     )
     response.delete_cookie(
         key="refresh_token",
         path="/",
-        secure=True,
+        secure=secure_flag,
         httponly=True,
         samesite="Strict"
     )

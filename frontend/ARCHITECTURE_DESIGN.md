@@ -30,28 +30,28 @@ src/
 
 ## 2. Responsabilidad de cada Capa
 
-*   **Domain**:
-    *   **Responsabilidad**: Definir las "verdades" del negocio. Contiene las Entidades (ej. `Domicilio`, `Iva`) y las interfaces de los Repositorios (ej. `IIvaRepository`).
-    *   **Conocimiento**: No conoce NADA del exterior. No sabe que existe Vue, Axios, o el navegador. Es puro TypeScript.
+- **Domain**:
+  - **Responsabilidad**: Definir las "verdades" del negocio. Contiene las Entidades (ej. `Domicilio`, `Iva`) y las interfaces de los Repositorios (ej. `IIvaRepository`).
+  - **Conocimiento**: No conoce NADA del exterior. No sabe que existe Vue, Axios, o el navegador. Es puro TypeScript.
 
-*   **Application**:
-    *   **Responsabilidad**: Ejecutar los casos de uso específicos de la aplicación (ej. "Obtener lista de monedas", "Crear un domicilio"). Orquesta la interacción entre el dominio y el mundo exterior.
-    *   **Conocimiento**: Conoce el Dominio. No conoce detalles de UI ni de infraestructura (repositorios concretos).
+- **Application**:
+  - **Responsabilidad**: Ejecutar los casos de uso específicos de la aplicación (ej. "Obtener lista de monedas", "Crear un domicilio"). Orquesta la interacción entre el dominio y el mundo exterior.
+  - **Conocimiento**: Conoce el Dominio. No conoce detalles de UI ni de infraestructura (repositorios concretos).
 
-*   **Infrastructure**:
-    *   **Responsabilidad**: Proveer implementaciones reales para las interfaces del dominio (ej. `HttpIvaRepository` que usa Axios). Maneja llamadas API, LocalStorage, etc.
-    *   **Conocimiento**: Conoce el Dominio (para implementar sus interfaces) y librerías externas.
+- **Infrastructure**:
+  - **Responsabilidad**: Proveer implementaciones reales para las interfaces del dominio (ej. `HttpIvaRepository` que usa Axios). Maneja llamadas API, LocalStorage, etc.
+  - **Conocimiento**: Conoce el Dominio (para implementar sus interfaces) y librerías externas.
 
-*   **UI**:
-    *   **Responsabilidad**: Presentar datos al usuario y capturar interacciones.
-    *   **Conocimiento**: Usa la capa de Application (Casos de uso). Observa entidades del Dominio para renderizar.
+- **UI**:
+  - **Responsabilidad**: Presentar datos al usuario y capturar interacciones.
+  - **Conocimiento**: Usa la capa de Application (Casos de uso). Observa entidades del Dominio para renderizar.
 
-*   **Shared**:
-    *   **Responsabilidad**: Código genérico reutilizable (formatos de fecha, validaciones simples) que no depende de reglas de negocio complejas.
+- **Shared**:
+  - **Responsabilidad**: Código genérico reutilizable (formatos de fecha, validaciones simples) que no depende de reglas de negocio complejas.
 
 ## 3. Contratos entre Capas (Repositories)
 
-La comunicación entre *Application* e *Infrastructure* se realiza a través de **Interfaces de Repositorio** definidas en el *Domain*.
+La comunicación entre _Application_ e _Infrastructure_ se realiza a través de **Interfaces de Repositorio** definidas en el _Domain_.
 
 Ejemplo conceptual:
 
@@ -69,8 +69,8 @@ Esto permite cambiar la implementación (ej. de HTTP a Mock) sin tocar la lógic
 ## 4. Reglas Claras de Dependencia
 
 1.  **Regla de Dependencia**: Las dependencias de código fuente solo pueden apuntar hacia adentro, hacia políticas de nivel más alto.
-    *   `UI` -> `Application` -> `Domain`
-    *   `Infrastructure` -> `Domain`
+    - `UI` -> `Application` -> `Domain`
+    - `Infrastructure` -> `Domain`
 2.  **Independencia del Framework**: El Dominio y la Aplicación no deben depender de Vue.js.
 3.  **Independencia de la UI**: La UI puede cambiar sin afectar las reglas de negocio.
 4.  **Independencia de la Base de Datos/API**: El dominio no sabe de dónde vienen los datos.
@@ -78,6 +78,7 @@ Esto permite cambiar la implementación (ej. de HTTP a Mock) sin tocar la lógic
 ## 5. Modelos Requeridos
 
 Se han generado/validado las entidades y repositorios para:
+
 - Domicilio
 - Teléfono
 - Operador

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainLayout from '../ui/layouts/MainLayout.vue'
+import MainLayout from '../shared/ui/layouts/MainLayout.vue'
+
+import { useAuthStore } from '../shared/stores/auth'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +9,12 @@ const router = createRouter({
         {
             path: '/login',
             name: 'login',
-            component: () => import('../ui/views/LoginView.vue')
+            component: () => import('../modules/Auth/ui/views/LoginView.vue')
+        },
+        {
+            path: '/403',
+            name: 'forbidden',
+            component: () => import('../shared/ui/views/ForbiddenView.vue')
         },
         {
             path: '/',
@@ -21,63 +28,86 @@ const router = createRouter({
                 {
                     path: '/usuarios',
                     name: 'usuarios',
-                    component: () => import('../ui/views/auth/UsuarioList.vue')
+                    component: () => import('../modules/Auth/ui/views/UsuarioList.vue')
                 },
                 {
                     path: '/clientes',
                     name: 'clientes',
-                    component: () => import('../ui/views/clientes/ClienteList.vue')
+                    component: () => import('../modules/Clientes/ui/views/ClienteList.vue')
                 },
                 {
                     path: '/clientes/:clienteId/domicilios/:domicilioId/telefonos',
                     name: 'cliente-domicilio-telefonos',
-                    component: () => import('../ui/views/clientes/ClienteTelefonosView.vue')
+                    component: () => import('../modules/Clientes/ui/views/ClienteTelefonosView.vue')
                 },
                 {
                     path: '/roles',
                     name: 'roles',
-                    component: () => import('../ui/views/auth/RolList.vue')
+                    component: () => import('../modules/Auth/ui/views/RolList.vue')
                 },
                 {
                     path: '/menus',
                     name: 'menus',
-                    component: () => import('../ui/views/auth/MenuItemTree.vue')
+                    component: () => import('../modules/Auth/ui/views/MenuItemTree.vue')
                 },
                 // Maestros
-                { path: '/monedas', name: 'monedas', component: () => import('../ui/views/maestros/MonedaView.vue') },
-                { path: '/ivas', name: 'ivas', component: () => import('../ui/views/maestros/IvaView.vue') },
-                { path: '/conceptos', name: 'conceptos', component: () => import('../ui/views/maestros/ConceptoView.vue') },
-                { path: '/tipos-comprobante', name: 'tipos-comprobante', component: () => import('../ui/views/maestros/TipoComprobanteView.vue') },
-                { path: '/tipos-impuesto', name: 'tipos-impuesto', component: () => import('../ui/views/maestros/TipoImpuestoView.vue') },
-                { path: '/paises', name: 'paises', component: () => import('../ui/views/maestros/PaisView.vue') },
-                { path: '/provincias', name: 'provincias', component: () => import('../ui/views/maestros/ProvinciaView.vue') },
-                { path: '/localidades', name: 'localidades', component: () => import('../ui/views/maestros/LocalidadView.vue') },
-                { path: '/tipodoms', name: 'tipodoms', component: () => import('../ui/views/maestros/TipoDomView.vue') },
-                { path: '/tipotels', name: 'tipotels', component: () => import('../ui/views/maestros/TipoTelView.vue') },
-                { path: '/operadores', name: 'operadores', component: () => import('../ui/views/maestros/OperadorView.vue') },
-                { path: '/domicilios', name: 'domicilios', component: () => import('../ui/views/maestros/DomicilioView.vue') },
-                { path: '/telefonos', name: 'telefonos', component: () => import('../ui/views/maestros/TelefonoView.vue') },
-                { path: '/tipodocs', name: 'tipodocs', component: () => import('../ui/views/maestros/TipoDocView.vue') },
-                { path: '/condiciones-tributarias', name: 'condiciones-tributarias', component: () => import('../ui/views/maestros/CondicionTributariaView.vue') },
+                { path: '/monedas', name: 'monedas', component: () => import('../modules/Maestros/ui/views/MonedaView.vue') },
+                { path: '/ivas', name: 'ivas', component: () => import('../modules/Maestros/ui/views/IvaView.vue') },
+                { path: '/conceptos', name: 'conceptos', component: () => import('../modules/Maestros/ui/views/ConceptoView.vue') },
+                { path: '/tipos-comprobante', name: 'tipos-comprobante', component: () => import('../modules/Maestros/ui/views/TipoComprobanteView.vue') },
+                { path: '/tipos-impuesto', name: 'tipos-impuesto', component: () => import('../modules/Maestros/ui/views/TipoImpuestoView.vue') },
+                { path: '/paises', name: 'paises', component: () => import('../modules/Maestros/ui/views/PaisView.vue') },
+                { path: '/provincias', name: 'provincias', component: () => import('../modules/Maestros/ui/views/ProvinciaView.vue') },
+                { path: '/localidades', name: 'localidades', component: () => import('../modules/Maestros/ui/views/LocalidadView.vue') },
+                { path: '/tipodoms', name: 'tipodoms', component: () => import('../modules/Maestros/ui/views/TipoDomView.vue') },
+                { path: '/tipotels', name: 'tipotels', component: () => import('../modules/Maestros/ui/views/TipoTelView.vue') },
+                { path: '/operadores', name: 'operadores', component: () => import('../modules/Maestros/ui/views/OperadorView.vue') },
+                { path: '/domicilios', name: 'domicilios', component: () => import('../modules/Maestros/ui/views/DomicilioView.vue') },
+                { path: '/telefonos', name: 'telefonos', component: () => import('../modules/Maestros/ui/views/TelefonoView.vue') },
+                { path: '/tipodocs', name: 'tipodocs', component: () => import('../modules/Maestros/ui/views/TipoDocView.vue') },
+                { path: '/condiciones-tributarias', name: 'condiciones-tributarias', component: () => import('../modules/Maestros/ui/views/CondicionTributariaView.vue') },
 
                 // Comprobantes
-                { path: '/comprobantes/nuevo', name: 'comprobante-nuevo', component: () => import('../ui/views/comprobantes/InvoiceCreateView.vue') },
-                { path: '/comprobantes', name: 'comprobantes', component: () => import('../ui/views/comprobantes/InvoiceListView.vue') },
+                { path: '/comprobantes/nuevo', name: 'comprobante-nuevo', component: () => import('../modules/Facturacion/ui/views/InvoiceCreateView.vue') },
+                { path: '/comprobantes', name: 'comprobantes', component: () => import('../modules/Facturacion/ui/views/InvoiceListView.vue') },
 
                 // Cliente - Cuenta Corriente
-                { path: '/cuentacorriente', name: 'cuentacorriente', component: () => import('../ui/views/clientes/CurrentAccountView.vue') },
+                { path: '/cuentacorriente', name: 'cuentacorriente', component: () => import('../modules/Clientes/ui/views/CurrentAccountView.vue') },
             ]
         }
     ]
 })
 
-router.beforeEach((to, _from, next) => {
-    const isAuthenticated = localStorage.getItem('isLoggedIn') === 'true';
-    if (to.meta.requiresAuth && !isAuthenticated) {
-        next({ name: 'login' });
-    } else {
-        next();
+router.beforeEach(async (to, _from, next) => {
+    const authStore = useAuthStore()
+
+    // 1. Attempt hydration if state is idle/failed, or if we have no user but might have cookies.
+    // If not authenticated, fetchUser will fail silently and state remains !isAuthenticated
+    if (!authStore.isAuthenticated && authStore.hydrationState !== 'loaded') {
+        await authStore.fetchUser()
     }
-});
+
+    // 2. Auth Check
+    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+        return next({ name: 'login' })
+    }
+
+    // 3. RBAC Check (Roles & Permissions)
+    const requiredRoles = to.meta.roles as string[] | undefined
+    const requiredPermissions = to.meta.permissions as string[] | undefined
+
+    if (requiredRoles || requiredPermissions) {
+        const hasAccess = authStore.canAccess({
+            roles: requiredRoles,
+            permissions: requiredPermissions
+        })
+
+        if (!hasAccess) {
+            return next({ name: 'forbidden' })
+        }
+    }
+
+    next()
+})
 
 export default router

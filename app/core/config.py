@@ -26,4 +26,11 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(30, env="JWT_ACCESS_TOKEN_EXPIRE_MINUTES")
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int   = Field(7,  env="JWT_REFRESH_TOKEN_EXPIRE_DAYS")
 
+    # Security
+    BACKEND_CORS_ORIGINS: list[str] = Field(default=[], env="BACKEND_CORS_ORIGINS")
+
+    @property
+    def IS_PRODUCTION(self) -> bool:
+        return self.AFIP_ENVIRONMENT.lower() == "production"
+
 settings = Settings()

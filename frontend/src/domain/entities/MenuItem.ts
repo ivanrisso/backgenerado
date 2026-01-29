@@ -1,4 +1,4 @@
-import { Rol } from './Rol';
+import type { Rol } from './Rol';
 
 export class MenuItem {
     constructor(

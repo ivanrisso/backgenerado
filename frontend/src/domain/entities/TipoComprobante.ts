@@ -4,7 +4,6 @@
 // Ideally, strict DDD uses VOs in interfaces.
 // Let's TRY to use the VO in the interface for better semantics.
 
-import { CodigoArca } from '../value-objects/CodigoArca';
 
 export interface TipoComprobante {
     id: number;

@@ -1,12 +1,12 @@
 
-import { TipoAplicacionEnum } from '../enums/TipoAplicacionEnum';
-import { BaseTributarioEnum } from '../enums/BaseTributarioEnum';
-import { AmbitoImpuestoEnum } from '../enums/AmbitoImpuestoEnum';
-import { CategoriaImpuestoEnum } from '../enums/CategoriaImpuestoEnum';
-import { TipoUsoImpuestoEnum } from '../enums/TipoUsoImpuestoEnum';
-import { MetodoCalculoImpuestoEnum } from '../enums/MetodoCalculoImpuestoEnum';
-import { AmbitoUsoImpuestoEnum } from '../enums/AmbitoUsoImpuestoEnum';
-import { CategoriaFiscalImpuestoEnum } from '../enums/CategoriaFiscalImpuestoEnum';
+import type { TipoAplicacionEnum } from '../enums/TipoAplicacionEnum';
+import type { BaseTributarioEnum } from '../enums/BaseTributarioEnum';
+import type { AmbitoImpuestoEnum } from '../enums/AmbitoImpuestoEnum';
+import type { CategoriaImpuestoEnum } from '../enums/CategoriaImpuestoEnum';
+import type { TipoUsoImpuestoEnum } from '../enums/TipoUsoImpuestoEnum';
+import type { MetodoCalculoImpuestoEnum } from '../enums/MetodoCalculoImpuestoEnum';
+import type { AmbitoUsoImpuestoEnum } from '../enums/AmbitoUsoImpuestoEnum';
+import type { CategoriaFiscalImpuestoEnum } from '../enums/CategoriaFiscalImpuestoEnum';
 import type { CondicionTributaria } from './CondicionTributaria';
 import type { TipoImpuestoDistribucion } from './TipoImpuestoDistribucion';
 

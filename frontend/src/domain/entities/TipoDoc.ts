@@ -1,4 +1,4 @@
-import { CodigoArca } from '../value-objects/CodigoArca';
+import type { CodigoArca } from '../value-objects/CodigoArca';
 
 export class TipoDoc {
     constructor(

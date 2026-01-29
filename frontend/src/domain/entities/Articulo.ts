@@ -1,4 +1,4 @@
-import { TipoArticuloEnum } from '../enums/TipoArticuloEnum';
+import type { TipoArticuloEnum } from '../enums/TipoArticuloEnum';
 import type { TipoImpuesto } from './TipoImpuesto';
 
 export interface Articulo {

@@ -1,5 +1,5 @@
 import type { IRolRepository } from '../../domain/repositories/IRolRepository';
-import { Rol } from '../../domain/entities/Rol';
+import type { Rol } from '../../domain/entities/Rol';
 import { httpClient } from '../api/httpClient';
 import { RolMapper } from '../mappers/RolMapper';
 import type { RolDTO } from '../dtos/UsuarioDTO';

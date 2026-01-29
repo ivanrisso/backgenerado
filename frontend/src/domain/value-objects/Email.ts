@@ -9,7 +9,7 @@ export class Email {
     }
 
     private validate(email: string): boolean {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const re = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/;
         return re.test(email);
     }
 

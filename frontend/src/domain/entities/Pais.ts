@@ -1,4 +1,4 @@
-import { CodigoPais } from '../value-objects/CodigoPais';
+import type { CodigoPais } from '../value-objects/CodigoPais';
 
 export class Pais {
     constructor(

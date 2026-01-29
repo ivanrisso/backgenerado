@@ -29,26 +29,31 @@ src/
 ## 2. Responsabilidad de cada Capa
 
 ### **Domain (Dominio)**
+
 - **Qué contiene:** Entidades (`Cliente`, `TipoDoc`), Value Objects y las Interfaces de los Repositorios (`ITipoDocRepository`).
 - **Dependencias:** NINGUNA. No conoce Axios, ni Vue, ni el Router.
-- **Objetivo:** Definir *qué* es el negocio y *qué* operaciones existen, sin definir *cómo* se hacen.
+- **Objetivo:** Definir _qué_ es el negocio y _qué_ operaciones existen, sin definir _cómo_ se hacen.
 
 ### **Application (Aplicación)**
+
 - **Qué contiene:** Casos de Uso (`GetTiposDocUseCase`).
 - **Dependencias:** Solo del Dominio.
 - **Objetivo:** Orquestar flujos. Ejemplo: "Pedir datos al repo -> Validar -> Devolver".
 
 ### **Infrastructure (Infraestructura)**
+
 - **Qué contiene:** Implementaciones reales de los repositorios (`AxiosTipoDocRepository`), clientes HTTP.
 - **Dependencias:** Dominio (para cumplir los contratos) y librerías externas (Axios).
 - **Objetivo:** "Ensuciarse" las manos con la IO (Internet, LocalStorage, etc.).
 
 ### **UI (Interfaz de Usuario)**
+
 - **Qué contiene:** Todo lo visual (Vue).
 - **Dependencias:** Application (para ejecutar acciones) y Domain (para mostrar datos).
 - **Objetivo:** Mostrar datos al usuario y capturar eventos.
 
 ### **Shared (Compartido)**
+
 - **Qué contiene:** Funciones puras de utilidad (fechas, strings).
 - **Dependencias:** Mínimas.
 
@@ -57,7 +62,7 @@ src/
 1. **La dependencia apunta hacia adentro:** `UI -> Application -> Domain`.
 2. `Domain` no importa nada de nadie.
 3. `Infrastructure` importa `Domain` (para implementar interfaces).
-4. `UI` *nunca* llama a `Infrastructure` directamente (idealmente usa Inyección de Dependencias).
+4. `UI` _nunca_ llama a `Infrastructure` directamente (idealmente usa Inyección de Dependencias).
 
 ## 4. Contratos (Interfaces / Ports)
 
@@ -76,7 +81,7 @@ export interface TipoDoc {
 
 // domain/repositories/ITipoDocRepository.ts
 export interface ITipoDocRepository {
-    getAll(): Promise<TipoDoc[]>;
-    getById(id: number): Promise<TipoDoc | null>;
+    getAll: () => Promise<TipoDoc[]>;
+    getById: (id: number) => Promise<TipoDoc | null>;
 }
 ```

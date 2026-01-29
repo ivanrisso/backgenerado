@@ -15,10 +15,12 @@ app = FastAPI(title="Billing Backend System")
 # Middleware global de errores
 app.add_middleware(ExceptionHandlingMiddleware)
 
+from app.core.config import settings
+
 # CORS settings (pueden ajustarse para producción)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"],  # Cambiar en producción
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,4 +1,4 @@
-import { AmbitoImpuestoEnum } from '../enums/AmbitoImpuestoEnum';
+import type { AmbitoImpuestoEnum } from '../enums/AmbitoImpuestoEnum';
 
 export interface CondicionTributaria {
     id: number;

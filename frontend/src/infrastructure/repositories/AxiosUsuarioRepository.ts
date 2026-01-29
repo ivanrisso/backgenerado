@@ -1,5 +1,5 @@
 import type { IUsuarioRepository } from '../../domain/repositories/IUsuarioRepository';
-import { Usuario } from '../../domain/entities/Usuario';
+import type { Usuario } from '../../domain/entities/Usuario';
 import { httpClient } from '../api/httpClient';
 import { UsuarioMapper } from '../mappers/UsuarioMapper';
 import type { UsuarioDTO } from '../dtos/UsuarioDTO';

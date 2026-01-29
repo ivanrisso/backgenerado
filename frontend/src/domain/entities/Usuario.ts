@@ -1,5 +1,5 @@
-import { Rol } from './Rol';
-import { Email } from '../value-objects/Email';
+import type { Rol } from './Rol';
+import type { Email } from '../value-objects/Email';
 
 export class Usuario {
     constructor(
