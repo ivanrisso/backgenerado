@@ -33,5 +33,24 @@ LOGGING_CONFIG = {
     },
 }
 
+import os
+import copy
+
 def init_logger():
-    dictConfig(LOGGING_CONFIG)
+    if os.getenv("ENV") == "test":
+        # En entorno de test/CI, evitamos configurar el FileHandler
+        # para no requerir directorios ni permisos de escritura.
+        config = copy.deepcopy(LOGGING_CONFIG)
+        
+        # Remover handler 'file' si existe
+        if "file" in config["handlers"]:
+            del config["handlers"]["file"]
+            
+        # Remover 'file' de los handlers del root logger
+        if "root" in config and "handlers" in config["root"]:
+            config["root"]["handlers"] = [h for h in config["root"]["handlers"] if h != "file"]
+            
+        dictConfig(config)
+    else:
+        # En producción/dev, usamos la config completa con logs a archivo
+        dictConfig(LOGGING_CONFIG)
