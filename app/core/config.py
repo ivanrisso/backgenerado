@@ -1,9 +1,10 @@
+import os
 from pydantic_settings import BaseSettings
 from pydantic import Field, ConfigDict
 
 class Settings(BaseSettings):
     model_config = ConfigDict(
-        env_file=".env",
+        env_file=".env.test" if os.getenv("ENV") == "test" else ".env",
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore"
