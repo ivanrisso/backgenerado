@@ -15,3 +15,4 @@ Cerrado por: Orchestrator (Antigravity)
 ## Notas
 Se ha habilitado la Integración Continua (CI) básica. 
 Cualquier PR futuro ejecutará automáticamente los tests.
+- **2026-01-29 Hotfix**: Se ajustó el pipeline para inyectar entorno de test (`ENV: test`, dummy certs, dummy `.env.test`), solucionando fallo de validación de configuración. CI Operativo.

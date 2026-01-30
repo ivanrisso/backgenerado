@@ -32,7 +32,22 @@ jobs:
     - name: Install dependencies
       run: poetry install --no-interaction --no-root
 
+    - name: Create .env.test for CI
+      run: |
+        echo "DATABASE_URL=sqlite+aiosqlite:///:memory:" >> .env.test
+        echo "AFIP_CERT_CRT_PATH=certs/ci_dummy.crt" >> .env.test
+        echo "AFIP_KEY_CRT_PATH=certs/ci_dummy.key" >> .env.test
+        echo "AFIP_CUIT=20300000001" >> .env.test
+        echo "AFIP_ENVIRONMENT=testing" >> .env.test
+        echo "JWT_SECRET_KEY=ci_secret_key_12345" >> .env.test
+        echo "BACKEND_CORS_ORIGINS=['http://localhost']" >> .env.test
+        # Create dummy cert directory so paths are valid if checked
+        mkdir -p certs
+        touch certs/ci_dummy.crt certs/ci_dummy.key
+
     - name: Run tests (Pytest)
+      env:
+        ENV: test
       run: poetry run pytest -v
 
   frontend-test:

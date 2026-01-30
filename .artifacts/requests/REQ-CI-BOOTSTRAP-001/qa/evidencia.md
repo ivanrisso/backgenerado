@@ -36,3 +36,13 @@ tests/test_healthcheck.py::test_healthcheck PASSED                              
 - [x] **Frontend Job**: Usa `setup-node`, `npm ci` (limpio) y `vitest`.
 - [x] **Triggers**: Configurado para `push` y `pull_request` en branches principales.
 - [x] **Aislamiento**: Jobs independientes corriendo en `ubuntu-latest`.
+
+## Hotfix: CI Settings Validation (2026-01-29)
+**Problema**: CI fallaba por falta de variables de entorno requeridas por `Settings` (Pydantic).
+**Solución**: 
+- Configurar `ENV: test` en el workflow.
+- Generar `certs/` y `.env.test` dummy durante el build.
+- `app/core/config.py` ya soportaba carga condicional.
+
+**Validación Local**:
+Script `verify_ci_fix.py` con `ENV=test` cargó exitosamente la configuración simulando el entorno de CI.
