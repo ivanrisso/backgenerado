@@ -42,6 +42,7 @@ tests/test_healthcheck.py::test_healthcheck PASSED                              
 **Solución**: 
 - Configurar `ENV: test` en el workflow.
 - Generar `certs/` y `.env.test` dummy durante el build.
+- Corregir formato de `BACKEND_CORS_ORIGINS` a JSON válido `[]` en `.env.test` (solucionando error de parsing por comillas simples).
 - `app/core/config.py` ya soportaba carga condicional.
 
 **Validación Local**:

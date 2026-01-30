@@ -40,7 +40,7 @@ jobs:
         echo "AFIP_CUIT=20300000001" >> .env.test
         echo "AFIP_ENVIRONMENT=testing" >> .env.test
         echo "JWT_SECRET_KEY=ci_secret_key_12345" >> .env.test
-        echo "BACKEND_CORS_ORIGINS=['http://localhost']" >> .env.test
+        echo "BACKEND_CORS_ORIGINS=[]" >> .env.test
         # Create dummy cert directory so paths are valid if checked
         mkdir -p certs
         touch certs/ci_dummy.crt certs/ci_dummy.key
