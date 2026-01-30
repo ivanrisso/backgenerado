@@ -49,6 +49,17 @@ async def get_all(service: ClienteService = Depends(get_cliente_service)):
     except ErrorDeRepositorio:
         raise HTTPException(status_code=500, detail="Error inesperado")
 
+from app.schemas.cliente_deudor import ClienteDeudorResponse
+
+@router.get("/deudores", response_model=List[ClienteDeudorResponse], dependencies=[Depends(require_roles("admin"))])
+async def get_deudores(service: ClienteService = Depends(get_cliente_service)):
+    try:
+        return await service.get_deudores()
+    except BaseDeDatosNoDisponible:
+        raise HTTPException(status_code=503, detail="Base de datos no disponible")
+    except ErrorDeRepositorio:
+        raise HTTPException(status_code=500, detail="Error inesperado")
+
 @router.get("/{id}", response_model=ClienteResponse,dependencies=[Depends(require_roles("admin"))])
 async def get_by_id(id: int, service: ClienteService = Depends(get_cliente_service)):
     try:

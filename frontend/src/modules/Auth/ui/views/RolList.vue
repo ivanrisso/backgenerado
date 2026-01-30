@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRoles } from '@ui/composables/auth/useRoles';
+import { useRoles } from '@auth/composables/useRoles';
 import RolForm from './RolForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Rol } from '../../../domain/entities/Rol';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Rol } from '@domain/entities/Rol';
 
 const { roles, isLoading, error, loadRoles, saveRol, deleteRol } = useRoles();
 

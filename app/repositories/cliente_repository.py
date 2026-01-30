@@ -159,6 +159,26 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al eliminar cliente")
 
+    async def get_deudores(self) -> List[tuple[Cliente, float]]:
+        from sqlalchemy import func
+        from app.infrastructure.db.orm_models import CuentaCorriente as CuentaCorrienteSQL
+        
+        stmt = (
+            select(ClienteSQL, func.sum(CuentaCorrienteSQL.importe * CuentaCorrienteSQL.signo).label("saldo"))
+            .join(CuentaCorrienteSQL, ClienteSQL.id == CuentaCorrienteSQL.cliente_id)
+            .group_by(ClienteSQL.id)
+            .having(func.sum(CuentaCorrienteSQL.importe * CuentaCorrienteSQL.signo) > 0)
+            .options(
+                joinedload(ClienteSQL.condicion_iva),
+                joinedload(ClienteSQL.condicion_iibb)
+            )
+        )
+        
+        result = await self.db.execute(stmt)
+        rows = result.all()
+        
+        return [(self._to_domain(cliente_sql), float(saldo)) for cliente_sql, saldo in rows]
+
     def _to_domain(self, cliente_sql: ClienteSQL) -> Cliente:
         from app.domain.entities.condiciontributaria import CondicionTributaria as CondicionTributariaDomain
         

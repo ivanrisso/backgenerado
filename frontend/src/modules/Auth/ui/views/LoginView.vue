@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { loginUseCase } from '../../di';
+import { loginUseCase } from '@modules/Auth/di';
 
 const router = useRouter();
 const email = ref('');
@@ -17,7 +17,8 @@ const handleLogin = async () => {
         // Login successful, redirect to dashboard
         router.push('/');
     } catch (e: any) {
-        error.value = 'Credenciales inválidas o error en el servidor.';
+        const msg = (e as any).response?.data?.detail;
+        error.value = msg || 'Credenciales inválidas o error en el servidor.';
         console.error(e);
     } finally {
         loading.value = false;

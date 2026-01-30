@@ -40,3 +40,6 @@ class ClienteUseCase:
             raise ClienteNoEncontrado(cliente_id)
 
         await self.repo.delete(cliente_id)
+
+    async def get_deudores(self) -> List[tuple[Cliente, float]]:
+        return await self.repo.get_deudores()

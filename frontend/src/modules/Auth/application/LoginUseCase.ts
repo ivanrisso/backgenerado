@@ -1,4 +1,4 @@
-import type { AxiosAuthRepository } from '../../infrastructure/repositories/AxiosAuthRepository';
+import { AxiosAuthRepository } from '@infra/repositories/AxiosAuthRepository';
 
 export class LoginUseCase {
     constructor(private readonly repository: AxiosAuthRepository) { }

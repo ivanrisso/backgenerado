@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed  } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import type { Cliente } from '../../../domain/entities/Cliente';
+import type { Cliente } from '@domain/entities/Cliente';
 // We need these models for the lists
-import type { Domicilio } from '../../../domain/entities/Domicilio';
+import type { Domicilio } from '@domain/entities/Domicilio';
 import DomicilioForm from './DomicilioForm.vue';
-import { useTiposDoc } from '../../composables/useTiposDoc';
-
-import { useDomicilios } from '../../composables/useDomicilios';
-import { useTelefonos } from '../../composables/useTelefonos';
-import { useTiposTel } from '../../composables/useTiposTel';
-import { useCondicionesTributarias } from '../../composables/useCondicionesTributarias';
-import { useTiposImpuesto } from '../../composables/useTiposImpuesto';
-import { useClientes } from '../../composables/useClientes';
+import { useTiposDoc } from '@modules/Maestros/composables/useTiposDoc';
+import { useDomicilios } from '@modules/Clientes/composables/useDomicilios';
+import { useTelefonos } from '@modules/Clientes/composables/useTelefonos';
+import { useTiposTel } from '@modules/Maestros/composables/useTiposTel';
+import { useCondicionesTributarias } from '@modules/Maestros/composables/useCondicionesTributarias';
+import { useTiposImpuesto } from '@modules/Maestros/composables/useTiposImpuesto';
+import { useClientes } from '@modules/Clientes/composables/useClientes';
 
 
 const props = defineProps<{

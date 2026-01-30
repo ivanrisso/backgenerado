@@ -51,6 +51,12 @@ export const menuConfig: MenuItem[] = [
                 label: 'Cuenta Corriente',
                 route: '/cuentacorriente',
                 roles: ['admin', 'cobranzas']
+            },
+            {
+                id: 'deudores',
+                label: 'Saldos Deudores',
+                route: '/clientes/deudores',
+                roles: ['admin', 'cobranzas', 'facturacion']
             }
         ]
     },

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
-import { Usuario } from '../../../domain/entities/Usuario';
-import { Email } from '../../../domain/value-objects/Email';
-import { useRoles } from '../../composables/auth/useRoles';
+import { Usuario } from '@domain/entities/Usuario';
+import { Email } from '@domain/value-objects/Email';
+import { useRoles } from '@auth/composables/useRoles';
 
 const props = defineProps<{
     modelValue: Usuario | null;

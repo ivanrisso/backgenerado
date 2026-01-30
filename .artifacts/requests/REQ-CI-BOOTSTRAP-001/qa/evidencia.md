@@ -47,3 +47,10 @@ tests/test_healthcheck.py::test_healthcheck PASSED                              
 
 **Validación Local**:
 Script `verify_ci_fix.py` con `ENV=test` cargó exitosamente la configuración simulando el entorno de CI.
+
+## Hotfix: CI Logger (2026-01-29)
+**Problema**: `ValueError: Unable to configure handler 'file'` en CI por falta de permisos/directorios de log.
+**Solución**: 
+- Se condicionó `app.core.logger.init_logger()` para no configurar `FileHandler` si `ENV=test`.
+- Se usa `copy.deepcopy` para no alterar la configuración global en memoria.
+**Validación**: Script `verify_logger.py` confirmó inicialización limpia con solo `StreamHandler`.

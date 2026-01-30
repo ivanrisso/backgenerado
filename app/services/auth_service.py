@@ -32,13 +32,27 @@ class AuthService:
 
     async def autenticar_usuario(self, email: str, password: str) -> Usuario:
         
+        logger.info(f"Intento de login para: {email}")
+        
+        # Buscar usuario
         usuario = await self.usuario_repo.get_by_email(email)
-        if not usuario or not verify_password(password, usuario.usuario_password):
+        
+        if not usuario:
+            logger.warning(f"Login fallido: Usuario {email} no encontrado.")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Credenciales inválidas.",
+                detail="Credenciales inválidas (Usuario no existe).",
                 headers={"WWW-Authenticate": "Bearer"}
             )
+            
+        if not verify_password(password, usuario.usuario_password):
+            logger.warning(f"Login fallido: Password incorrecto para {email}.")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Credenciales inválidas (Password incorrecto).",
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+            
         return usuario
 
     def crear_tokens(self, usuario: Usuario) -> tuple[str, str]:

@@ -1,13 +1,17 @@
 import { httpClient } from '../api/httpClient';
 import type { Usuario } from '../../domain/entities/Usuario';
+import { UsuarioMapper } from '../mappers/UsuarioMapper';
+import type { UsuarioDTO } from '../dtos/UsuarioDTO';
 
 export class AxiosAuthRepository {
     private readonly resource = '/auth';
 
     async login(email: string, password: string): Promise<void> {
         await httpClient.post(`${this.resource}/login`, { usuario_email: email, usuario_password: password });
-        // Backend sets HttpOnly cookie. We just set a flag for UI state.
         localStorage.setItem('isLoggedIn', 'true');
+
+        // Validate session immediately to ensure cookie is set
+        await this.getMe();
     }
 
     async logout(): Promise<void> {
@@ -18,15 +22,8 @@ export class AxiosAuthRepository {
         }
     }
 
-    async getProfile(): Promise<Usuario> {
-        const response = await httpClient.get(`${this.resource}/me`);
-        const data = response.data;
-        return {
-            id: data.id,
-            email: data.usuario_email,
-            nombre: data.nombre,
-            apellido: data.apellido,
-            roles: data.roles ? data.roles.map((r: any) => r.rol_nombre) : []
-        };
+    async getMe(): Promise<Usuario> {
+        const response = await httpClient.get<UsuarioDTO>(`${this.resource}/me`);
+        return UsuarioMapper.toDomain(response.data);
     }
 }

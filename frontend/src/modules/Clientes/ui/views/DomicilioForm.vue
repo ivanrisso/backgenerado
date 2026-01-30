@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
-import type { Domicilio } from '../../../domain/entities/Domicilio';
-import { useUbicacion } from '../../composables/useUbicacion';
-import { useTiposDom } from '../../composables/useTiposDom';
+import type { Domicilio } from '@domain/entities/Domicilio';
+import { useUbicacion } from '@modules/Maestros/composables/useUbicacion';
+import { useTiposDom } from '@modules/Maestros/composables/useTiposDom';
 
 const props = defineProps<{
     modelValue: Omit<Domicilio, 'id'> & { id?: number }; // Partial/New domicilio

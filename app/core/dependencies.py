@@ -40,6 +40,14 @@ async def get_current_user(
 
 
 
+
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # Log debug inputs
+    # logger.info(f"DEBUG AUTH Headers: {request.headers}")
+    # logger.info(f"DEBUG AUTH Cookies: {request.cookies}")
+
     token = request.cookies.get("access_token")
     if not token:
         # Intentar obtener del header Authorization

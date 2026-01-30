@@ -36,6 +36,11 @@ const router = createRouter({
                     component: () => import('../modules/Clientes/ui/views/ClienteList.vue')
                 },
                 {
+                    path: '/clientes/deudores',
+                    name: 'clientes-deudores',
+                    component: () => import('../modules/Clientes/ui/views/ClienteDeudorList.vue')
+                },
+                {
                     path: '/clientes/:clienteId/domicilios/:domicilioId/telefonos',
                     name: 'cliente-domicilio-telefonos',
                     component: () => import('../modules/Clientes/ui/views/ClienteTelefonosView.vue')

@@ -1,26 +1,42 @@
-# Procedimiento Diario — SDLC con Antigravity
+# Procedimiento Diario — SDLC con Antigravity (Post-Bootstrap)
 
-Este documento resume **el procedimiento estándar** para crear, ejecutar y cerrar requerimientos (REQ) en el proyecto usando Antigravity como **AI-First SDLC**.
+Este documento define **el procedimiento estándar y canónico** para crear, ejecutar y cerrar requerimientos (REQ) en el proyecto usando Antigravity como **AI-First SDLC**, **una vez finalizada la fase de bootstrap**.
 
-> **Objetivo:** que cualquier nuevo cambio (feature, mejora, infra) se ejecute de forma **repetible, segura y auditable**, sin romper CI ni fiscalidad.
+> **Objetivo:** garantizar que cualquier cambio (feature, mejora o ajuste) se ejecute de forma **segura, repetible, auditable y con CI obligatorio**, sin romper calidad ni fiscalidad.
 
 ---
 
 ## 🧭 Principio Rector
 
-> **Documentar → Planificar → Aprobar → Ejecutar → Evidenciar → Cerrar**
+> **Documentar → Planificar → Aprobar → Ejecutar → Validar (CI) → Evidenciar → Cerrar**
 
 Nunca ejecutar código sin:
 
 * REQ creado
 * Plan aprobado
-* Evidencia
+* Evidencia registrada
+* CI verde
+
+---
+
+## 🧱 Nota clave sobre Bootstrap (MUY IMPORTANTE)
+
+El **bootstrap del proyecto ya fue ejecutado y cerrado** (Baseline, Quality, CI).
+
+Esto implica que:
+
+* ❌ **NO** se vuelve a ejecutar `02_quality-bootstrap.md`.
+* ❌ **NO** se recrea CI ni testing base.
+* ❌ **NO** se ajusta infraestructura de forma recurrente.
+* ✅ Todo nuevo requerimiento entra **directamente en fase de evolución funcional**.
+
+> **El CI verde marca el fin del bootstrap y el inicio del desarrollo normal.**
 
 ---
 
 ## 0️⃣ Pregunta Inicial (obligatoria)
 
-**¿El cambio toca código productivo o infraestructura versionada?**
+**¿El cambio toca código productivo o configuración versionada?**
 
 * ❌ No → No corresponde ejecutar workflows (documentación pura).
 * ✅ Sí → Continuar con el procedimiento.
@@ -77,24 +93,28 @@ Qué NO se va a tocar.
 Qué cambia para el usuario o sistema.
 
 ## Impacto técnico
-Backend / Frontend / AFIP / DB.
+Backend / Frontend / DB / AFIP.
 
 ## Casos relevantes
-Solo los casos importantes.
+Casos funcionales importantes.
 ```
 
 ---
 
 ## 2️⃣ Elegir el workflow correcto
 
-| Tipo de cambio                  | Workflow a ejecutar                                     |
-| ------------------------------- | ------------------------------------------------------- |
-| Feature / Mejora funcional      | `03_feature-evolution.md`                               |
-| Cambio fiscal AFIP              | `03_feature-evolution.md` + `04_afip-reconciliation.md` |
-| Infra / CI / tooling            | `03_feature-evolution.md`                               |
-| Definición de estándares (raro) | `02_quality-bootstrap.md`                               |
+| Tipo de cambio                  | Workflow a ejecutar        |
+| ------------------------------- | -------------------------- |
+| Feature / Mejora funcional      | `03_feature-evolution.md`  |
+| Cambio fiscal AFIP              | `03_feature-evolution.md`  |
+| Cambio de infraestructura MAYOR | Bootstrap explícito (raro) |
+| Documentación / PRD / ADR       | Ninguno                    |
 
-📌 **Regla:** Todo lo que toca código → `03_feature-evolution.md`.
+📌 **Reglas:**
+
+* Todo REQ funcional entra por `03_feature-evolution.md`.
+* Infraestructura solo se toca con un **REQ explícito de tipo bootstrap**.
+* CI y calidad base ya están congelados.
 
 ---
 
@@ -115,11 +135,11 @@ Contexto:
 Restricciones:
 - No romper CI.
 - No usar servicios externos reales.
-- Agregar o ajustar tests si corresponde.
+- Ajustar o agregar tests si corresponde.
 
 Objetivo:
 - Implementar el REQ.
-- Guardar evidencia en:
+- Generar evidencia en:
   `.artifacts/requests/REQ-XXXX/qa/evidencia.md`.
 
 Al finalizar:
@@ -131,7 +151,7 @@ Al finalizar:
 
 ## 4️⃣ Aprobar el plan (paso obligatorio)
 
-Antigravity **siempre** responde primero con un plan.
+Antigravity **siempre responde primero con un plan**.
 
 ### ✅ Respuesta estándar de aprobación
 
@@ -142,26 +162,39 @@ Procedé con la ejecución siguiendo el plan definido.
 Respetar restricciones y estándares existentes.
 ```
 
-⚠️ **Nunca** dejar ejecutar sin esta aprobación explícita.
+⚠️ **Nunca ejecutar sin esta aprobación explícita.**
 
 ---
 
-## 5️⃣ Ejecución
+## 5️⃣ Ejecución e integración continua
 
-Antigravity ejecuta automáticamente:
+Durante esta fase:
 
-* Cambios de código
-* Tests
-* CI
-* Evidencia
+**Antigravity:**
 
-👉 El usuario **no interviene** durante esta fase.
+* Implementa cambios de código.
+* Actualiza o crea tests.
+* Deja el repositorio listo para versionar.
+
+**Usuario (humano):**
+
+```bash
+git add .
+git commit -m "feat: REQ-XXXX <descripción>"
+git push
+```
+
+**GitHub Actions:**
+
+* Ejecuta CI automáticamente.
+* Corre tests backend y frontend.
+* Bloquea el cierre si CI falla.
 
 ---
 
 ## 6️⃣ Verificación de cierre
 
-Al finalizar, verificar que existan:
+Confirmar que existen:
 
 ```
 REQ-XXXX/
@@ -173,8 +206,8 @@ REQ-XXXX/
 
 Y que:
 
-* CI esté verde
-* Gate Delivery = PASS
+* CI está **verde en runner remoto**.
+* Gate Delivery = **PASS**.
 
 ---
 
@@ -218,6 +251,7 @@ Cerrado por: Orchestrator (Antigravity)
 3. Sin `input.md` no hay ejecución.
 4. Sin CI verde no se cierra.
 5. AFIP real **jamás** en tests.
+6. Bootstrap **no se repite**.
 
 ---
 
@@ -226,19 +260,21 @@ Cerrado por: Orchestrator (Antigravity)
 ```
 Crear REQ
 ↓
-Elegir workflow
-↓
-Ejecutar (Orchestrator)
+03_feature-evolution.md
 ↓
 Aprobar plan
 ↓
-Ejecutar
+Implementar
 ↓
-Evidencia + Gate
+Commit / Push
+↓
+CI verde
+↓
+Gate PASS
 ↓
 Cerrar REQ
 ```
 
 ---
 
-**Este procedimiento es la fuente de verdad para el trabajo diario del proyecto.**
+**Este documento es la fuente de verdad para el trabajo diario del proyecto en fase post-bootstrap.**

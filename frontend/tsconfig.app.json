@@ -6,6 +6,15 @@
       "vite/client"
     ],
     "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@modules/*": [
+        "./src/modules/*"
+      ],
+      "@auth/*": [
+        "./src/modules/Auth/*"
+      ],
       "@domain/*": [
         "./src/domain/*"
       ],

@@ -108,13 +108,26 @@ export const useAuthStore = defineStore('auth', {
             fetchPromise = (async () => {
                 try {
                     // Ensure backend endpoint matches. Based on previous audit: GET /auth/me
-                    const response = await httpClient.get<Usuario & { roles: string[] }>('/auth/me');
+                    const response = await httpClient.get<any>('/auth/me');
+                    const data = response.data;
 
-                    // MAPPING
-                    this.user = response.data;
+                    // MAPPING to Store Interface
+                    this.user = {
+                        id: data.id,
+                        email: data.usuario_email
+                    };
 
-                    // Safe guard:
-                    this.roles = (response.data as any).roles || [];
+                    // Map Roles Objects to Strings
+                    const rawRoles = data.roles || [];
+                    this.roles = rawRoles.map((r: any) => r.rol_nombre?.toLowerCase() || r);
+                    // ensure lowercase for consistency? 'Admin' or 'admin'?
+                    // Store 'canAccess' checks 'admin' (lowercase).
+                    // DB has 'Admin'.
+                    // Let's normalize to lowercase for logic, but keep display if needed.
+                    // Store check: state.roles.includes('admin')
+                    // So we must map to lower or correct case.
+                    // Let's assume standard is lowercase in store logic.
+                    this.roles = this.roles.map(r => r.toLowerCase());
 
                     this.hydrationState = 'loaded';
                 } catch (error) {

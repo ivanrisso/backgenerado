@@ -28,15 +28,10 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-        if (error.response) {
-            if (error.response.status === 401) {
-                console.warn(`Unauthorized access at ${error.config?.url}. Redirecting to login...`);
-                localStorage.removeItem('isLoggedIn'); // Clear session flag
-                // Use window.location to force full reload or router if available
-                if (window.location.pathname !== '/login') {
-                    window.location.href = '/login';
-                }
-            }
+        // Allow the caller to handle 401 (e.g., for init checks)
+        // We only clear the local flag.
+        if (error.response?.status === 401) {
+            localStorage.removeItem('isLoggedIn');
         }
         return Promise.reject(error);
     }

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useClientes } from '../../composables/useClientes';
+import { useClientes } from '@modules/Clientes/composables/useClientes';
 import ClienteForm from './ClienteForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Cliente } from '../../../domain/entities/Cliente';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Cliente } from '@domain/entities/Cliente';
 
 const route = useRoute();
 const router = useRouter();

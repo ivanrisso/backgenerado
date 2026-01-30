@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useUsuarios } from '@ui/composables/auth/useUsuarios';
+import { useUsuarios } from '@auth/composables/useUsuarios';
 import UsuarioForm from './UsuarioForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Usuario } from '../../../domain/entities/Usuario';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Usuario } from '@domain/entities/Usuario';
 
 const { usuarios, isLoading: loading, error, loadUsuarios, saveUsuario, deleteUsuario, assignRoles } = useUsuarios();
 

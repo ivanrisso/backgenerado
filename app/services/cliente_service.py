@@ -3,6 +3,7 @@
 from typing import List
 from app.use_cases.cliente_use_case import ClienteUseCase
 from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse
+from app.schemas.cliente_deudor import ClienteDeudorResponse
 from app.domain.entities.cliente import Cliente
 from app.domain.exceptions.cliente import ClienteNoEncontrado, ClienteDuplicado, ClienteInvalido
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
@@ -39,6 +40,29 @@ class ClienteService:
             raise e
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al listar clientes")
+
+    async def get_deudores(self) -> List[ClienteDeudorResponse]:
+        try:
+            resultados = await self.use_case.get_deudores()
+            
+            responses = []
+            for cliente, saldo in resultados:
+                # Convert domain entity to dict
+                cliente_dict = cliente.__dict__.copy()
+                
+                # Handle related objects if needed (like cond_iva)
+                if hasattr(cliente, 'condicion_iva') and cliente.condicion_iva:
+                     cliente_dict['condicion_iva'] = cliente.condicion_iva
+                if hasattr(cliente, 'condicion_iibb') and cliente.condicion_iibb:
+                     cliente_dict['condicion_iibb'] = cliente.condicion_iibb
+
+                responses.append(ClienteDeudorResponse(**cliente_dict, saldo=saldo))
+            
+            return responses
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al obtener deudores")
 
     async def create(self, data: ClienteCreate) -> ClienteResponse:
         try:
