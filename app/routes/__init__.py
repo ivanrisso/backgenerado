@@ -61,6 +61,8 @@ api_router.include_router(usuario_router)
 api_router.include_router(comprobante_full_router)
 api_router.include_router(condiciontributaria_router)
 api_router.include_router(articulo_router)
+from app.routes.recibo_routes import router as recibo_router
+api_router.include_router(recibo_router)
 
 def include_all_routes(app: FastAPI):
     app.include_router(api_router)

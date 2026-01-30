@@ -71,6 +71,9 @@ const router = createRouter({
                 { path: '/comprobantes/nuevo', name: 'comprobante-nuevo', component: () => import('../modules/Facturacion/ui/views/InvoiceCreateView.vue') },
                 { path: '/comprobantes', name: 'comprobantes', component: () => import('../modules/Facturacion/ui/views/InvoiceListView.vue') },
 
+                // Tesorería
+                { path: '/recibos/nuevo', name: 'recibo-nuevo', component: () => import('../modules/Tesoreria/ui/views/ReciboCreateView.vue') },
+
                 // Cliente - Cuenta Corriente
                 { path: '/cuentacorriente', name: 'cuentacorriente', component: () => import('../modules/Clientes/ui/views/CurrentAccountView.vue') },
             ]

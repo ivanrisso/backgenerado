@@ -63,6 +63,18 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
         sql_obj = result.scalar_one_or_none()
         return self._to_domain(sql_obj) if sql_obj else None
 
+    async def get_last_number(self, tipo_comprobante_id: int, punto_venta: int) -> int:
+        stmt = (
+            select(func.max(ComprobanteSQL.numero))
+            .where(
+                ComprobanteSQL.tipo_comprobante_id == tipo_comprobante_id,
+                ComprobanteSQL.punto_venta == punto_venta
+            )
+        )
+        result = await self.db.execute(stmt)
+        max_num = result.scalar()
+        return max_num if max_num is not None else 0
+
     async def create(self, comprobante: Comprobante, commit: bool = True) -> Comprobante:
         try:
             comprobante_sql = self._to_orm(comprobante)

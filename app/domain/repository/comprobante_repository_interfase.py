@@ -10,11 +10,20 @@ class ComprobanteRepositoryInterface(ABC):
         pass
 
     @abstractmethod
+    async def get_by_voucher_id(self, voucher_id: str) -> Optional[Comprobante]:
+        pass
+
+    @abstractmethod
     async def get_all(self) -> List[Comprobante]:
         pass
 
     @abstractmethod
-    async def create(self, comprobante: Comprobante) -> Comprobante:
+    async def get_last_number(self, tipo_comprobante_id: int, punto_venta: int) -> int:
+        """Obtiene el último número de comprobante para un tipo y punto de venta."""
+        pass
+        
+    @abstractmethod
+    async def create(self, comprobante: Comprobante, commit: bool = True) -> Comprobante:
         pass
 
     @abstractmethod
