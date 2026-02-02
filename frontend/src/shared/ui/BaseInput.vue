@@ -14,5 +14,5 @@ const handleInput = (event: Event) => {
            focus:outline-none focus:ring-2 focus:ring-primary/30"
     :value="modelValue"
     @input="handleInput"
-  />
+  >
 </template>

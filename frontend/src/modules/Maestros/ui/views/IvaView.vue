@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useIvas } from '../../composables/useIvas';
+import { useIvas } from '@modules/Maestros/composables/useIvas';
 import IvaForm from './IvaForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Iva } from '../../../domain/entities/Iva';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Iva } from '@domain/entities/Iva';
 
 const { ivas, loading, error, loadIvas, createIva, updateIva, deleteIva } = useIvas();
 

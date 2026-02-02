@@ -18,3 +18,9 @@ Entregar slices backend seguros fiscalmente, con migraciones y tests mínimos.
 - cambios propuestos (archivos)
 - migraciones (si aplica)
 - tests / evidencia
+
+---
+
+## Modo Workflow (Antigravity)
+- 03: implementar slice backend
+- 05: aplicar hotfix backend bajo scope lock

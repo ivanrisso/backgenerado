@@ -17,7 +17,7 @@ vi.mock('../../../shared/http/client', () => ({
     }
 }));
 
-describe('ReciboCreateView', () => {
+describe('reciboCreateView', () => {
     it('renders properly', () => {
         const router = createRouter({
             history: createWebHistory(),

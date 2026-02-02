@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { TipoDom } from '../../../domain/entities/TipoDom';
+import type { TipoDom } from '@domain/entities/TipoDom';
 
 const props = defineProps<{
     modelValue: TipoDom | null;

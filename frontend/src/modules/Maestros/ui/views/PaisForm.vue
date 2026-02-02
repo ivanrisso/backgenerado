@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { Pais } from '../../../domain/entities/Pais';
-import { CodigoPais } from '../../../domain/value-objects/CodigoPais';
+import { Pais } from '@domain/entities/Pais';
+import { CodigoPais } from '@domain/value-objects/CodigoPais';
 
 const props = defineProps<{
     modelValue: Pais | null;

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
-import { useUbicacion } from '../../composables/useUbicacion';
+import { useUbicacion } from '@modules/Maestros/composables/useUbicacion';
 import LocalidadForm from './LocalidadForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Localidad } from '../../../domain/entities/Localidad';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Localidad } from '@domain/entities/Localidad';
 
 const { 
     paises, provincias, localidades, 
@@ -24,13 +24,15 @@ const editingEntity = ref<Localidad | null>(null);
 
 // Auto-select logic
 watch(paises, (newPaises) => {
-    if (newPaises.length > 0 && selectedPaisId.value === null && newPaises[0]) {
+    if (!newPaises || newPaises.length === 0) return;
+    if (selectedPaisId.value === null && newPaises[0]) {
         handlePaisChange(newPaises[0].id);
     }
 });
 
 watch(provincias, (newProvincias) => {
-    if (newProvincias.length > 0 && selectedProvinciaId.value === null && newProvincias[0]) {
+    if (!newProvincias || newProvincias.length === 0) return;
+    if (selectedProvinciaId.value === null && newProvincias[0]) {
         handleProvinciaChange(newProvincias[0].id);
     }
 });

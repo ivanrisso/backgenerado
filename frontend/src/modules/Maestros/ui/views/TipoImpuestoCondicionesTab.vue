@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useCondicionesTributarias } from '../../composables/useCondicionesTributarias';
+import { useCondicionesTributarias } from '@modules/Maestros/composables/useCondicionesTributarias';
 import CondicionTributariaForm from './CondicionTributariaForm.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { CondicionTributaria } from '../../../domain/entities/CondicionTributaria';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { CondicionTributaria } from '@domain/entities/CondicionTributaria';
 
 const props = defineProps<{
     tipoImpuestoId: number;

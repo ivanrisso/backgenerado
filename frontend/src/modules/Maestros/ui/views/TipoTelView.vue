@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useTiposContacto } from '../../composables/useTiposContacto';
+import { useTiposTel } from '@modules/Maestros/composables/useTiposTel';
 import TipoTelForm from './TipoTelForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { TipoTel } from '../../../domain/entities/TipoTel';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { TipoTel } from '@domain/entities/TipoTel';
 
-const { tiposTel, loading, error, createTipoTel, updateTipoTel, deleteTipoTel } = useTiposContacto();
+const { tiposTel, loading, error, loadTiposTel, createTipoTel, updateTipoTel, deleteTipoTel } = useTiposTel();
+
+import { onMounted } from 'vue';
+
+onMounted(() => {
+    loadTiposTel();
+});
 
 const showForm = ref(false);
 const isDeleteMode = ref(false);

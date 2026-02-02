@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useTiposContacto } from '../../composables/useTiposContacto';
+import { useTiposDom } from '@modules/Maestros/composables/useTiposDom';
 import TipoDomForm from './TipoDomForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { TipoDom } from '../../../domain/entities/TipoDom';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { TipoDom } from '@domain/entities/TipoDom';
 
-const { tiposDom, loading, error, createTipoDom, updateTipoDom, deleteTipoDom } = useTiposContacto();
+const { tiposDom, loading, error, loadTiposDom, createTipoDom, updateTipoDom, deleteTipoDom } = useTiposDom();
 
-// Trigger load on mount since useTiposContacto fetches both on mount but we want to be sure or just reuse it
-// The composable has onMounted inside it? Let's check. 
-// Yes, line 32: onMounted(() => { fetchData(); });
-// So it auto-loads. We might not need to call it again, but if we do, it's fine.
-// Wait, if I import it here, it might run onMounted again or share state? 
-// Composable creates state inside function scope. So calling useTiposContacto() creates NEW state and runs onMounted.
-// This is typical for "per-component" state. So it works.
+// Trigger load on mount
+import { onMounted } from 'vue';
+
+onMounted(() => {
+    loadTiposDom();
+});
 
 const showForm = ref(false);
 const isDeleteMode = ref(false);

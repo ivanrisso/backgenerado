@@ -60,7 +60,7 @@ const selectedAfipTaxes = ref<string[]>([]);
 const route = useRoute();
 
 onMounted(async () => {
-    await Promise.all([
+    const results = await Promise.allSettled([
         loadTiposDoc(), 
         loadDomicilios(), 
         loadTelefonos(), 
@@ -68,6 +68,17 @@ onMounted(async () => {
         loadTiposImpuesto(),
         loadCondicionesTributarias()
     ]);
+
+    // Check for errors
+    const errors = results
+        .filter(r => r.status === 'rejected')
+        .map(r => (r as PromiseRejectedResult).reason);
+        
+    if (errors.length > 0) {
+        console.error("Errors loading master data:", errors);
+        // We could set serverError here if we want to show a global alert
+        // serverError.value = "Algunos datos maestros no pudieron cargarse.";
+    }
     
     // Check for tab query param
     if (route.query.tab && typeof route.query.tab === 'string') {
@@ -529,7 +540,7 @@ const handleSubmit = () => {
                     
             <div v-if="currentDomicilios.length === 0" class="p-12 text-center">
               <span class="inline-block p-3 rounded-full bg-gray-100 text-gray-400 mb-3">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
               </span>
               <p class="text-[15px] text-gray-500 font-medium">
                 Sin domicilios asignados

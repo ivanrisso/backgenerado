@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { useTiposImpuesto } from '../../composables/useTiposImpuesto';
+import { useTiposImpuesto } from '@modules/Maestros/composables/useTiposImpuesto';
 import TipoImpuestoForm from './TipoImpuestoForm.vue';
 import TipoImpuestoCondicionesTab from './TipoImpuestoCondicionesTab.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { TipoImpuesto } from '../../../domain/entities/TipoImpuesto';
-import { TipoUsoImpuestoEnum } from '../../../domain/enums/TipoUsoImpuestoEnum';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { TipoImpuesto } from '@domain/entities/TipoImpuesto';
+import { TipoUsoImpuestoEnum } from '@domain/enums/TipoUsoImpuestoEnum';
 
 const { tiposImpuesto, loading, error, loadTiposImpuesto, createTipoImpuesto, updateTipoImpuesto, deleteTipoImpuesto } = useTiposImpuesto();
 

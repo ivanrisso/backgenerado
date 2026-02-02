@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useCondicionesTributarias } from '../../composables/useCondicionesTributarias';
+import { useCondicionesTributarias } from '@modules/Maestros/composables/useCondicionesTributarias';
 import CondicionTributariaForm from './CondicionTributariaForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { CondicionTributaria } from '../../../domain/entities/CondicionTributaria';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { CondicionTributaria } from '@domain/entities/CondicionTributaria';
 
 const { 
     condicionesTributarias, 

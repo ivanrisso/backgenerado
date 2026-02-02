@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
-import type { CondicionTributaria } from '../../../domain/entities/CondicionTributaria';
-import { AmbitoImpuestoEnum } from '../../../domain/enums/AmbitoImpuestoEnum';
-import { useTiposImpuesto } from '../../composables/useTiposImpuesto';
+import type { CondicionTributaria } from '@domain/entities/CondicionTributaria';
+import { AmbitoImpuestoEnum } from '@domain/enums/AmbitoImpuestoEnum';
+import { useTiposImpuesto } from '@modules/Maestros/composables/useTiposImpuesto';
 
 const props = defineProps<{
     modelValue: CondicionTributaria | null;

@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Telefono } from '../../../domain/entities/Telefono';
+import type { Telefono } from '@domain/entities/Telefono';
 
 const props = defineProps<{
     modelValue: Telefono | null;

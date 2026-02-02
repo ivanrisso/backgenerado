@@ -1,9 +1,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useClientes } from '../../composables/useClientes';
-import { useComprobantes } from '../../composables/useComprobantes';
-import { useTiposComprobante } from '../../composables/useTiposComprobante';
+import { useClientes } from '@modules/Clientes/composables/useClientes';
+import { useComprobantes } from '@modules/Facturacion/composables/useComprobantes';
+import { useTiposComprobante } from '@modules/Maestros/composables/useTiposComprobante';
 
 const { 
     clientes, 

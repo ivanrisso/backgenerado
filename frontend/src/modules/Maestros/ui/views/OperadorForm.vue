@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Operador } from '../../../domain/entities/Operador';
+import type { Operador } from '@domain/entities/Operador';
 
 const props = defineProps<{
     modelValue: Operador | null;

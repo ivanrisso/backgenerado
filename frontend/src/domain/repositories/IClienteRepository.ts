@@ -8,5 +8,6 @@ export interface IClienteRepository {
     delete: (id: number) => Promise<void>;
     getAfipTaxComparison: (id: number) => Promise<any>;
     syncAfipTaxes: (id: number, afipIds: string[]) => Promise<any>;
+    getDeudores: () => Promise<Cliente[]>;
 }
 

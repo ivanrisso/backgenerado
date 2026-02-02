@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Concepto } from '../../../domain/entities/Concepto';
+import type { Concepto } from '@domain/entities/Concepto';
 
 const props = defineProps<{
     modelValue: Concepto | null;

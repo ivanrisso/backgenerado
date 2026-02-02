@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useClientes } from '../../composables/useClientes';
-import { useTiposComprobante } from '../../composables/useTiposComprobante';
-import { useMonedas } from '../../composables/useMonedas';
-import { useConceptos } from '../../composables/useConceptos';
-import { useIvas } from '../../composables/useIvas';
-import { useCondicionIva } from '../../composables/useCondicionIva';
-import { useDomicilios } from '../../composables/useDomicilios';
+import { useClientes } from '@modules/Clientes/composables/useClientes';
+import { useTiposComprobante } from '@modules/Maestros/composables/useTiposComprobante';
+import { useMonedas } from '@modules/Maestros/composables/useMonedas';
+import { useConceptos } from '@modules/Maestros/composables/useConceptos';
+import { useIvas } from '@modules/Maestros/composables/useIvas';
+import { useCondicionesTributarias } from '@modules/Maestros/composables/useCondicionesTributarias';
+import { useDomicilios } from '@modules/Clientes/composables/useDomicilios';
 
-import { createComprobanteFullUseCase, getLocalidadByIdUseCase, getProvinciaByIdUseCase } from '../../../di';
-import { Money } from '../../../domain/value-objects/Money';
-import { useComprobantes } from '../../composables/useComprobantes';
+import { createComprobanteFullUseCase, getLocalidadByIdUseCase, getProvinciaByIdUseCase } from '@/di';
+import { Money } from '@domain/value-objects/Money';
+import { useComprobantes } from '@modules/Facturacion/composables/useComprobantes';
 
 
 
@@ -23,7 +23,7 @@ const { tiposComprobante, loadTiposComprobante } = useTiposComprobante();
 const { monedas, loadMonedas } = useMonedas();
 const { conceptos, loadConceptos } = useConceptos();
 const { ivas, loadIvas } = useIvas();
-const { condicionesIva, loadCondicionesIva } = useCondicionIva();
+const { condicionesTributarias: condicionesIva, loadCondicionesTributarias: loadCondicionesIva } = useCondicionesTributarias();
 const { domicilios, loadDomicilios } = useDomicilios();
 
 const { comprobantes, loadComprobantes } = useComprobantes();
@@ -239,8 +239,8 @@ watch(() => cabecera.value.cliente_id, async (newId) => {
         }
         
         // Auto-select Tipo Comprobante based on Condicion IVA
-        if (cliente.iva_id) {
-            const ivaCond = condicionesIva.value.find(i => i.id === cliente.iva_id);
+        if (cliente.condicion_iva_id) {
+            const ivaCond = condicionesIva.value.find(i => i.id === cliente.condicion_iva_id);
             if (ivaCond) {
 
                 // Responsable Inscripto (Code 1) -> Factura A (Code "01")
@@ -272,8 +272,16 @@ const removeItem = (index: number) => {
 };
 
 const submit = async () => {
-    if (!cabecera.value.cliente_id || !cabecera.value.tipo_comprobante_id || !cabecera.value.concepto_id) {
-        error.value = "Por favor complete los campos obligatorios.";
+    if (!cabecera.value.cliente_id) {
+        error.value = "Debe seleccionar un cliente de la lista sugerida.";
+        return;
+    }
+    if (!cabecera.value.tipo_comprobante_id) {
+        error.value = "Debe seleccionar un Tipo de Comprobante.";
+        return;
+    }
+    if (!cabecera.value.concepto_id) {
+        error.value = "Debe seleccionar un Concepto.";
         return;
     }
 

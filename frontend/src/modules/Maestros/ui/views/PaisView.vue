@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useUbicacion } from '../../composables/useUbicacion';
+import { useUbicacion } from '@modules/Maestros/composables/useUbicacion';
 import PaisForm from './PaisForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Pais } from '../../../domain/entities/Pais';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Pais } from '@domain/entities/Pais';
 
 const { paises, loading, error, createPais, updatePais, deletePais, loadPaises } = useUbicacion();
 

@@ -30,7 +30,7 @@ export function useClientes() {
         error.value = null;
         try {
             // calling equivalent of repository.getDeudores()
-            clientesDeudores.value = await (repository as any).getDeudores();
+            clientesDeudores.value = await repository.getDeudores();
         } catch (e: any) {
             error.value = e.message || 'Error loading deudores';
             throw e;

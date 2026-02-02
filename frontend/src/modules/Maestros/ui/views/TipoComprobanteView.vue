@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useTiposComprobante } from '../../composables/useTiposComprobante';
+import { useTiposComprobante } from '@modules/Maestros/composables/useTiposComprobante';
 import TipoComprobanteForm from './TipoComprobanteForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { TipoComprobante } from '../../../domain/entities/TipoComprobante';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { TipoComprobante } from '@domain/entities/TipoComprobante';
 
 const { tiposComprobante, loading, error, loadTiposComprobante, createTipoComprobante, updateTipoComprobante, deleteTipoComprobante } = useTiposComprobante();
 

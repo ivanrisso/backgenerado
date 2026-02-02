@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { TipoComprobante } from '../../../domain/entities/TipoComprobante';
+import type { TipoComprobante } from '@domain/entities/TipoComprobante';
 
 const props = defineProps<{
     modelValue: TipoComprobante | null;

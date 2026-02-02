@@ -27,11 +27,24 @@ export const menuConfig: MenuItem[] = [
                 route: '/comprobantes',
                 permissions: ['comprobante.read']
             },
+            // {
+            //     id: 'nuevo-comprobante',
+            //     label: 'Nueva Factura',
+            //     route: '/comprobantes/nuevo',
+            //     roles: ['admin', 'vendedor']
+            // }
+        ]
+    },
+    {
+        id: 'tesoreria',
+        label: 'Tesorería',
+        icon: 'currency-dollar',
+        children: [
             {
-                id: 'nuevo-comprobante',
-                label: 'Nueva Factura',
-                route: '/comprobantes/nuevo',
-                roles: ['admin', 'vendedor']
+                id: 'nuevo-recibo',
+                label: 'Nuevo Recibo',
+                route: '/recibos/nuevo',
+                roles: ['admin', 'cobranzas']
             }
         ]
     },
@@ -68,10 +81,17 @@ export const menuConfig: MenuItem[] = [
         children: [
             { id: 'monedas', label: 'Monedas', route: '/monedas' },
             { id: 'ivas', label: 'Tasas IVA', route: '/ivas' },
+            { id: 'tipos-comprobante', label: 'Tipos Comprobante', route: '/tipos-comprobante' },
+            { id: 'tipo-impuestos', label: 'Tipos Impuesto', route: '/tipos-impuesto' },
+            { id: 'condiciones-trib', label: 'Cond. Tributarias', route: '/condiciones-tributarias' },
             { id: 'conceptos', label: 'Conceptos', route: '/conceptos' },
+            { id: 'tipos-doc', label: 'Tipos Documento', route: '/tipodocs' },
             { id: 'paises', label: 'Países', route: '/paises' },
             { id: 'provincias', label: 'Provincias', route: '/provincias' },
-            { id: 'localidades', label: 'Localidades', route: '/localidades' }
+            { id: 'localidades', label: 'Localidades', route: '/localidades' },
+            { id: 'tipos-tel', label: 'Tipos Teléfono', route: '/tipotels' },
+            // { id: 'domicilios', label: 'Domicilios', route: '/domicilios' },
+            { id: 'operadores', label: 'Operadores', route: '/operadores' }
         ]
     },
     {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useTiposContacto } from '../../composables/useTiposContacto';
+import { useTiposTel } from '@modules/Maestros/composables/useTiposTel';
 
-const { tiposDom, tiposTel, loading, error } = useTiposContacto();
+const { tiposDom, tiposTel, loading, error } = useTiposTel();
 </script>
 
 <template>

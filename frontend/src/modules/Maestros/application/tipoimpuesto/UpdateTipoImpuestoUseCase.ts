@@ -1,6 +1,6 @@
 
-import type { ITipoImpuestoRepository } from '../../../domain/repositories/ITipoImpuestoRepository';
-import type { TipoImpuesto } from '../../../domain/entities/TipoImpuesto';
+import type { ITipoImpuestoRepository } from '@domain/repositories/ITipoImpuestoRepository';
+import type { TipoImpuesto } from '@domain/entities/TipoImpuesto';
 
 export class UpdateTipoImpuestoUseCase {
     constructor(private repository: ITipoImpuestoRepository) { }

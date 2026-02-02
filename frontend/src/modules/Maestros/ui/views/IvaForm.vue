@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Iva } from '../../../domain/entities/Iva';
+import type { Iva } from '@domain/entities/Iva';
 
 const props = defineProps<{
     modelValue: Iva | null;

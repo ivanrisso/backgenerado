@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Domicilio } from '../../../domain/entities/Domicilio';
+import type { Domicilio } from '@domain/entities/Domicilio';
 
 const props = defineProps<{
     modelValue: Domicilio | null;

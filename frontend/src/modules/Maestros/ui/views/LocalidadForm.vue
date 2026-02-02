@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Localidad } from '../../../domain/entities/Localidad';
-import { Localidad as LocalidadEntity } from '../../../domain/entities/Localidad'; // Alias to avoid conflict with types if needed, or just use same name if class
-import type { Provincia } from '../../../domain/entities/Provincia';
+import type { Localidad } from '@domain/entities/Localidad';
+import { Localidad as LocalidadEntity } from '@domain/entities/Localidad'; // Alias to avoid conflict with types if needed, or just use same name if class
+import type { Provincia } from '@domain/entities/Provincia';
 
 const props = defineProps<{
     modelValue: Localidad | null;

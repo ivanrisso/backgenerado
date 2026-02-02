@@ -1,10 +1,10 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
-import type { Articulo } from '../../../domain/entities/Articulo';
-import { TipoArticuloEnum } from '../../../domain/enums/TipoArticuloEnum';
-import { useTiposImpuesto } from '../../composables/useTiposImpuesto';
-import { TipoUsoImpuestoEnum } from '../../../domain/enums/TipoUsoImpuestoEnum';
+import type { Articulo } from '@domain/entities/Articulo';
+import { TipoArticuloEnum } from '@domain/enums/TipoArticuloEnum';
+import { useTiposImpuesto } from '@modules/Maestros/composables/useTiposImpuesto';
+import { TipoUsoImpuestoEnum } from '@domain/enums/TipoUsoImpuestoEnum';
 
 const props = defineProps<{
     modelValue: Articulo | null;

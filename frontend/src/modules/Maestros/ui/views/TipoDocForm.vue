@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { TipoDoc } from '../../../domain/entities/TipoDoc';
-import { CodigoArca } from '../../../domain/value-objects/CodigoArca';
+import { TipoDoc } from '@domain/entities/TipoDoc';
+import { CodigoArca } from '@domain/value-objects/CodigoArca';
 
 const props = defineProps<{
     modelValue: TipoDoc | null; // If null, assume creation

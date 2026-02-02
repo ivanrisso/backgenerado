@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { Provincia } from '../../../domain/entities/Provincia';
+import { Provincia } from '@domain/entities/Provincia';
 
 
 const props = defineProps<{

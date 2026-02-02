@@ -1,11 +1,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useDomicilios } from '../../composables/useDomicilios';
+import { useDomicilios } from '@modules/Maestros/composables/useDomicilios';
 import DomicilioForm from './DomicilioForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Domicilio } from '../../../domain/entities/Domicilio';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Domicilio } from '@domain/entities/Domicilio';
 
 const { domicilios, loading, error, loadDomicilios, createDomicilio, updateDomicilio, deleteDomicilio } = useDomicilios();
 

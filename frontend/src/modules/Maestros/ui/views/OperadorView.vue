@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useOperadores } from '../../composables/useOperadores';
+import { useOperadores } from '@modules/Maestros/composables/useOperadores';
 import OperadorForm from './OperadorForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Operador } from '../../../domain/entities/Operador';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Operador } from '@domain/entities/Operador';
 
 const { operadores, loading, error, loadOperadores, createOperador, updateOperador, deleteOperador } = useOperadores();
 

@@ -128,118 +128,124 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="p-6">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800">Nuevo Recibo de Cobranza</h1>
+  <div class="p-6">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">
+      Nuevo Recibo de Cobranza
+    </h1>
 
-        <div class="bg-white p-6 rounded-lg shadow space-y-6">
-            
-            <!-- Cliente -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Cliente</label>
-                <div class="relative mt-1">
-                    <input 
-                        v-model="clientSearchQuery" 
-                        type="text" 
-                        class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        placeholder="Buscar cliente..."
-                        @focus="clientShowSuggestions = true"
-                        @blur="handleClientBlur"
-                    />
-                    <ul v-if="clientShowSuggestions && clientFilteredList.length" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto shadow-lg">
-                        <li v-for="c in clientFilteredList" :key="c.id" 
-                            class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm"
-                            @mousedown.prevent="selectCliente(c)"
-                        >
-                            {{ c.razon_social || c.nombre + ' ' + c.apellido }} ({{ c.cuit }})
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Datos Recibo -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Fecha Emisión</label>
-                    <input v-model="form.fecha_emision" type="date" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm" />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Punto de Venta</label>
-                    <input v-model.number="form.punto_venta" type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm" />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Importe Total</label>
-                    <div class="relative mt-1 rounded-md shadow-sm">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span class="text-gray-500 sm:text-sm">$</span>
-                        </div>
-                        <input v-model.number="form.total" type="number" step="0.01" class="block w-full rounded-md border-gray-300 pl-7 pr-12 focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="0.00" />
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Observaciones</label>
-                <textarea v-model="form.observaciones" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"></textarea>
-            </div>
-
-            <!-- Imputaciones -->
-            <div v-if="selectedClientId" class="border-t pt-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Imputación a Facturas</h3>
-                    <button type="button" @click="autoImputar" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none">
-                        Auto-Imputar (Antigüedad)
-                    </button>
-                </div>
-
-                <div v-if="comprobantesPendientes.length === 0" class="text-sm text-gray-500 italic">
-                    El cliente no tiene facturas con saldo pendiente. Se generará un saldo a favor.
-                </div>
-
-                <div v-else class="space-y-2">
-                    <div v-for="debt in comprobantesPendientes" :key="debt.id" class="flex items-center justify-between bg-gray-50 p-3 rounded border">
-                        <div class="text-sm">
-                            <span class="font-bold">{{ debt.tipo_comprobante_id }}</span> <!-- TODO: Map Name -->
-                            Nro: {{ debt.numero }} - Fecha: {{ new Date(debt.fecha_emision).toLocaleDateString() }}
-                            <div class="text-gray-500">Saldo: ${{ debt.saldo }}</div>
-                        </div>
-                        <div class="w-32">
-                             <!-- Check if this debt is in imputaciones list -->
-                            <input 
-                                :value="form.imputaciones.find(i => i.comprobante_deuda_id === debt.id)?.importe || 0"
-                                @input="(e: any) => {
-                                    const val = Number(e.target.value);
-                                    const idx = form.imputaciones.findIndex(i => i.comprobante_deuda_id === debt.id);
-                                    if (val > 0) {
-                                        if (idx >= 0) form.imputaciones[idx].importe = val;
-                                        else form.imputaciones.push({ comprobante_deuda_id: debt.id, importe: val });
-                                    } else {
-                                        if (idx >= 0) form.imputaciones.splice(idx, 1);
-                                    }
-                                }"
-                                type="number" 
-                                class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md text-right" 
-                            />
-                        </div>
-                    </div>
-                    <div class="text-right text-sm font-bold text-gray-700 mt-2">
-                        Total Imputado: ${{ form.imputaciones.reduce((sum, i) => sum + i.importe, 0).toFixed(2) }}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botones -->
-            <div class="flex justify-end pt-4 space-x-3">
-                <button type="button" @click="router.back()" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Cancelar
-                </button>
-                <button type="button" @click="submit" :disabled="isSubmitting" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
-                    {{ isSubmitting ? 'Guardando...' : 'Crear Recibo' }}
-                </button>
-            </div>
-            
-            <div v-if="errorMsg" class="text-red-600 text-sm font-bold text-center">
-                {{ errorMsg }}
-            </div>
+    <div class="bg-white p-6 rounded-lg shadow space-y-6">
+      <!-- Cliente -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Cliente</label>
+        <div class="relative mt-1">
+          <input 
+            v-model="clientSearchQuery" 
+            type="text" 
+            class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="Buscar cliente..."
+            @focus="clientShowSuggestions = true"
+            @blur="handleClientBlur"
+          >
+          <ul v-if="clientShowSuggestions && clientFilteredList.length" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto shadow-lg">
+            <li
+              v-for="c in clientFilteredList" :key="c.id" 
+              class="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+              @mousedown.prevent="selectCliente(c)"
+            >
+              {{ c.razon_social || `${c.nombre } ${ c.apellido}` }} ({{ c.cuit }})
+            </li>
+          </ul>
         </div>
+      </div>
+
+      <!-- Datos Recibo -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Fecha Emisión</label>
+          <input v-model="form.fecha_emision" type="date" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Punto de Venta</label>
+          <input v-model.number="form.punto_venta" type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Importe Total</label>
+          <div class="relative mt-1 rounded-md shadow-sm">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <span class="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <input v-model.number="form.total" type="number" step="0.01" class="block w-full rounded-md border-gray-300 pl-7 pr-12 focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Observaciones</label>
+        <textarea v-model="form.observaciones" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm" />
+      </div>
+
+      <!-- Imputaciones -->
+      <div v-if="selectedClientId" class="border-t pt-4">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-medium text-gray-900">
+            Imputación a Facturas
+          </h3>
+          <button type="button" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none" @click="autoImputar">
+            Auto-Imputar (Antigüedad)
+          </button>
+        </div>
+
+        <div v-if="comprobantesPendientes.length === 0" class="text-sm text-gray-500 italic">
+          El cliente no tiene facturas con saldo pendiente. Se generará un saldo a favor.
+        </div>
+
+        <div v-else class="space-y-2">
+          <div v-for="debt in comprobantesPendientes" :key="debt.id" class="flex items-center justify-between bg-gray-50 p-3 rounded border">
+            <div class="text-sm">
+              <span class="font-bold">{{ debt.tipo_comprobante_id }}</span> <!-- TODO: Map Name -->
+              Nro: {{ debt.numero }} - Fecha: {{ new Date(debt.fecha_emision).toLocaleDateString() }}
+              <div class="text-gray-500">
+                Saldo: ${{ debt.saldo }}
+              </div>
+            </div>
+            <div class="w-32">
+              <!-- Check if this debt is in imputaciones list -->
+              <input 
+                :value="form.imputaciones.find(i => i.comprobante_deuda_id === debt.id)?.importe || 0"
+                type="number"
+                class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md text-right" 
+                @input="(e: any) => {
+                  const val = Number(e.target.value);
+                  const idx = form.imputaciones.findIndex(i => i.comprobante_deuda_id === debt.id);
+                  if (val > 0) {
+                    if (idx >= 0) form.imputaciones[idx].importe = val;
+                    else form.imputaciones.push({ comprobante_deuda_id: debt.id, importe: val });
+                  } else {
+                    if (idx >= 0) form.imputaciones.splice(idx, 1);
+                  }
+                }" 
+              >
+            </div>
+          </div>
+          <div class="text-right text-sm font-bold text-gray-700 mt-2">
+            Total Imputado: ${{ form.imputaciones.reduce((sum, i) => sum + i.importe, 0).toFixed(2) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex justify-end pt-4 space-x-3">
+        <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" @click="router.back()">
+          Cancelar
+        </button>
+        <button type="button" :disabled="isSubmitting" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50" @click="submit">
+          {{ isSubmitting ? 'Guardando...' : 'Crear Recibo' }}
+        </button>
+      </div>
+            
+      <div v-if="errorMsg" class="text-red-600 text-sm font-bold text-center">
+        {{ errorMsg }}
+      </div>
     </div>
+  </div>
 </template>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useConceptos } from '../../composables/useConceptos';
+import { useConceptos } from '@modules/Maestros/composables/useConceptos';
 import ConceptoForm from './ConceptoForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Concepto } from '../../../domain/entities/Concepto';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Concepto } from '@domain/entities/Concepto';
 
 const { conceptos, loading, error, loadConceptos, createConcepto, updateConcepto, deleteConcepto } = useConceptos();
 

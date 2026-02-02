@@ -6,8 +6,7 @@ defineProps<{
 
 <template>
   <span
-    :class="[
-      'inline-flex items-center px-2 py-1 rounded-md text-xs font-medium',
+    class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium" :class="[
       `bg-semantic-${type}-bg text-semantic-${type}-fg`
     ]"
   >

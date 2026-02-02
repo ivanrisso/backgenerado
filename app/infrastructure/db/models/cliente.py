@@ -15,8 +15,8 @@ class Cliente(Base):
     email: Mapped[Optional[EmailStr]] = mapped_column()
     tipo_doc_id: Mapped[int] = mapped_column()
     iva_id: Mapped[int] = mapped_column()
-    iva: Mapped["Iva"] = mapped_column()
-    tipo_doc: Mapped[TipoDoc] = mapped_column()
+    iva: Mapped["Iva"] = relationship()
+    tipo_doc: Mapped["TipoDoc"] = relationship()
     comprobantes: Mapped[List["Comprobante"]] = relationship(back_populates="cliente")
     domicilios: Mapped[List["Domicilio"]] = relationship(back_populates="cliente")
 

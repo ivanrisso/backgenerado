@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
-import { useUbicacion } from '../../composables/useUbicacion';
+import { useUbicacion } from '@modules/Maestros/composables/useUbicacion';
 import ProvinciaForm from './ProvinciaForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Provincia } from '../../../domain/entities/Provincia';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Provincia } from '@domain/entities/Provincia';
 
 const { 
     paises, provincias, selectedPaisId, loading, error, 
@@ -21,7 +21,8 @@ const editingEntity = ref<Provincia | null>(null);
 
 // Auto-select first country logic
 watch(paises, (newPaises) => {
-    if (newPaises.length > 0 && selectedPaisId.value === null && newPaises[0]) {
+    if (!newPaises || newPaises.length === 0) return;
+    if (selectedPaisId.value === null && newPaises[0]) {
         handlePaisChange(newPaises[0].id);
     }
 });

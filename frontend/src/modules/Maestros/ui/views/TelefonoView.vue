@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useTelefonos } from '../../composables/useTelefonos';
+import { useTelefonos } from '@modules/Maestros/composables/useTelefonos';
 import TelefonoForm from './TelefonoForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Telefono } from '../../../domain/entities/Telefono';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Telefono } from '@domain/entities/Telefono';
 
 const { telefonos, loading, error, loadTelefonos, createTelefono, updateTelefono, deleteTelefono } = useTelefonos();
 

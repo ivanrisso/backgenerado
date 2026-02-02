@@ -49,5 +49,10 @@ export class AxiosClienteRepository implements IClienteRepository {
         const response = await httpClient.post(`${this.resource}${id}/sync-afip-taxes`, afipIds);
         return response.data;
     }
+
+    async getDeudores(): Promise<Cliente[]> {
+        const response = await httpClient.get(`${this.resource}deudores`);
+        return response.data.map(ClienteMapper.toDomain);
+    }
 }
 

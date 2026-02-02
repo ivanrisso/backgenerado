@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useComprobantes } from '../../composables/useComprobantes';
-import { useTiposComprobante } from '../../composables/useTiposComprobante';
-import { useClientes } from '../../composables/useClientes';
+import { useComprobantes } from '@modules/Facturacion/composables/useComprobantes';
+import { useTiposComprobante } from '@modules/Maestros/composables/useTiposComprobante';
+import { useClientes } from '@modules/Clientes/composables/useClientes';
 
 const router = useRouter();
 const { comprobantes, loading, error, loadComprobantes } = useComprobantes();

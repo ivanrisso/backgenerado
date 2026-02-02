@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { TipoImpuesto } from '../../../domain/entities/TipoImpuesto';
-import { TipoAplicacionEnum } from '../../../domain/enums/TipoAplicacionEnum';
-import { BaseTributarioEnum } from '../../../domain/enums/BaseTributarioEnum';
-import { AmbitoImpuestoEnum } from '../../../domain/enums/AmbitoImpuestoEnum';
-import { CategoriaImpuestoEnum } from '../../../domain/enums/CategoriaImpuestoEnum';
-import { TipoUsoImpuestoEnum } from '../../../domain/enums/TipoUsoImpuestoEnum';
-import { MetodoCalculoImpuestoEnum } from '../../../domain/enums/MetodoCalculoImpuestoEnum';
-import { AmbitoUsoImpuestoEnum } from '../../../domain/enums/AmbitoUsoImpuestoEnum';
-import { CategoriaFiscalImpuestoEnum } from '../../../domain/enums/CategoriaFiscalImpuestoEnum';
-import { TipoDistribucionImpuestoEnum, TipoReparticionBaseImpuestoEnum } from '../../../domain/entities/TipoImpuestoDistribucion';
-import TaxDistributionTable from '../../components/maestros/TaxDistributionTable.vue';
+import type { TipoImpuesto } from '@domain/entities/TipoImpuesto';
+import { TipoAplicacionEnum } from '@domain/enums/TipoAplicacionEnum';
+import { BaseTributarioEnum } from '@domain/enums/BaseTributarioEnum';
+import { AmbitoImpuestoEnum } from '@domain/enums/AmbitoImpuestoEnum';
+import { CategoriaImpuestoEnum } from '@domain/enums/CategoriaImpuestoEnum';
+import { TipoUsoImpuestoEnum } from '@domain/enums/TipoUsoImpuestoEnum';
+import { MetodoCalculoImpuestoEnum } from '@domain/enums/MetodoCalculoImpuestoEnum';
+import { AmbitoUsoImpuestoEnum } from '@domain/enums/AmbitoUsoImpuestoEnum';
+import { CategoriaFiscalImpuestoEnum } from '@domain/enums/CategoriaFiscalImpuestoEnum';
+import { TipoDistribucionImpuestoEnum, TipoReparticionBaseImpuestoEnum } from '@domain/entities/TipoImpuestoDistribucion';
+import TaxDistributionTable from '@modules/Maestros/components/maestros/TaxDistributionTable.vue';
 
 const props = defineProps<{
     modelValue: TipoImpuesto | null;

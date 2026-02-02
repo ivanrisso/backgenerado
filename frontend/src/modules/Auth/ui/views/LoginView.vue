@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { loginUseCase } from '@modules/Auth/di';
+import { loginUseCase } from '@/di';
+import { useAuthStore } from '@shared/stores/auth';
 
 const router = useRouter();
 const email = ref('');
@@ -14,8 +15,13 @@ const handleLogin = async () => {
     error.value = '';
     try {
         await loginUseCase.execute(email.value, password.value);
+        
+        // Force hydration of the store before redirecting
+        const authStore = useAuthStore();
+        await authStore.fetchUser(true);
+
         // Login successful, redirect to dashboard
-        router.push('/');
+        await router.replace('/');
     } catch (e: any) {
         const msg = (e as any).response?.data?.detail;
         error.value = msg || 'Credenciales inválidas o error en el servidor.';

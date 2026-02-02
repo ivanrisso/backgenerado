@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useMonedas } from '../../composables/useMonedas';
+import { useMonedas } from '@modules/Maestros/composables/useMonedas';
 import MonedaForm from './MonedaForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { Moneda } from '../../../domain/entities/Moneda';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { Moneda } from '@domain/entities/Moneda';
 
 const { monedas, loading, error, loadMonedas, createMoneda, updateMoneda, deleteMoneda } = useMonedas();
 

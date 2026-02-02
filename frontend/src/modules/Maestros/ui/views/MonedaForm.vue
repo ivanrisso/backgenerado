@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import type { Moneda } from '../../../domain/entities/Moneda';
+import type { Moneda } from '@domain/entities/Moneda';
 
 const props = defineProps<{
     modelValue: Moneda | null;

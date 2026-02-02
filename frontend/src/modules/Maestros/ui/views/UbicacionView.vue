@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UbicacionSelector from '../../components/config/UbicacionSelector.vue';
+import UbicacionSelector from '@modules/Maestros/components/config/UbicacionSelector.vue';
 </script>
 
 <template>

@@ -53,7 +53,7 @@ class AfipAdapter:
             if not cliente:
                  raise ErrorAfip(f"Cliente {comprobante.cliente_id} no encontrado")
             
-            condicion_iva = await self.iva_uc.get_by_id(cliente.iva_id)
+            condicion_iva = await self.iva_uc.get_by_id(cliente.condicion_iva_id)
             if not condicion_iva:
                  raise ErrorAfip(f"El cliente {cliente.nombre} no tiene condición de IVA asignada")
 

@@ -13,64 +13,66 @@ import { HttpCondicionTributariaRepository } from '@infra/repositories/HttpCondi
 
 
 
-import { GetClientesUseCase } from '@app/use-cases/GetClientesUseCase';
-import { CreateClienteUseCase } from '@app/use-cases/CreateClienteUseCase';
-import { UpdateClienteUseCase } from '@app/use-cases/UpdateClienteUseCase';
-import { GetClienteByIdUseCase } from '@app/use-cases/GetClienteByIdUseCase';
-import { DeleteClienteUseCase } from '@app/use-cases/DeleteClienteUseCase';
-import { GetAfipTaxComparisonUseCase } from '@app/use-cases/GetAfipTaxComparisonUseCase';
-import { SyncAfipTaxesUseCase } from '@app/use-cases/SyncAfipTaxesUseCase';
-import { GetCondicionesTributariasUseCase } from '@app/use-cases/condiciontributaria/GetCondicionesTributariasUseCase';
+import { GetClientesUseCase } from '@modules/Clientes/application/GetClientesUseCase';
+import { CreateClienteUseCase } from '@modules/Clientes/application/CreateClienteUseCase';
+import { UpdateClienteUseCase } from '@modules/Clientes/application/UpdateClienteUseCase';
+import { GetClienteByIdUseCase } from '@modules/Clientes/application/GetClienteByIdUseCase';
+import { DeleteClienteUseCase } from '@modules/Clientes/application/DeleteClienteUseCase';
+import { GetAfipTaxComparisonUseCase } from '@modules/Facturacion/application/GetAfipTaxComparisonUseCase';
+import { SyncAfipTaxesUseCase } from '@modules/Facturacion/application/SyncAfipTaxesUseCase';
+import { GetCondicionesTributariasUseCase } from '@modules/Maestros/application/condiciontributaria/GetCondicionesTributariasUseCase';
 
 
 
-import { GetComprobantesUseCase } from '@app/use-cases/GetComprobantesUseCase';
-import { CreateComprobanteUseCase } from '@app/use-cases/CreateComprobanteUseCase';
+import { GetComprobantesUseCase } from '@modules/Facturacion/application/GetComprobantesUseCase';
+import { CreateComprobanteUseCase } from '@modules/Facturacion/application/CreateComprobanteUseCase';
 
-import { LoginUseCase } from '@app/use-cases/LoginUseCase';
-import { LogoutUseCase } from '@app/use-cases/LogoutUseCase';
-import { GetProfileUseCase } from '@app/use-cases/GetProfileUseCase';
+import { LoginUseCase } from '@modules/Auth/application/LoginUseCase';
+import { LogoutUseCase } from '@modules/Auth/application/LogoutUseCase';
+import { GetProfileUseCase } from '@modules/Auth/application/GetProfileUseCase';
 
 // New UseCase Imports
-import { GetTiposDocUseCase } from '@app/use-cases/TipoDoc/GetTiposDocUseCase';
-import { GetTipoDocByIdUseCase } from '@app/use-cases/TipoDoc/GetTipoDocByIdUseCase';
-import { CreateTipoDocUseCase } from '@app/use-cases/TipoDoc/CreateTipoDocUseCase';
-import { UpdateTipoDocUseCase } from '@app/use-cases/TipoDoc/UpdateTipoDocUseCase';
-import { DeleteTipoDocUseCase } from '@app/use-cases/TipoDoc/DeleteTipoDocUseCase';
+import { GetTiposDocUseCase } from '@modules/Maestros/application/TipoDoc/GetTiposDocUseCase';
+import { GetTipoDocByIdUseCase } from '@modules/Maestros/application/TipoDoc/GetTipoDocByIdUseCase';
+import { CreateTipoDocUseCase } from '@modules/Maestros/application/TipoDoc/CreateTipoDocUseCase';
+import { UpdateTipoDocUseCase } from '@modules/Maestros/application/TipoDoc/UpdateTipoDocUseCase';
+import { DeleteTipoDocUseCase } from '@modules/Maestros/application/TipoDoc/DeleteTipoDocUseCase';
 
-import { GetPaisesUseCase } from '@app/use-cases/Pais/GetPaisesUseCase';
-import { CreatePaisUseCase } from '@app/use-cases/Pais/CreatePaisUseCase';
-import { UpdatePaisUseCase } from '@app/use-cases/Pais/UpdatePaisUseCase';
-import { DeletePaisUseCase } from '@app/use-cases/Pais/DeletePaisUseCase';
+import { GetPaisesUseCase } from '@modules/Maestros/application/Pais/GetPaisesUseCase';
+import { CreatePaisUseCase } from '@modules/Maestros/application/Pais/CreatePaisUseCase';
+import { UpdatePaisUseCase } from '@modules/Maestros/application/Pais/UpdatePaisUseCase';
+import { DeletePaisUseCase } from '@modules/Maestros/application/Pais/DeletePaisUseCase';
 
-import { GetProvinciasByPaisUseCase } from '@app/use-cases/Provincia/GetProvinciasByPaisUseCase';
-import { CreateProvinciaUseCase } from '@app/use-cases/Provincia/CreateProvinciaUseCase';
-import { UpdateProvinciaUseCase } from '@app/use-cases/Provincia/UpdateProvinciaUseCase';
-import { DeleteProvinciaUseCase } from '@app/use-cases/Provincia/DeleteProvinciaUseCase';
+import { GetProvinciasByPaisUseCase } from '@modules/Maestros/application/Provincia/GetProvinciasByPaisUseCase';
+import { CreateProvinciaUseCase } from '@modules/Maestros/application/Provincia/CreateProvinciaUseCase';
+import { UpdateProvinciaUseCase } from '@modules/Maestros/application/Provincia/UpdateProvinciaUseCase';
+import { DeleteProvinciaUseCase } from '@modules/Maestros/application/Provincia/DeleteProvinciaUseCase';
 
-import { GetLocalidadesByProvinciaUseCase } from '@app/use-cases/Localidad/GetLocalidadesByProvinciaUseCase';
-import { CreateLocalidadUseCase } from '@app/use-cases/Localidad/CreateLocalidadUseCase';
-import { UpdateLocalidadUseCase } from '@app/use-cases/Localidad/UpdateLocalidadUseCase';
-import { DeleteLocalidadUseCase } from '@app/use-cases/Localidad/DeleteLocalidadUseCase';
+import { GetLocalidadesByProvinciaUseCase } from '@modules/Maestros/application/Localidad/GetLocalidadesByProvinciaUseCase';
+import { CreateLocalidadUseCase } from '@modules/Maestros/application/Localidad/CreateLocalidadUseCase';
+import { UpdateLocalidadUseCase } from '@modules/Maestros/application/Localidad/UpdateLocalidadUseCase';
+import { DeleteLocalidadUseCase } from '@modules/Maestros/application/Localidad/DeleteLocalidadUseCase';
 
-import { GetTiposDomUseCase } from '@app/use-cases/TipoDom/GetTiposDomUseCase';
-import { CreateTipoDomUseCase } from '@app/use-cases/TipoDom/CreateTipoDomUseCase';
-import { UpdateTipoDomUseCase } from '@app/use-cases/TipoDom/UpdateTipoDomUseCase';
-import { DeleteTipoDomUseCase } from '@app/use-cases/TipoDom/DeleteTipoDomUseCase';
+import { GetTiposDomUseCase } from '@modules/Maestros/application/TipoDom/GetTiposDomUseCase';
+import { CreateTipoDomUseCase } from '@modules/Maestros/application/TipoDom/CreateTipoDomUseCase';
+import { UpdateTipoDomUseCase } from '@modules/Maestros/application/TipoDom/UpdateTipoDomUseCase';
+import { DeleteTipoDomUseCase } from '@modules/Maestros/application/TipoDom/DeleteTipoDomUseCase';
 
-import { GetTiposTelUseCase } from '@app/use-cases/TipoTel/GetTiposTelUseCase';
-import { CreateTipoTelUseCase } from '@app/use-cases/TipoTel/CreateTipoTelUseCase';
-import { UpdateTipoTelUseCase } from '@app/use-cases/TipoTel/UpdateTipoTelUseCase';
-import { DeleteTipoTelUseCase } from '@app/use-cases/TipoTel/DeleteTipoTelUseCase';
+import { GetTiposTelUseCase } from '@modules/Maestros/application/TipoTel/GetTiposTelUseCase';
+import { CreateTipoTelUseCase } from '@modules/Maestros/application/TipoTel/CreateTipoTelUseCase';
+import { UpdateTipoTelUseCase } from '@modules/Maestros/application/TipoTel/UpdateTipoTelUseCase';
+import { DeleteTipoTelUseCase } from '@modules/Maestros/application/TipoTel/DeleteTipoTelUseCase';
 
-import { GetLocalidadByIdUseCase } from '@app/use-cases/ubicacion/GetLocalidadByIdUseCase';
-import { GetProvinciaByIdUseCase } from '@app/use-cases/ubicacion/GetProvinciaByIdUseCase';
+import { GetLocalidadByIdUseCase } from '@modules/Maestros/application/ubicacion/GetLocalidadByIdUseCase';
+import { GetProvinciaByIdUseCase } from '@modules/Maestros/application/ubicacion/GetProvinciaByIdUseCase';
 // Auth & RBAC Imports
 import { AxiosUsuarioRepository } from '@infra/repositories/AxiosUsuarioRepository';
 import { AxiosRolRepository } from '@infra/repositories/AxiosRolRepository';
 import { AxiosMenuItemRepository } from '@infra/repositories/AxiosMenuItemRepository';
 import { AxiosAuthService } from '@infra/services/AxiosAuthService';
 
+
+/*
 import {
     GetAllUsuariosUseCase,
     GetUsuarioByIdUseCase,
@@ -95,8 +97,9 @@ import {
     DeleteMenuItemUseCase,
     AssignRolesToMenuItemUseCase
 } from '@app/usecases/menuitem/MenuItemUseCases';
+*/
 
-import { AuthUseCase } from '@app/usecases/auth/AuthUseCase';
+// import { AuthUseCase } from '@modules/Auth/application/AuthUseCase';
 
 // ... existing imports ...
 import { HttpDomicilioRepository } from '@infra/repositories/HttpDomicilioRepository';
@@ -109,60 +112,60 @@ import { HttpIvaRepository } from '@infra/repositories/HttpIvaRepository';
 import { HttpTipoImpuestoRepository } from '@infra/repositories/HttpTipoImpuestoRepository';
 import { HttpArticuloRepository } from '@infra/repositories/HttpArticuloRepository';
 
-import { GetArticulosUseCase } from '@app/use-cases/articulo/GetArticulosUseCase';
-import { CreateArticuloUseCase } from '@app/use-cases/articulo/CreateArticuloUseCase';
-import { UpdateArticuloUseCase } from '@app/use-cases/articulo/UpdateArticuloUseCase';
-import { DeleteArticuloUseCase } from '@app/use-cases/articulo/DeleteArticuloUseCase';
+import { GetArticulosUseCase } from '@modules/Maestros/application/articulo/GetArticulosUseCase';
+import { CreateArticuloUseCase } from '@modules/Maestros/application/articulo/CreateArticuloUseCase';
+import { UpdateArticuloUseCase } from '@modules/Maestros/application/articulo/UpdateArticuloUseCase';
+import { DeleteArticuloUseCase } from '@modules/Maestros/application/articulo/DeleteArticuloUseCase';
 
-import { GetDomiciliosUseCase } from '@app/use-cases/domicilio/GetDomiciliosUseCase';
-import { CreateDomicilioUseCase } from '@app/use-cases/domicilio/CreateDomicilioUseCase';
-import { UpdateDomicilioUseCase } from '@app/use-cases/domicilio/UpdateDomicilioUseCase';
-import { DeleteDomicilioUseCase } from '@app/use-cases/domicilio/DeleteDomicilioUseCase';
-import { GetDomicilioByIdUseCase } from '@app/use-cases/domicilio/GetDomicilioByIdUseCase';
+import { GetDomiciliosUseCase } from '@modules/Maestros/application/domicilio/GetDomiciliosUseCase';
+import { CreateDomicilioUseCase } from '@modules/Maestros/application/domicilio/CreateDomicilioUseCase';
+import { UpdateDomicilioUseCase } from '@modules/Maestros/application/domicilio/UpdateDomicilioUseCase';
+import { DeleteDomicilioUseCase } from '@modules/Maestros/application/domicilio/DeleteDomicilioUseCase';
+import { GetDomicilioByIdUseCase } from '@modules/Maestros/application/domicilio/GetDomicilioByIdUseCase';
 
-import { GetTelefonosUseCase } from '@app/use-cases/telefono/GetTelefonosUseCase';
-import { CreateTelefonoUseCase } from '@app/use-cases/telefono/CreateTelefonoUseCase';
-import { UpdateTelefonoUseCase } from '@app/use-cases/telefono/UpdateTelefonoUseCase';
-import { DeleteTelefonoUseCase } from '@app/use-cases/telefono/DeleteTelefonoUseCase';
+import { GetTelefonosUseCase } from '@modules/Maestros/application/telefono/GetTelefonosUseCase';
+import { CreateTelefonoUseCase } from '@modules/Maestros/application/telefono/CreateTelefonoUseCase';
+import { UpdateTelefonoUseCase } from '@modules/Maestros/application/telefono/UpdateTelefonoUseCase';
+import { DeleteTelefonoUseCase } from '@modules/Maestros/application/telefono/DeleteTelefonoUseCase';
 
-import { GetOperadoresUseCase } from '@app/use-cases/operador/GetOperadoresUseCase';
-import { CreateOperadorUseCase } from '@app/use-cases/operador/CreateOperadorUseCase';
-import { DeleteOperadorUseCase } from '@app/use-cases/operador/DeleteOperadorUseCase';
+import { GetOperadoresUseCase } from '@modules/Maestros/application/operador/GetOperadoresUseCase';
+import { CreateOperadorUseCase } from '@modules/Maestros/application/operador/CreateOperadorUseCase';
+import { DeleteOperadorUseCase } from '@modules/Maestros/application/operador/DeleteOperadorUseCase';
 
-import { GetTiposComprobanteUseCase } from '@app/use-cases/tipocomprobante/GetTiposComprobanteUseCase';
-import { GetConceptosUseCase } from '@app/use-cases/concepto/GetConceptosUseCase';
-import { GetMonedasUseCase } from '@app/use-cases/moneda/GetMonedasUseCase';
-import { GetIvasUseCase } from '@app/use-cases/iva/GetIvasUseCase';
+import { GetTiposComprobanteUseCase } from '@modules/Maestros/application/tipocomprobante/GetTiposComprobanteUseCase';
+import { GetConceptosUseCase } from '@modules/Maestros/application/concepto/GetConceptosUseCase';
+import { GetMonedasUseCase } from '@modules/Maestros/application/moneda/GetMonedasUseCase';
+import { GetIvasUseCase } from '@modules/Maestros/application/iva/GetIvasUseCase';
 
-import { GetTiposImpuestoUseCase } from '@app/use-cases/tipoimpuesto/GetTiposImpuestoUseCase';
-import { CreateTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/CreateTipoImpuestoUseCase';
-import { UpdateTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/UpdateTipoImpuestoUseCase';
-import { DeleteTipoImpuestoUseCase } from '@app/use-cases/tipoimpuesto/DeleteTipoImpuestoUseCase';
-import { CreateIvaUseCase } from '@app/use-cases/iva/CreateIvaUseCase';
-import { UpdateIvaUseCase } from '@app/use-cases/iva/UpdateIvaUseCase';
-import { DeleteIvaUseCase } from '@app/use-cases/iva/DeleteIvaUseCase';
+import { GetTiposImpuestoUseCase } from '@modules/Maestros/application/tipoimpuesto/GetTiposImpuestoUseCase';
+import { CreateTipoImpuestoUseCase } from '@modules/Maestros/application/tipoimpuesto/CreateTipoImpuestoUseCase';
+import { UpdateTipoImpuestoUseCase } from '@modules/Maestros/application/tipoimpuesto/UpdateTipoImpuestoUseCase';
+import { DeleteTipoImpuestoUseCase } from '@modules/Maestros/application/tipoimpuesto/DeleteTipoImpuestoUseCase';
+import { CreateIvaUseCase } from '@modules/Maestros/application/iva/CreateIvaUseCase';
+import { UpdateIvaUseCase } from '@modules/Maestros/application/iva/UpdateIvaUseCase';
+import { DeleteIvaUseCase } from '@modules/Maestros/application/iva/DeleteIvaUseCase';
 
 
-import { CreateMonedaUseCase } from '@app/use-cases/moneda/CreateMonedaUseCase';
+import { CreateMonedaUseCase } from '@modules/Maestros/application/moneda/CreateMonedaUseCase';
 
-import { UpdateMonedaUseCase } from '@app/use-cases/moneda/UpdateMonedaUseCase';
-import { DeleteMonedaUseCase } from '@app/use-cases/moneda/DeleteMonedaUseCase';
+import { UpdateMonedaUseCase } from '@modules/Maestros/application/moneda/UpdateMonedaUseCase';
+import { DeleteMonedaUseCase } from '@modules/Maestros/application/moneda/DeleteMonedaUseCase';
 
-import { CreateConceptoUseCase } from '@app/use-cases/concepto/CreateConceptoUseCase';
-import { UpdateConceptoUseCase } from '@app/use-cases/concepto/UpdateConceptoUseCase';
-import { DeleteConceptoUseCase } from '@app/use-cases/concepto/DeleteConceptoUseCase';
+import { CreateConceptoUseCase } from '@modules/Maestros/application/concepto/CreateConceptoUseCase';
+import { UpdateConceptoUseCase } from '@modules/Maestros/application/concepto/UpdateConceptoUseCase';
+import { DeleteConceptoUseCase } from '@modules/Maestros/application/concepto/DeleteConceptoUseCase';
 
-import { CreateTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/CreateTipoComprobanteUseCase';
-import { UpdateTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/UpdateTipoComprobanteUseCase';
-import { DeleteTipoComprobanteUseCase } from '@app/use-cases/tipocomprobante/DeleteTipoComprobanteUseCase';
+import { CreateTipoComprobanteUseCase } from '@modules/Maestros/application/tipocomprobante/CreateTipoComprobanteUseCase';
+import { UpdateTipoComprobanteUseCase } from '@modules/Maestros/application/tipocomprobante/UpdateTipoComprobanteUseCase';
+import { DeleteTipoComprobanteUseCase } from '@modules/Maestros/application/tipocomprobante/DeleteTipoComprobanteUseCase';
 
-import { UpdateOperadorUseCase } from '@app/use-cases/operador/UpdateOperadorUseCase';
+import { UpdateOperadorUseCase } from '@modules/Maestros/application/operador/UpdateOperadorUseCase';
 import { AxiosComprobanteFullRepository } from '@infra/repositories/AxiosComprobanteFullRepository';
-import { CreateComprobanteFullUseCase } from '@app/use-cases/comprobante/CreateComprobanteFullUseCase';
+import { CreateComprobanteFullUseCase } from '@modules/Facturacion/application/CreateComprobanteFullUseCase';
 
-import { CreateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/CreateCondicionTributariaUseCase';
-import { UpdateCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/UpdateCondicionTributariaUseCase';
-import { DeleteCondicionTributariaUseCase } from '@app/use-cases/condiciontributaria/DeleteCondicionTributariaUseCase';
+import { CreateCondicionTributariaUseCase } from '@modules/Maestros/application/condiciontributaria/CreateCondicionTributariaUseCase';
+import { UpdateCondicionTributariaUseCase } from '@modules/Maestros/application/condiciontributaria/UpdateCondicionTributariaUseCase';
+import { DeleteCondicionTributariaUseCase } from '@modules/Maestros/application/condiciontributaria/DeleteCondicionTributariaUseCase';
 
 // Repositories
 const authRepository = new AxiosAuthRepository();
@@ -240,8 +243,9 @@ const menuItemRepository = new AxiosMenuItemRepository();
 const authService = new AxiosAuthService(); // Service, not Repository in strict sense but fulfills interface
 
 // Auth Use Case
-export const authUseCase = new AuthUseCase(authService);
+// export const authUseCase = new AuthUseCase(authService);
 
+/*
 // Usuario Use Cases
 export const getAllUsuariosUseCase = new GetAllUsuariosUseCase(usuarioRepository);
 export const getUsuarioByIdUseCase = new GetUsuarioByIdUseCase(usuarioRepository);
@@ -263,6 +267,7 @@ export const createMenuItemUseCase = new CreateMenuItemUseCase(menuItemRepositor
 export const updateMenuItemUseCase = new UpdateMenuItemUseCase(menuItemRepository);
 export const deleteMenuItemUseCase = new DeleteMenuItemUseCase(menuItemRepository);
 export const assignRolesToMenuItemUseCase = new AssignRolesToMenuItemUseCase(menuItemRepository);
+*/
 
 const domicilioRepository = new HttpDomicilioRepository();
 const telefonoRepository = new HttpTelefonoRepository();
@@ -330,4 +335,3 @@ export const getArticulosUseCase = new GetArticulosUseCase(articuloRepository);
 export const createArticuloUseCase = new CreateArticuloUseCase(articuloRepository);
 export const updateArticuloUseCase = new UpdateArticuloUseCase(articuloRepository);
 export const deleteArticuloUseCase = new DeleteArticuloUseCase(articuloRepository);
-

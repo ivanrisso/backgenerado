@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { useClientes } from '@modules/Clientes/composables/useClientes';
 import PageHeader from '@shared/ui/PageHeader.vue';
 import DataTable from '@shared/ui/DataTable.vue';
@@ -54,7 +54,9 @@ const formatCurrency = (value: number) => {
         </template>
         <template #cell-nombre="{ item }">
           <span class="font-medium text-gray-900">{{ item.razon_social || `${item.nombre} ${item.apellido}` }}</span>
-          <div class="text-xs text-gray-400" v-if="item.email">{{ item.email }}</div>
+          <div v-if="item.email" class="text-xs text-gray-400">
+            {{ item.email }}
+          </div>
         </template>
         <template #cell-cuit="{ item }">
           <span class="text-gray-500 font-mono">{{ item.cuit || '-' }}</span>

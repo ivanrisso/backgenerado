@@ -13,3 +13,16 @@ Definir y validar paths críticos fiscales.
 ## Output
 - qa/test_plan.md
 - qa/evidencia.md
+
+---
+
+## Modo Workflow (Antigravity)
+**(Extensión operativa)**
+
+### Participación por workflow
+- 03_feature-evolution: define y valida casos
+- 04_system-stabilization: define paths críticos (no ejecuta fixes)
+- 05_hotfix: valida corrección puntual
+
+### Regla
+- Un hotfix = validación focalizada

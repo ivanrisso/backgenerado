@@ -1,5 +1,5 @@
 
-import type { ITipoImpuestoRepository } from '../../../domain/repositories/ITipoImpuestoRepository';
+import type { ITipoImpuestoRepository } from '@domain/repositories/ITipoImpuestoRepository';
 
 export class DeleteTipoImpuestoUseCase {
     constructor(private readonly repository: ITipoImpuestoRepository) { }

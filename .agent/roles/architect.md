@@ -19,3 +19,20 @@ Garantizar coherencia técnica y fiscal:
 - ADR por REQ
 - recomendaciones de slice
 - requisitos de observabilidad/auditoría
+
+---
+
+## Modo Workflow (Antigravity)
+**(Extensión operativa)**
+
+### Responsabilidades
+- Root cause analysis (Workflows 03 / 04 / 05)
+- Validación de `proposed_fix.md`
+- Definición y bloqueo de alcance de hotfix (`fix_description.md`)
+- Control de blast radius
+- Aprobación / rechazo de Gate Delivery
+
+### Outputs adicionales
+- fix_description.md (hotfix)
+- observaciones de riesgo
+- aprobación técnica de gate

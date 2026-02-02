@@ -1,9 +1,12 @@
-import { ref } from 'vue';
-import { AxiosTipoDocRepository } from '@infra/repositories/AxiosTipoDocRepository';
-import type { TipoDoc } from '@domain/entities/TipoDoc';
 
-// Singleton instance usually preferred, or DI
-const repository = new AxiosTipoDocRepository();
+import { ref } from 'vue';
+import type { TipoDoc } from '@domain/entities/TipoDoc';
+import {
+    getTiposDocUseCase,
+    createTipoDocUseCase,
+    updateTipoDocUseCase,
+    deleteTipoDocUseCase
+} from '@/di';
 
 export function useTiposDoc() {
     const tiposDoc = ref<TipoDoc[]>([]);
@@ -14,14 +17,71 @@ export function useTiposDoc() {
         loading.value = true;
         error.value = null;
         try {
-            tiposDoc.value = await repository.getAll();
+            tiposDoc.value = await getTiposDocUseCase.execute();
         } catch (e: any) {
-            error.value = e.message || 'Error loading TipoDocs';
+            const msg = e.response?.data?.detail || e.message || 'Error al cargar tipos de documento';
+            error.value = msg;
             console.error(e);
         } finally {
             loading.value = false;
         }
     };
 
-    return { tiposDoc, loadTiposDoc, loading, error };
+    const createTipoDoc = async (entity: Omit<TipoDoc, 'id'>) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            await createTipoDocUseCase.execute(entity);
+            await loadTiposDoc();
+        } catch (e: any) {
+            const msg = e.response?.data?.detail || e.message || 'Error al crear tipo de documento';
+            error.value = msg;
+            console.error(e);
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const updateTipoDoc = async (entity: TipoDoc) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            await updateTipoDocUseCase.execute(entity.id, entity);
+            await loadTiposDoc();
+        } catch (e: any) {
+            const msg = e.response?.data?.detail || e.message || 'Error al actualizar tipo de documento';
+            error.value = msg;
+            console.error(e);
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const deleteTipoDoc = async (id: number) => {
+        loading.value = true;
+        error.value = null;
+        try {
+            await deleteTipoDocUseCase.execute(id);
+            await loadTiposDoc();
+        } catch (e: any) {
+            const msg = e.response?.data?.detail || e.message || 'Error al eliminar tipo de documento';
+            error.value = msg;
+            console.error(e);
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    return {
+        tiposDoc,
+        loading,
+        error,
+        loadTiposDoc,
+        createTipoDoc,
+        updateTipoDoc,
+        deleteTipoDoc
+    };
 }

@@ -12,7 +12,9 @@ from app.domain.exceptions.usuario import UsuarioNoEncontrado, UsuarioDuplicado
 from app.domain.exceptions.base import BaseDeDatosNoDisponible, ErrorDeRepositorio
 from app.domain.exceptions.integridad import ClaveForaneaInvalida
 
-router = APIRouter(prefix="/usuarios", tags=["Usuario"])
+from app.core.dependencies import require_roles
+
+router = APIRouter(prefix="/usuarios", tags=["Usuario"], dependencies=[Depends(require_roles("admin"))])
 
 # DB session
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:

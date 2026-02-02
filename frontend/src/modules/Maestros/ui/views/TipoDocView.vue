@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useTiposDoc } from '../../composables/useTiposDoc';
+import { useTiposDoc } from '@modules/Maestros/composables/useTiposDoc';
 import TipoDocForm from './TipoDocForm.vue';
-import PageHeader from '../../components/common/PageHeader.vue';
-import DataTable from '../../components/common/DataTable.vue';
-import type { TipoDoc } from '../../../domain/entities/TipoDoc';
+import PageHeader from '@shared/ui/PageHeader.vue';
+import DataTable from '@shared/ui/DataTable.vue';
+import type { TipoDoc } from '@domain/entities/TipoDoc';
 
 // We need to pass edit/delete handlers to the list, but extracting the list component might be tricky if it doesn't support events.
 // Let's just inline the list here or modify the existing component. Ideally, modify the existing component to emit events.
 
-const { tiposDoc, loading, error, createTipoDoc, updateTipoDoc, deleteTipoDoc } = useTiposDoc();
+const { tiposDoc, loading, error, loadTiposDoc, createTipoDoc, updateTipoDoc, deleteTipoDoc } = useTiposDoc();
+
+import { onMounted } from 'vue';
+
+onMounted(() => {
+    loadTiposDoc();
+});
 
 const showForm = ref(false);
 const isDeleteMode = ref(false);

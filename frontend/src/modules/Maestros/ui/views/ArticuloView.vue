@@ -1,11 +1,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { useArticulos } from '../../composables/useArticulos';
-import type { Articulo } from '../../../domain/entities/Articulo';
-import { TipoArticuloEnum } from '../../../domain/enums/TipoArticuloEnum';
+import { useArticulos } from '@modules/Maestros/composables/useArticulos';
+import type { Articulo } from '@domain/entities/Articulo';
+import { TipoArticuloEnum } from '@domain/enums/TipoArticuloEnum';
 import ArticuloForm from './ArticuloForm.vue';
-import DataTable from '../../components/common/DataTable.vue';
+import DataTable from '@shared/ui/DataTable.vue';
 
 const { articulos, loading, loadArticulos, createArticulo, updateArticulo, deleteArticulo } = useArticulos();
 
