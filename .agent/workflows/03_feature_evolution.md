@@ -45,13 +45,21 @@ sobre un sistema **técnicamente estable**, garantizando:
 ✔️ Nueva pantalla / flujo / regla  
 ✔️ Ampliación de comportamiento existente  
 
+✔️ Cambio funcional aprobado y definido  
+✔️ Comportamiento nuevo o ampliado  
+
 ❌ Crash  
 ❌ Error técnico  
 ❌ Import roto  
 ❌ Loop / watcher  
 ❌ 401 / 500 técnicos  
 
-👉 Eso va a **Workflow 70 / 71**
+❌ Corrección funcional reactiva  
+❌ Bug funcional detectado en producción  
+
+👉 Correcciones funcionales reactivas o bugs funcionales existentes
+   se gestionan exclusivamente mediante **Workflow 72**.
+
 
 ---
 
@@ -201,5 +209,16 @@ Si el REQ toca:
 
 ## Regla Final
 
-> **Si algo falla técnicamente → NO se arregla acá.  
-> Se corta y vuelve a 70.**
+**Si algo falla técnicamente → NO se arregla acá.  Se corta y vuelve a 70.**
+
+---
+
+## Pilares obligatorios del Workflow 03
+
+Toda feature debe dejar:
+
+1. Decisión (ADR)
+2. Comportamiento validado (QA)
+3. Evidencia persistente (artefactos)
+
+
