@@ -5,6 +5,7 @@ from app.services.recibo_service import ReciboService
 from app.schemas.recibo import ReciboCreate, ImputacionCreate
 from app.domain.entities.comprobante import Comprobante
 from app.domain.entities.tipocomprobante import TipoComprobante
+from app.domain.entities.cliente import Cliente
 
 @pytest.fixture
 def mock_repos():
@@ -12,7 +13,8 @@ def mock_repos():
         "comprobante": AsyncMock(),
         "tipo": AsyncMock(),
         "imputacion": AsyncMock(),
-        "cc": AsyncMock()
+        "cc": AsyncMock(),
+        "cliente": AsyncMock()
     }
 
 @pytest.fixture
@@ -21,7 +23,9 @@ def service(mock_repos):
         mock_repos["comprobante"],
         mock_repos["tipo"],
         mock_repos["imputacion"],
-        mock_repos["cc"]
+
+        mock_repos["cc"],
+        mock_repos["cliente"]
     )
 
 @pytest.mark.asyncio
@@ -62,7 +66,9 @@ async def test_create_recibo_basic(service, mock_repos):
 
     mock_repos["comprobante"].get_last_number.assert_called_with(1, 1)
     mock_repos["comprobante"].create.assert_called_once()
+
     mock_repos["cc"].create.assert_called_once() # Verify CC movement creation
+    mock_repos["cliente"].get_by_id.assert_called_once()
 
 @pytest.mark.asyncio
 async def test_create_recibo_with_imputation(service, mock_repos):
@@ -92,6 +98,13 @@ async def test_create_recibo_with_imputation(service, mock_repos):
     )
     mock_repos["comprobante"].create.return_value = recibo_creado_mock
 
+    # Mock Cliente
+    cliente_mock = Cliente(
+        id=1, tipo_doc_id=99, cuit="20123456789", razon_social="Cliente Test",
+        nombre="Cliente", apellido="Test", email="test@cliente.com"
+    )
+    mock_repos["cliente"].get_by_id.return_value = cliente_mock
+
     # Input: Pay 1000 out of 2000 debt
     data = ReciboCreate(
         cliente_id=1,
@@ -114,6 +127,8 @@ async def test_create_recibo_with_imputation(service, mock_repos):
     # 2. Imputation Created
     mock_repos["imputacion"].create.assert_called_once()
     
+    
     # 3. Recibo Updated (final balance 0 because fully applied)
     assert recibo_creado_mock.saldo == 0
     mock_repos["comprobante"].update.assert_any_call(999, recibo_creado_mock, commit=True)
+
