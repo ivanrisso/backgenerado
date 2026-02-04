@@ -42,6 +42,7 @@ class Comprobante:
             tipo_doc_id=dto.tipo_doc_id,
             moneda_id=dto.moneda_id,
             punto_venta=dto.punto_venta,
+            numero=dto.numero,
             fecha_emision=dto.fecha_emision,
             doc_nro=dto.doc_nro,
             nombre_cliente=dto.nombre_cliente,

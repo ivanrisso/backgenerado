@@ -11,6 +11,7 @@ from app.use_cases.cliente_use_case import ClienteUseCase
 from app.use_cases.iva_use_case import IvaUseCase
 from app.domain.exceptions.afip import ErrorAfip
 from app.core.afip.wsfe import WSFEClient
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,8 @@ class AfipAdapter:
 
         moneda_uc: MonedaUseCase,
         cliente_uc: ClienteUseCase,
-        iva_uc: IvaUseCase
+        condicion_iva_uc: Any, # CondicionIvaUseCase (Dynamic typing to avoid circular imports if needed)
+        iva_rates_uc: IvaUseCase
     ):
         self.ebilling = ebilling
         self.tipo_comprobante_uc = tipo_comprobante_uc
@@ -32,10 +34,18 @@ class AfipAdapter:
         self.tipodoc_uc = tipodoc_uc
         self.moneda_uc = moneda_uc
         self.cliente_uc = cliente_uc
-        self.iva_uc = iva_uc
+        self.iva_uc = condicion_iva_uc # Use proper naming internally if possible, keeping backwards compat var name might be confusing.
+        self.condicion_iva_uc = condicion_iva_uc
+        self.iva_rates_uc = iva_rates_uc
 
     async def solicitar_cae(self, payload: ComprobanteFullCreate, comprobante: Comprobante) -> dict:
         # Validar número de documento
+        try:
+            with open("/tmp/afip_debug.log", "a") as f:
+                 f.write(f"DEBUG ENTER solicitar_cae. ClienteID: {comprobante.cliente_id}\n")
+        except:
+            pass
+
         try:
             doc_nro = int(payload.doc_nro)
         except ValueError:
@@ -53,11 +63,27 @@ class AfipAdapter:
             if not cliente:
                  raise ErrorAfip(f"Cliente {comprobante.cliente_id} no encontrado")
             
-            condicion_iva = await self.iva_uc.get_by_id(cliente.condicion_iva_id)
+            # Use condicion_iva_uc (GetCondicionIvaByIdUseCase) injected as iva_uc for now, 
+            # OR better: use the one finding logic directly if passed correctly.
+            # Ideally we rename the dependency, but for minimal changes let's assume iva_uc is now the correct one
+            # OR we simply fix the usage here if we change the injection.
+            
+            if not cliente.condicion_iva_id:
+                raise ErrorAfip(f"El cliente {cliente.nombre} no tiene condición de IVA asignada")
+
+            # Fetch Condicion Entity
+            # NOTE: We can pass Repository directly which has get_by_id
+            condicion_iva = await self.condicion_iva_uc.get_by_id(cliente.condicion_iva_id) 
+            
             if not condicion_iva:
-                 raise ErrorAfip(f"El cliente {cliente.nombre} no tiene condición de IVA asignada")
+                 raise ErrorAfip(f"No se encontró la condición de IVA ID {cliente.condicion_iva_id}")
 
         except Exception as e:
+            try:
+                with open("/tmp/afip_debug.log", "a") as f:
+                     f.write(f"DEBUG EXCEPTION METADATA: {str(e)}\n")
+            except:
+                pass
             raise ErrorAfip("Error al obtener metadata para comprobante", causa=str(e))
 
         if tipo_cbte.codigo_arca is None:
@@ -80,10 +106,25 @@ class AfipAdapter:
             
         # Construcción de payload (Estructura hierarchy Zeep)
         
+        # Logging debug info to file for visibility
+        try:
+            with open("/tmp/afip_debug.log", "a") as f:
+                 f.write(f"DEBUG STARTING CAE. Concepto: {concepto.codigo_arca}\n")
+        except:
+            pass
+
+        # Fix types for Zeep (WSDL expects ints for IDs)
+        try:
+            c_concepto = int(concepto.codigo_arca)
+            c_doctipo = int(tipo_doc.codigo_arca)
+            c_moneda = str(moneda.codigo_arca) # Currency code is string 'PES'
+        except ValueError:
+             raise ErrorAfip(f"Error convirtiendo códigos ARCA a int. Concepto={concepto.codigo_arca}, DocTipo={tipo_doc.codigo_arca}")
+
         # Detalle
         detalle_req = {
-            "Concepto": concepto.codigo_arca,
-            "DocTipo": tipo_doc.codigo_arca,
+            "Concepto": c_concepto,
+            "DocTipo": c_doctipo,
             "DocNro": doc_nro,
             "CbteDesde": comprobante.numero,
             "CbteHasta": comprobante.numero,
@@ -94,70 +135,90 @@ class AfipAdapter:
             "ImpOpEx": 0,    # Exento
             "ImpIVA": payload.total_iva,
             "ImpTrib": payload.total_impuestos,
-            "MonId": moneda.codigo_arca,
+            "MonId": c_moneda,
             "MonCotiz": payload.cotizacion_moneda
         }
 
-        # RG 5616: Condicion IVA Receptor
-        if condicion_iva.codigo is None:
-             raise ErrorAfip(f"La condición de IVA '{condicion_iva.descripcion}' no tiene código ARCA asociado")
+        # RG 5616: Condicion IVA Receptor - Mapeo Manual si falta codigo
+        codigo_condicion = None
+        
+        # Intentar obtener del modelo si tuviera campo codigo (no tiene aun)
+        if hasattr(condicion_iva, 'codigo') and condicion_iva.codigo is not None:
+             codigo_condicion = condicion_iva.codigo
+        else:
+             # Map by Name (Fallback)
+             nombre_cond = condicion_iva.nombre.lower() if condicion_iva.nombre else ""
+             if "inscripto" in nombre_cond:
+                 codigo_condicion = 1
+             elif "monotributo" in nombre_cond:
+                 codigo_condicion = 6
+             elif "exento" in nombre_cond:
+                 codigo_condicion = 4
+             elif "consumidor final" in nombre_cond:
+                 codigo_condicion = 5
+        
+        if codigo_condicion is None:
+             # Default fallback or Error? AFIP requires it.
+             # Let's default to Consumidor Final (5) if unknown to avoid blocking, OR error.
+             # Error is safer.
+             raise ErrorAfip(f"No se pudo determinar código AFIP para condición '{condicion_iva.nombre}'")
              
-        detalle_req["CondicionIVAReceptorId"] = condicion_iva.codigo
+        detalle_req["CondicionIVAReceptorId"] = codigo_condicion
 
         # Fechas del servicio (solo si concepto no es Productos)
         # Concepto 1 = Productos (no requiere fechas)
         # Concepto 2 = Servicios (requiere fechas)
         # Concepto 3 = Prod y Serv
-        if concepto.codigo_arca in [2, 3]:
+        # Fix check logic (integers)
+        if c_concepto in [2, 3]:
             detalle_req["FchServDesde"] = payload.fecha_emision.strftime("%Y%m%d") # Should be actual dates
             detalle_req["FchServHasta"] = payload.fecha_emision.strftime("%Y%m%d")
             detalle_req["FchVtoPago"] = payload.fecha_emision.strftime("%Y%m%d")
 
 
         if payload.detalles:
-            # Group by AFIP Code
-            iva_aggregates = {} # { afip_code: { BaseImp: X, Importe: Y, Id: afip_code } }
-            
-            for d in payload.detalles:
-                if d.iva_id:
-                     # Fetch Iva entity. 
-                     # Option A: Fetch one by one (slow but easy)
-                     # Option B: Fetch all relevant (better)
-                     # Since this is async loop, one by one is O(N).
-                     # Optimization: Cache fetched IVAs in local dict
-                     
-                     # Check if we already fetched this iva_id?
-                     # Since I cannot easily maintain state across loop without pre-fetching.
-                     pass 
-            
-            # Better approach: 
-            # 1. Collect all unique IVA IDs
-            unique_iva_ids = set(d.iva_id for d in payload.detalles if d.iva_id)
-            iva_map = {} # id -> codigo
-            
-            for iid in unique_iva_ids:
-                iva_ent = await self.iva_uc.get_by_id(iid)
-                if iva_ent and iva_ent.codigo is not None:
-                    iva_map[iid] = iva_ent.codigo
-                else:
-                    raise ErrorAfip(f"IVA ID {iid} no tiene código AFIP asociado")
+            try:
+                # Group by AFIP Code
+                iva_aggregates = {} # { afip_code: { BaseImp: X, Importe: Y, Id: afip_code } }
+                
+                # Use list comprehension to get unique IDs, ensuring we filter None
+                unique_iva_ids = set(d.iva_id for d in payload.detalles if d.iva_id is not None)
+                iva_map = {} # id -> codigo
+                
+                with open("/tmp/afip_debug.log", "a") as f:
+                    f.write(f"DEBUG Unique IVA IDs: {unique_iva_ids}\n")
 
-            # 2. Iterate details and aggregate
-            for d in payload.detalles:
-                if d.iva_id:
-                    afip_code = iva_map.get(d.iva_id)
-                    if afip_code not in iva_aggregates:
-                        iva_aggregates[afip_code] = {"Id": afip_code, "BaseImp": 0.0, "Importe": 0.0}
-                    
-                    iva_aggregates[afip_code]["BaseImp"] += d.importe
-                    iva_aggregates[afip_code]["Importe"] += d.importe_iva
-            
-            # 3. Convert to List
-            detalle_req["Iva"] = {
-                 "AlicIva": list(iva_aggregates.values())
-            }
-            logger.info(f"DEBUG ALICIVA: {detalle_req['Iva']}")
-            print(f"DEBUG ALICIVA PAYLOAD: {detalle_req['Iva']}")
+                for iid in unique_iva_ids:
+                     # Ensure this calls the RATES use case
+                     if not self.iva_rates_uc:
+                         raise Exception("iva_rates_uc dependency is missing in Adapter")
+                         
+                     iva_ent = await self.iva_rates_uc.get_by_id(iid)
+                     if iva_ent and iva_ent.codigo is not None:
+                        iva_map[iid] = int(iva_ent.codigo) # Zeep prefers int for ID
+                     else:
+                        raise ErrorAfip(f"IVA ID {iid} no tiene código AFIP asociado")
+    
+                # 2. Iterate details and aggregate
+                for d in payload.detalles:
+                    if d.iva_id is not None:
+                        afip_code = iva_map.get(d.iva_id)
+                        if afip_code not in iva_aggregates:
+                            iva_aggregates[afip_code] = {"Id": afip_code, "BaseImp": 0.0, "Importe": 0.0}
+                        
+                        iva_aggregates[afip_code]["BaseImp"] += d.importe
+                        iva_aggregates[afip_code]["Importe"] += d.importe_iva
+                
+                # 3. Convert to List
+                detalle_req["Iva"] = {
+                     "AlicIva": list(iva_aggregates.values())
+                }
+                logger.info(f"DEBUG ALICIVA: {detalle_req['Iva']}")
+                
+            except Exception as iv_ex:
+                 with open("/tmp/afip_debug.log", "a") as f:
+                    f.write(f"DEBUG IVA PROCESS EXCEPTION: {iv_ex}\n")
+                 raise ErrorAfip(f"Error procesando IVAs: {str(iv_ex)}")
 
         if payload.impuestos:
              detalle_req["Tributos"] = {
@@ -180,16 +241,22 @@ class AfipAdapter:
             "FeCabReq": {
                 "CantReg": 1,
                 "PtoVta": comprobante.punto_venta,
-                "CbteTipo": tipo_cbte.codigo_arca
+                "CbteTipo": c_concepto # Wait, CbteTipo is Tipo Comprobante (e.g. 1, 6), NOT Concepto!
             },
             "FeDetReq": [detalle_req] 
         }
         
-        logger.info(f"DEBUG AFIP PAYLOAD: PtoVta={comprobante.punto_venta}, Tipo={tipo_cbte.codigo_arca}, Detalle={detalle_req}")
-        print(f"DEBUG AFIP PAYLOAD: PtoVta={comprobante.punto_venta}, Tipo={tipo_cbte.codigo_arca}, Detalle={detalle_req}")
+        # FIX: CbteTipo should be Tipo Comprobante code, not Concepto code.
+        # Original code line 183: "CbteTipo": tipo_cbte.codigo_arca
+        payload_req["FeCabReq"]["CbteTipo"] = int(tipo_cbte.codigo_arca)
 
+        logger.info(f"DEBUG AFIP PAYLOAD: PtoVta={comprobante.punto_venta}, Tipo={tipo_cbte.codigo_arca}, Detalle={detalle_req}")
+        
         # Solicitar CAE
         try:
+            with open("/tmp/afip_debug.log", "a") as f:
+                 f.write(f"DEBUG Sending Payload: {payload_req}\n")
+
             response = self.ebilling.create_voucher(payload_req)
             
             det_resp = response.FeDetResp.FECAEDetResponse[0]
@@ -207,6 +274,8 @@ class AfipAdapter:
             
         except Exception as e:
             logger.exception("Error al solicitar CAE")
+            with open("/tmp/afip_debug.log", "a") as f:
+                 f.write(f"DEBUG AFIP EXCEPTION: {e}\n")
             raise ErrorAfip(
                 mensaje="Error al solicitar CAE a AFIP",
                 causa=str(e)

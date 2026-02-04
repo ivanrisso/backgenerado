@@ -8,7 +8,7 @@ from app.domain.entities.enums import (
     TipoAplicacionEnum, BaseTributarioEnum, AmbitoImpuestoEnum,
     CategoriaImpuestoEnum, TipoUsoImpuestoEnum, MetodoCalculoImpuestoEnum,
     AmbitoUsoImpuestoEnum,    CategoriaFiscalImpuestoEnum, TipoArticuloEnum,
-    TipoDistribucionImpuestoEnum, TipoReparticionBaseImpuestoEnum
+    TipoDistribucionImpuestoEnum, TipoReparticionBaseImpuestoEnum, TipoPuntoVentaEnum
 )
 
 class Base(DeclarativeBase):
@@ -491,3 +491,15 @@ class Imputacion(Base):
 
     credito: Mapped["Comprobante"] = relationship("Comprobante", foreign_keys=[comprobante_credito_id], back_populates="imputaciones_credito")
     debito: Mapped["Comprobante"] = relationship("Comprobante", foreign_keys=[comprobante_debito_id], back_populates="imputaciones_debito")
+
+
+class PuntoVenta(Base):
+    __tablename__ = "punto_venta"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    numero: Mapped[int] = mapped_column(unique=True, nullable=False)
+    tipo: Mapped[TipoPuntoVentaEnum] = mapped_column(nullable=False, default=TipoPuntoVentaEnum.ELECTRONICA)
+    bloqueado: Mapped[bool] = mapped_column(nullable=False, default=False)
+
+    def __repr__(self):
+        return f"<PuntoVenta(numero={self.numero}, tipo='{self.tipo}')>"

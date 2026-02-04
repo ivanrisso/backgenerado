@@ -1,0 +1,108 @@
+--- Starting Verification for HF-GAP-001 (Partial Imputation) ---
+Creating Base Invoice with Saldo 1000...
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 95, in execute
+    return self.await_(self._execute_async(operation, parameters))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 107, in _execute_async
+    result = await self._cursor.execute(operation, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncmy/cursors.pyx", line 179, in execute
+  File "asyncmy/cursors.pyx", line 364, in _query
+  File "asyncmy/connection.pyx", line 496, in query
+  File "asyncmy/connection.pyx", line 684, in _read_query_result
+  File "asyncmy/connection.pyx", line 1071, in read
+  File "asyncmy/connection.pyx", line 646, in read_packet
+  File "asyncmy/protocol.pyx", line 190, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/protocol.pyx", line 194, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/errors.pyx", line 128, in asyncmy.errors.raise_mysql_exception
+  File "asyncmy/errors.pyx", line 137, in asyncmy.errors.raise_mysql_exception
+asyncmy.errors.IntegrityError: (1062, "Duplicate entry '999001' for key 'comprobante.numero'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/repro_hf_gap_001.py", line 173, in <module>
+    asyncio.run(run_verification())
+  File "/usr/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/repro_hf_gap_001.py", line 92, in run_verification
+    await db.execute(stmt)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/ext/asyncio/session.py", line 463, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2251, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/bulk_persistence.py", line 1294, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1415, in execute
+    return meth(
+           ^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1637, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1842, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1982, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2351, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 95, in execute
+    return self.await_(self._execute_async(operation, parameters))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 107, in _execute_async
+    result = await self._cursor.execute(operation, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncmy/cursors.pyx", line 179, in execute
+  File "asyncmy/cursors.pyx", line 364, in _query
+  File "asyncmy/connection.pyx", line 496, in query
+  File "asyncmy/connection.pyx", line 684, in _read_query_result
+  File "asyncmy/connection.pyx", line 1071, in read
+  File "asyncmy/connection.pyx", line 646, in read_packet
+  File "asyncmy/protocol.pyx", line 190, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/protocol.pyx", line 194, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/errors.pyx", line 128, in asyncmy.errors.raise_mysql_exception
+  File "asyncmy/errors.pyx", line 137, in asyncmy.errors.raise_mysql_exception
+sqlalchemy.exc.IntegrityError: (asyncmy.errors.IntegrityError) (1062, "Duplicate entry '999001' for key 'comprobante.numero'")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 53, 1, 80, 1, 1, 999001, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', 'State', 1.0, 1000.0, 0.0, 0.0, 1000.0, 1000.0, 'DUMMY', datetime.date(2026, 2, 4))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)

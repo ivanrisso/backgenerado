@@ -1,0 +1,357 @@
+ERROR:app.repositories.comprobante_repository:RAW INTEGRITY ERROR: (1048, "Column 'numero' cannot be null")
+INFO:app.repositories.comprobante_repository:Error de integridad al crear comprobante
+WARNING:app.repositories.comprobante_full_repository:🔴 Rollback por excepción en UOW: <class 'app.domain.exceptions.base.ErrorDeRepositorio'>
+ERROR:app.use_cases.comprobante_full_use_case:Error inesperado al crear comprobante completo
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 95, in execute
+    return self.await_(self._execute_async(operation, parameters))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 107, in _execute_async
+    result = await self._cursor.execute(operation, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncmy/cursors.pyx", line 179, in execute
+  File "asyncmy/cursors.pyx", line 364, in _query
+  File "asyncmy/connection.pyx", line 496, in query
+  File "asyncmy/connection.pyx", line 684, in _read_query_result
+  File "asyncmy/connection.pyx", line 1071, in read
+  File "asyncmy/connection.pyx", line 646, in read_packet
+  File "asyncmy/protocol.pyx", line 190, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/protocol.pyx", line 194, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/errors.pyx", line 128, in asyncmy.errors.raise_mysql_exception
+  File "asyncmy/errors.pyx", line 137, in asyncmy.errors.raise_mysql_exception
+asyncmy.errors.IntegrityError: (1048, "Column 'numero' cannot be null")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/app/repositories/comprobante_repository.py", line 86, in create
+    await self.db.flush()
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/ext/asyncio/session.py", line 801, in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4345, in flush
+    self._flush(objects)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4480, in _flush
+    with util.safe_reraise():
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4441, in _flush
+    flush_context.execute()
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1415, in execute
+    return meth(
+           ^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1637, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1842, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1982, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2351, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 95, in execute
+    return self.await_(self._execute_async(operation, parameters))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 107, in _execute_async
+    result = await self._cursor.execute(operation, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncmy/cursors.pyx", line 179, in execute
+  File "asyncmy/cursors.pyx", line 364, in _query
+  File "asyncmy/connection.pyx", line 496, in query
+  File "asyncmy/connection.pyx", line 684, in _read_query_result
+  File "asyncmy/connection.pyx", line 1071, in read
+  File "asyncmy/connection.pyx", line 646, in read_packet
+  File "asyncmy/protocol.pyx", line 190, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/protocol.pyx", line 194, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/errors.pyx", line 128, in asyncmy.errors.raise_mysql_exception
+  File "asyncmy/errors.pyx", line 137, in asyncmy.errors.raise_mysql_exception
+sqlalchemy.exc.IntegrityError: (asyncmy.errors.IntegrityError) (1048, "Column 'numero' cannot be null")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, cod_postal_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, observaciones, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 54, 1, 80, 1, 1, None, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', '1234', 'State', 1.0, 500.0, 0.0, 0.0, 500.0, 500.0, 'Partial Imputation Test', '12345678901234', datetime.date(2026, 12, 31))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/app/use_cases/comprobante_full_use_case.py", line 58, in create_comprobante_full
+    cabecera = await self.uow.comprobante_repo.create(cabecera, commit=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/app/repositories/comprobante_repository.py", line 117, in create
+    raise ErrorDeRepositorio(f"Error de integridad al crear comprobante: {e}")
+app.domain.exceptions.base.ErrorDeRepositorio: Error de integridad al crear comprobante: (asyncmy.errors.IntegrityError) (1048, "Column 'numero' cannot be null")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, cod_postal_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, observaciones, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 54, 1, 80, 1, 1, None, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', '1234', 'State', 1.0, 500.0, 0.0, 0.0, 500.0, 500.0, 'Partial Imputation Test', '12345678901234', datetime.date(2026, 12, 31))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 95, in execute
+    return self.await_(self._execute_async(operation, parameters))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 107, in _execute_async
+    result = await self._cursor.execute(operation, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncmy/cursors.pyx", line 179, in execute
+  File "asyncmy/cursors.pyx", line 364, in _query
+  File "asyncmy/connection.pyx", line 496, in query
+  File "asyncmy/connection.pyx", line 684, in _read_query_result
+  File "asyncmy/connection.pyx", line 1071, in read
+  File "asyncmy/connection.pyx", line 646, in read_packet
+  File "asyncmy/protocol.pyx", line 190, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/protocol.pyx", line 194, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/errors.pyx", line 128, in asyncmy.errors.raise_mysql_exception
+  File "asyncmy/errors.pyx", line 137, in asyncmy.errors.raise_mysql_exception
+asyncmy.errors.IntegrityError: (1048, "Column 'numero' cannot be null")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/app/repositories/comprobante_repository.py", line 86, in create
+    await self.db.flush()
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/ext/asyncio/session.py", line 801, in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4345, in flush
+    self._flush(objects)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4480, in _flush
+    with util.safe_reraise():
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 4441, in _flush
+    flush_context.execute()
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1415, in execute
+    return meth(
+           ^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1637, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1842, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1982, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 2351, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 95, in execute
+    return self.await_(self._execute_async(operation, parameters))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 107, in _execute_async
+    result = await self._cursor.execute(operation, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncmy/cursors.pyx", line 179, in execute
+  File "asyncmy/cursors.pyx", line 364, in _query
+  File "asyncmy/connection.pyx", line 496, in query
+  File "asyncmy/connection.pyx", line 684, in _read_query_result
+  File "asyncmy/connection.pyx", line 1071, in read
+  File "asyncmy/connection.pyx", line 646, in read_packet
+  File "asyncmy/protocol.pyx", line 190, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/protocol.pyx", line 194, in asyncmy.protocol.MysqlPacket.raise_for_error
+  File "asyncmy/errors.pyx", line 128, in asyncmy.errors.raise_mysql_exception
+  File "asyncmy/errors.pyx", line 137, in asyncmy.errors.raise_mysql_exception
+sqlalchemy.exc.IntegrityError: (asyncmy.errors.IntegrityError) (1048, "Column 'numero' cannot be null")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, cod_postal_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, observaciones, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 54, 1, 80, 1, 1, None, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', '1234', 'State', 1.0, 500.0, 0.0, 0.0, 500.0, 500.0, 'Partial Imputation Test', '12345678901234', datetime.date(2026, 12, 31))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/app/use_cases/comprobante_full_use_case.py", line 58, in create_comprobante_full
+    cabecera = await self.uow.comprobante_repo.create(cabecera, commit=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/app/repositories/comprobante_repository.py", line 117, in create
+    raise ErrorDeRepositorio(f"Error de integridad al crear comprobante: {e}")
+app.domain.exceptions.base.ErrorDeRepositorio: Error de integridad al crear comprobante: (asyncmy.errors.IntegrityError) (1048, "Column 'numero' cannot be null")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, cod_postal_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, observaciones, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 54, 1, 80, 1, 1, None, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', '1234', 'State', 1.0, 500.0, 0.0, 0.0, 500.0, 500.0, 'Partial Imputation Test', '12345678901234', datetime.date(2026, 12, 31))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/repro_hf_gap_001.py", line 128, in run_verification
+    nc_result = await use_case.create_comprobante_full(nc_payload)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/app/use_cases/comprobante_full_use_case.py", line 167, in create_comprobante_full
+    raise ErrorDeRepositorio(f"Error inesperado al crear comprobante completo: {str(e)}")
+app.domain.exceptions.base.ErrorDeRepositorio: Error inesperado al crear comprobante completo: Error de integridad al crear comprobante: (asyncmy.errors.IntegrityError) (1048, "Column 'numero' cannot be null")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, cod_postal_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, observaciones, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 54, 1, 80, 1, 1, None, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', '1234', 'State', 1.0, 500.0, 0.0, 0.0, 500.0, 500.0, 'Partial Imputation Test', '12345678901234', datetime.date(2026, 12, 31))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+--- Starting Verification for HF-GAP-001 (Partial Imputation) ---
+Invoice 999001 exists. Resetting saldo to 1000...
+Invoice Ready: ID=7, Saldo=1000.0
+
+[TEST 1] Creating NC with Partial Imputation (300)...
+RAW INTEGRITY ERROR: (asyncmy.errors.IntegrityError) (1048, "Column 'numero' cannot be null")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, cod_postal_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, observaciones, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 54, 1, 80, 1, 1, None, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', '1234', 'State', 1.0, 500.0, 0.0, 0.0, 500.0, 500.0, 'Partial Imputation Test', '12345678901234', datetime.date(2026, 12, 31))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+❌ TEST 1 FAILED: Error inesperado al crear comprobante completo: Error de integridad al crear comprobante: (asyncmy.errors.IntegrityError) (1048, "Column 'numero' cannot be null")
+[SQL: INSERT INTO comprobante (cliente_id, tipo_comprobante_id, concepto_id, tipo_doc_id, moneda_id, punto_venta, numero, fecha_emision, doc_nro, nombre_cliente, cuit_cliente, domicilio_cliente, localidad_cliente, cod_postal_cliente, provincia_cliente, cotizacion_moneda, total_neto, total_iva, total_impuestos, total, saldo, observaciones, cae, cae_vencimiento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: (4, 54, 1, 80, 1, 1, None, datetime.date(2026, 2, 4), '20999999999', 'Test Hotfix BE-002 S.A.', '20999999999', 'Street 123', 'City', '1234', 'State', 1.0, 500.0, 0.0, 0.0, 500.0, 500.0, 'Partial Imputation Test', '12345678901234', datetime.date(2026, 12, 31))]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+[TEST 2] Creating NC with Excess Imputation (Factura Saldo Overrun)...
+Traceback (most recent call last):
+  File "/home/irisso/proyectos/facturacion/repro_hf_gap_001.py", line 183, in <module>
+    asyncio.run(run_verification())
+  File "/usr/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/repro_hf_gap_001.py", line 157, in run_verification
+    cliente_id=client.id,
+               ^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/attributes.py", line 566, in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/attributes.py", line 1086, in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/attributes.py", line 1116, in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/state.py", line 803, in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/loading.py", line 1670, in load_scalar_attributes
+    result = load_on_ident(
+             ^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/loading.py", line 509, in load_on_ident
+    return load_on_pk_identity(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/loading.py", line 694, in load_on_pk_identity
+    session.execute(
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2241, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 2110, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/orm/session.py", line 1189, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 3273, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/base.py", line 3297, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/base.py", line 713, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/impl.py", line 308, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/base.py", line 675, in __init__
+    self.__connect()
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/pool/base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/engine/default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/dialects/mysql/asyncmy.py", line 286, in connect
+    await_only(creator_fn(*arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/irisso/proyectos/facturacion/.venv/lib/python3.11/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 123, in await_only
+    raise exc.MissingGreenlet(
+sqlalchemy.exc.MissingGreenlet: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)

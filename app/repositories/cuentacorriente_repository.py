@@ -40,12 +40,15 @@ class CuentaCorrienteRepositoryImpl(CuentaCorrienteRepositoryInterface):
         cuentacorrientes_sql = result.scalars().all()
         return [self._to_domain(c) for c in cuentacorrientes_sql]
 
-    async def create(self, cuentacorriente: CuentaCorriente) -> CuentaCorriente:
+    async def create(self, cuentacorriente: CuentaCorriente, commit: bool = True) -> CuentaCorriente:
         try:
             cuentacorriente_sql = self._to_orm(cuentacorriente)
             self.db.add(cuentacorriente_sql)
-            await self.db.commit()
-            await self.db.refresh(cuentacorriente_sql)
+            if commit:
+                await self.db.commit()
+                await self.db.refresh(cuentacorriente_sql)
+            else:
+                await self.db.flush()
             return self._to_domain(cuentacorriente_sql)
 
         except IntegrityError as e:

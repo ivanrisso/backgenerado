@@ -1,0 +1,294 @@
+---
+description: Hotfix Funcional / Producto
+---
+
+# Workflow 72 — Hotfix Funcional / Producto
+
+**Nivel:** ALTO  
+**Tipo:** Correctivo Funcional / Producto  
+**Dependencias obligatorias:**
+- Workflow 70 — Stabilization Scan (ejecutado)
+- Hotfix clasificado como **FUNCIONAL** o **PRODUCTO**
+
+---
+
+📌 Regla de Idioma (CRÍTICA)
+
+Todos los artefactos funcionales
+DEBEN estar redactados en **ESPAÑOL CLARO Y FUNCIONAL**:
+
+- functional_definition.md
+- impact_analysis.md
+- implementation_plan.md
+- casos de prueba
+- evidencias
+- status.md
+
+El objetivo es que puedan ser entendidos por:
+Producto, QA y Negocio sin reinterpretación técnica.
+
+---
+
+## Propósito
+
+Corregir **un único hotfix funcional o de producto** que:
+- no rompe técnicamente el sistema,
+- pero impide o degrada el uso correcto del producto,
+asegurando que el comportamiento final sea **claro, validado y documentado**.
+
+Este workflow:
+- ✔️ **Corrige comportamiento**
+- ✔️ **Ajusta flujos**
+- ✔️ **Genera casos de prueba funcionales**
+- ❌ **No corrige bugs técnicos puros** (eso es Workflow 71)
+
+---
+
+## Qué corrige este workflow
+
+✔️ Flujos incompletos  
+✔️ Menús que no exponen funcionalidades existentes  
+✔️ CRU(D) funcionalmente incorrectos  
+✔️ Validaciones faltantes o incorrectas  
+✔️ UX que bloquea tareas válidas  
+✔️ Reglas de negocio mal reflejadas en UI o BE  
+
+---
+
+## Qué NO hace este workflow (NO negociable)
+
+- ❌ No arregla crashes técnicos
+- ❌ No corrige imports / aliases / DI
+- ❌ No resuelve errores 500 o 401 técnicos
+- ❌ No refactoriza masivamente
+- ❌ No introduce nuevas features
+
+> **Si aparece un error técnico → volver a Workflow 70 o 71**
+
+---
+
+## Input obligatorio
+
+Debe existir exactamente uno de los siguientes:
+
+hotfix/HF-FUNC-XXX/fix_description.md
+hotfix/HF-FUNC-XXX/metadata.md
+
+Requisitos:
+- metadata.md debe indicar:
+  - tipo: FUNCIONAL o PRODUCTO
+
+Reglas:
+- Un Workflow 72 = **un solo hotfix funcional**
+- El hotfix debe estar clasificado como `FUNCIONAL` o `PRODUCTO`
+- El hotfix debe estar priorizado en `hotfix/ORDER.md`
+
+
+
+---
+
+## Roles involucrados
+
+- **Product Owner / Analista Funcional**
+- **Frontend Engineer**
+- **Backend Engineer**
+- **QA**
+- **Release Manager**
+- **Arquitecto** (supervisión, no implementación)
+
+---
+
+## Principio rector
+
+> **Un hotfix funcional se corrige con comportamiento claro y pruebas claras.**  
+> No hay “arreglo implícito”.
+
+---
+
+## Stage A — Clarificación funcional del Hotfix
+
+**Rol activo:** Product Owner / Analista  
+**Skill:** `functional-clarifier`
+
+### Acciones
+1. Leer `fix_description.md`
+2. Definir explícitamente:
+   - Comportamiento actual (incorrecto)
+   - Comportamiento esperado (correcto)
+   - Casos borde
+3. Validar alcance:
+   - Qué entra
+   - Qué NO entra
+
+### Output obligatorio
+hotfix/HF-FUNC-XXX/functional_definition.md
+
+---
+
+## Stage B — Impact Analysis Funcional
+
+**Rol activo:** Arquitecto + Backend/Frontend  
+**Skill:** `functional-impact-analysis`
+
+### Acciones
+1. Identificar:
+   - Pantallas afectadas
+   - Endpoints afectados
+   - Reglas impactadas
+2. Evaluar riesgo funcional:
+   - Bajo / Medio / Alto
+
+### Output obligatorio
+hotfix/HF-FUNC-XXX/impact_analysis.md
+
+---
+
+## Stage C — Plan de Implementación Funcional
+
+**Rol activo:** Frontend / Backend  
+**Skill:** `functional-planner`
+
+### Acciones
+1. Definir cambios necesarios:
+   - UI
+   - Backend
+   - Validaciones
+2. Detallar pasos mínimos
+3. Evitar cambios colaterales
+
+### Output obligatorio
+hotfix/HF-FUNC-XXX/implementation_plan.md
+
+---
+
+## Stage D — Implementación Funcional
+
+**Rol activo:** Frontend / Backend  
+**Skill:** `functional-implementation`
+
+### Acciones
+1. Implementar solo lo definido en el plan
+2. Mantener backward compatibility
+3. No alterar reglas no involucradas
+
+### Reglas duras
+- ❌ No refactor general
+- ❌ No mejoras estéticas no pedidas
+- ❌ No lógica “aprovechando”
+
+---
+
+## Stage E — Generación de Casos de Prueba Funcionales
+
+**Rol activo:** QA  
+**Skill:** `functional-test-designer`
+
+### Acciones
+1. Diseñar casos de prueba:
+   - Happy path
+   - Error controlado
+   - Permisos / roles
+   - Casos borde
+2. Alinear cada caso con comportamiento esperado
+
+### Output obligatorio
+qa/cases/HF-FUNC-XXX.md
+
+---
+
+## Stage F — Ejecución de Pruebas Funcionales (Manual / E2E)
+
+**Rol activo:** QA  
+**Skill:** `functional-test-execution`
+
+### Acciones
+1. Ejecutar los casos definidos
+2. Registrar:
+   - Resultado
+   - Evidencia
+   - Observaciones
+
+### Output obligatorio
+hotfix/HF-FUNC-XXX/test_evidence.md
+
+---
+
+## Stage G — Smoke Test Integrado
+
+**Rol activo:** QA  
+**Skill:** `functional-smoke-test`
+
+### Acciones
+1. Navegar flujos relacionados
+2. Verificar que no se rompió nada adyacente
+3. Validar UX básica
+4. Confirmar que NO se reintrodujeron:
+   - errores técnicos previos
+   - crashes
+   - loops de navegación
+
+### Output obligatorio
+hotfix/HF-FUNC-XXX/smoke_evidence.md
+
+---
+
+## Stage H — Cierre del Hotfix Funcional
+
+**Rol activo:** Release Manager  
+**Skill:** `hotfix-closure`
+**Template de cierre obligatorio:**  
+`.agent/templates/status_functional.md`
+
+### Acciones
+1. Verificar evidencia completa
+2. Marcar hotfix como cerrado
+3. Registrar estado final
+
+### Output obligatorio
+hotfix/HF-FUNC-XXX/status.md
+
+---
+
+## Gate — Functional Hotfix Validation
+
+**Checklist aplicado:** `gate_functional_hotfix.md`
+
+### PASS si:
+- Existe `functional_definition.md`
+- Existe `impact_analysis.md`
+- Existe `implementation_plan.md`
+- Existe `qa/cases/HF-FUNC-XXX.md`
+- Existe `test_evidence.md`
+- Existe `status.md`
+- No hay regresiones visibles
+
+### FAIL si:
+- Falta evidencia
+- Comportamiento no es claro
+- QA no valida el resultado
+
+---
+
+## Resultado esperado
+
+✔️ Comportamiento funcional corregido  
+✔️ Flujos claros y validados  
+✔️ Casos de prueba documentados  
+✔️ Evidencia reproducible  
+✔️ Hotfix cerrado formalmente  
+
+---
+
+## Relación con otros Workflows
+
+- **Workflow 70**: detecta y clasifica
+- **Workflow 71**: corrige hotfix técnico
+- **Workflow 72**: corrige hotfix funcional / producto
+- **Feature workflow**: evolución normal
+
+---
+
+## Regla final (NO negociable)
+
+> **Un hotfix funcional sin casos de prueba NO existe.**  
+> **Un hotfix sin status NO está cerrado.**

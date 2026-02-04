@@ -6,10 +6,12 @@ from app.domain.entities.cuentacorriente import CuentaCorriente
 from app.domain.entities.imputacion import Imputacion
 from app.domain.repository.comprobante_repository_interfase import ComprobanteRepositoryInterface
 from app.domain.repository.tipocomprobante_repository_interfase import TipoComprobanteRepositoryInterface
+from app.domain.repository.cliente_repository_interfase import ClienteRepositoryInterface
 from app.repositories.imputacion_repository import ImputacionRepositoryImpl
 from app.repositories.cuentacorriente_repository import CuentaCorrienteRepositoryImpl
 from app.domain.exceptions.comprobante import ComprobanteInvalido, ComprobanteNoEncontrado
 from app.domain.exceptions.base import ErrorDeRepositorio
+from app.domain.exceptions.cliente import ClienteNoEncontrado
 
 class ReciboService:
     def __init__(
@@ -17,12 +19,14 @@ class ReciboService:
         comprobante_repo: ComprobanteRepositoryInterface,
         tipo_comprobante_repo: TipoComprobanteRepositoryInterface,
         imputacion_repo: ImputacionRepositoryImpl,
-        cc_repo: CuentaCorrienteRepositoryImpl
+        cc_repo: CuentaCorrienteRepositoryImpl,
+        cliente_repo: ClienteRepositoryInterface
     ):
         self.comprobante_repo = comprobante_repo
         self.tipo_comprobante_repo = tipo_comprobante_repo
         self.imputacion_repo = imputacion_repo
         self.cc_repo = cc_repo
+        self.cliente_repo = cliente_repo
 
     async def create_recibo(self, data: ReciboCreate) -> ReciboResponse:
         # 1. Obtener Tipo Comprobante "RECIBO"
@@ -39,33 +43,30 @@ class ReciboService:
         ultimo_numero = await self.comprobante_repo.get_last_number(tipo_recibo.id, data.punto_venta)
         nuevo_numero = ultimo_numero + 1
 
+        # 2a. Obtener Cliente
+        cliente = await self.cliente_repo.get_by_id(data.cliente_id)
+        if not cliente:
+            raise ClienteNoEncontrado(data.cliente_id)
+
         # 3. Crear Entidad Comprobante (Recibo)
-        # Nota: Usamos campos default o dummy para lo que no aplica a Recibo (CAE, etc)
-        # El saldo inicial del recibo es el Total. Se irá consumiendo con imputaciones.
-        # Si sobra, queda como saldo a favor en el recibo.
         recibo = Comprobante(
             id=None,
             cliente_id=data.cliente_id,
             tipo_comprobante_id=tipo_recibo.id,
             concepto_id=1, # Default Concepto Productos/Servicios o buscar uno "PAGOS" ??? Asumimos 1 por ahora
-            tipo_doc_id=99, # Consumidor Final o lo que venga del cliente? 
-            # ! IMPORTANTE: Deberíamos obtener los datos del cliente real para llenar estos campos denormalizados
-            # Por simplicidad en este REQ, asumimos que el repo llena o el front manda. 
-            # Como ReciboCreate no tiene todo, esto fallaría en BD si son Not Null.
-            # SOLUCIÓN: ReciboService debería buscar al Cliente para llenar nombre, cuit, etc.
-            # Por ahora pondré placeholders, pero idealmente se inyecta ClienteRepository.
+            tipo_doc_id=cliente.tipo_doc_id if cliente.tipo_doc_id else 99, 
             
             moneda_id=1, # PESOS default
             punto_venta=data.punto_venta,
             numero=nuevo_numero,
             fecha_emision=data.fecha_emision,
-            doc_nro="00000000", # Placeholder
-            nombre_cliente="Cliente", # Placeholder
-            cuit_cliente="00000000000",
-            domicilio_cliente="-",
-            localidad_cliente="-",
-            cod_postal_cliente="-",
-            provincia_cliente="-",
+            doc_nro=cliente.cuit if cliente.cuit else "00000000",
+            nombre_cliente=cliente.razon_social if cliente.razon_social else f"{cliente.nombre or ''} {cliente.apellido or ''}".strip() or "Cliente",
+            cuit_cliente=cliente.cuit if cliente.cuit else "00000000000",
+            domicilio_cliente=cliente.domicilio if hasattr(cliente, "domicilio") and cliente.domicilio else "-", # Cliente entity no muestra domicilio en view_file
+            localidad_cliente=getattr(cliente, "localidad", "-"), # Asumiendo que podría tener o no
+            cod_postal_cliente=getattr(cliente, "cod_postal", "-"),
+            provincia_cliente=getattr(cliente, "provincia", "-"),
             
             cotizacion_moneda=1.0,
             total_neto=data.total, # En recibo Neto = Total ?

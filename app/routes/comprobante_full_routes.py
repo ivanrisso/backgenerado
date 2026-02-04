@@ -23,6 +23,7 @@ from app.repositories.tipodoc_repository import TipoDocRepositoryImpl
 from app.repositories.moneda_repository import MonedaRepositoryImpl
 from app.repositories.cliente_repository import ClienteRepositoryImpl
 from app.repositories.iva_repository import IvaRepositoryImpl
+from app.repositories.condiciontributaria_repository import CondicionTributariaRepositoryImpl
 
 
 from app.use_cases.tipocomprobante_use_case import TipoComprobanteUseCase
@@ -54,6 +55,7 @@ def get_comprobante_full_service(
     # Dependencies for Adapter (RG 5616)
     cliente_uc = ClienteUseCase(ClienteRepositoryImpl(session))
     iva_uc = IvaUseCase(IvaRepositoryImpl(session))
+    condicion_iva_repo = CondicionTributariaRepositoryImpl(session)
 
     # 👉 Instanciar el cliente AFIP y ElectronicBilling
     # 👉 Instanciar el cliente AFIP (Nativo WSFEClient)
@@ -66,7 +68,8 @@ def get_comprobante_full_service(
         tipodoc_uc=tipodoc_uc,
         moneda_uc=moneda_uc,
         cliente_uc=cliente_uc,
-        iva_uc=iva_uc
+        condicion_iva_uc=condicion_iva_repo,
+        iva_rates_uc=iva_uc
     )
 
     use_case = ComprobanteFullUseCase(uow=uow, afip_adapter=afip_adapter)

@@ -27,6 +27,17 @@ La detección, clasificación y priorización **NO ocurren aquí**.
       Password: admin.password.dev
 ---
 
+📌 Regla de Idioma (NO negociable)
+
+Todo archivo generado por este workflow
+(implementation_plan, test_evidence, e2e_evidence, status.md)
+DEBE estar escrito en **ESPAÑOL**.
+
+Narrativas automáticas o resúmenes en otro idioma
+NO son válidos como evidencia.
+
+---
+
 ## Qué corrige este workflow
 
 ✔️ Imports rotos  
@@ -142,6 +153,10 @@ hotfix/HF-XXX/test_evidence.md
 **Tipo:** Runtime / Interactivo  
 **Bloqueante:** SÍ
 
+### Entorno de ejecución
+- Navegador: Chromium (CDP / manual)
+- Base URL: http://localhost:5173
+
 ### Objetivo
 
 Re-ejecutar **exactamente el escenario que fallaba**, tal como fue documentado
@@ -190,21 +205,27 @@ hotfix/HF-XXX/e2e_evidence.md
 
 **Rol activo:** Release Manager  
 **Skill:** `hotfix-closure`
+**Template de cierre obligatorio:**  
+`.agent/templates/status_technical.md`
+
 
 ### Acciones
-1. Verificar que TODA la evidencia existe
-2. Marcar el hotfix como cerrado
-3. Registrar estado final
+1. Verificar que existan:
+   - implementation_plan.md
+   - test_evidence.md
+   - e2e_evidence.md (PASS)
+   - CI en verde
+2. Crear el archivo `status.md` con estado final del hotfix
+3. Marcar el hotfix como cerrado
 
 ### Output obligatorio
 hotfix/HF-XXX/status.md
-
 
 ---
 
 ## Gate — Stabilization Fix (ENDURECIDO)
 
-**Checklist aplicado:** `gate_stabilization_fix.md`
+**Checklist aplicado:** `stabilization-hotfix.md`
 
 ### PASS solo si:
 - Existe `implementation_plan.md`
@@ -242,5 +263,3 @@ hotfix/HF-XXX/status.md
    - e2e_evidence.md
    - status.md
 - Los mensajes de resumen o smoke tests narrativos NO sustituyen evidencia persistida.
-
-

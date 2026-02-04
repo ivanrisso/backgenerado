@@ -92,7 +92,7 @@ class ComprobanteFullUseCase:
                         # 1. Buscar Comprobante Local
                         try:
                             invoice = await self.uow.comprobante_repo.get_by_afip_data(
-                                codigo_arca=str(assoc.Tipo).zfill(2) if len(str(assoc.Tipo)) < 3 else str(assoc.Tipo), # Code 01, 06..
+                                codigo_arca=str(assoc.Tipo).zfill(3), # Ensure 3 digits (e.g. 11 -> 011)
                                 punto_venta=assoc.PtoVta,
                                 numero=assoc.Nro
                             )
@@ -100,11 +100,25 @@ class ComprobanteFullUseCase:
                             if invoice:
                                 # 2. Calcular importe a imputar
                                 # Por defecto, tomamos el total de la NC (o lo que quede de saldo)
-                                # Si la NC es total, tomamos todo.
-                                # TODO: Manejar imputación parcial si el usuario lo especificara.
-                                # Por ahora asumimos que la NC imputa hasta su total.
+                                # Si el usuario especifica importe_imputar > 0, intentamos usar eso.
                                 
-                                monto_imputar = min(invoice.saldo, cabecera.saldo)
+                                monto_imputar = 0.0
+                                
+                                # Lógica de Imputación Parcial (HF-GAP-001)
+                                if getattr(assoc, 'importe_imputar', 0) > 0:
+                                    solicitado = assoc.importe_imputar
+                                    
+                                    # Validaciones
+                                    if solicitado > invoice.saldo:
+                                        raise HTTPException(status_code=400, detail=f"El importe a imputar ({solicitado}) excede el saldo de la factura ({invoice.saldo})")
+                                    
+                                    if solicitado > cabecera.saldo:
+                                        raise HTTPException(status_code=400, detail=f"El importe a imputar ({solicitado}) excede el saldo disponible de la NC ({cabecera.saldo})")
+                                        
+                                    monto_imputar = solicitado
+                                else:
+                                    # Lógica por defecto (Automática)
+                                    monto_imputar = min(invoice.saldo, cabecera.saldo)
                                 
                                 if monto_imputar > 0:
                                     # 3. Crear Imputacion
@@ -127,9 +141,11 @@ class ComprobanteFullUseCase:
                                     
                                     logger.info(f"Imputación creada: NC {cabecera.id} -> Factura {invoice.id} por {monto_imputar}")
                                     
+                        except HTTPException:
+                            raise
                         except Exception as integrity_ex:
                              logger.error(f"Error al imputar comprobante asociado: {integrity_ex}")
-                             # No bloqueamos la creación de la NC, solo logueamos.
+                             # No bloqueamos la creación de la NC, solo logueamos (para errores no críticos).
 
                 await self.uow.commit()
                 

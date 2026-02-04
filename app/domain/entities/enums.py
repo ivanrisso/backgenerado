@@ -66,3 +66,8 @@ class TipoDistribucionImpuestoEnum(str, Enum):
 class TipoReparticionBaseImpuestoEnum(str, Enum):
     BASE = "BASE"
     IMPUESTO = "IMPUESTO"
+
+class TipoPuntoVentaEnum(str, Enum):
+    ELECTRONICA = "ELECTRONICA"
+    FISCAL = "FISCAL"
+    MANUAL = "MANUAL"

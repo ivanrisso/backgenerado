@@ -14,7 +14,7 @@ class CuentaCorrienteRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    async def create(self, cuentacorriente: CuentaCorriente) -> CuentaCorriente:
+    async def create(self, cuentacorriente: CuentaCorriente, commit: bool = True) -> CuentaCorriente:
         pass
 
     @abstractmethod

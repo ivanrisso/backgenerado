@@ -71,6 +71,10 @@ const router = createRouter({
                 { path: '/telefonos', name: 'telefonos', component: () => import('@modules/Maestros/ui/views/TelefonoView.vue') },
                 { path: '/tipodocs', name: 'tipodocs', component: () => import('@modules/Maestros/ui/views/TipoDocView.vue') },
                 { path: '/condiciones-tributarias', name: 'condiciones-tributarias', component: () => import('@modules/Maestros/ui/views/CondicionTributariaView.vue') },
+                { path: '/puntos-venta', name: 'puntos-venta', component: () => import('@modules/Maestros/ui/views/PuntoVentaList.vue') },
+
+                // Config
+                { path: '/config/afip', name: 'afip-config', component: () => import('@modules/Maestros/ui/views/AfipConfigView.vue') },
 
                 // Comprobantes
                 { path: '/comprobantes/nuevo', name: 'comprobante-nuevo', component: () => import('@modules/Facturacion/ui/views/InvoiceCreateView.vue') },

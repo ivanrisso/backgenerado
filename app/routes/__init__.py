@@ -64,5 +64,11 @@ api_router.include_router(articulo_router)
 from app.routes.recibo_routes import router as recibo_router
 api_router.include_router(recibo_router)
 
+from app.routes.afip_config_routes import router as afip_config_router
+api_router.include_router(afip_config_router)
+
+from app.routes.punto_venta_routes import router as punto_venta_router
+api_router.include_router(punto_venta_router)
+
 def include_all_routes(app: FastAPI):
     app.include_router(api_router)

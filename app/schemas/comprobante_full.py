@@ -12,6 +12,7 @@ class CbteAsoc(BaseModel):
     Tipo: int
     PtoVta: int
     Nro: int
+    importe_imputar: Optional[float] = 0.0
 
 class ComprobanteFullCreate(ComprobanteCreate):
     detalles: List[ComprobanteDetalleCreate]

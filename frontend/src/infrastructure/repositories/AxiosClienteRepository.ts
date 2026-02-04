@@ -13,7 +13,6 @@ export class AxiosClienteRepository implements IClienteRepository {
 
     async getById(id: number): Promise<Cliente | null> {
         try {
-            console.log(`[AxiosClienteRepository] getById called with id: ${id} (type: ${typeof id})`);
             const response = await httpClient.get(`${this.resource}${id}`);
             return ClienteMapper.toDomain(response.data);
         } catch (error: any) {

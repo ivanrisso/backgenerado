@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { httpClient } from '../http/client';
 
+// LocalStorage Key
+const AUTH_FLAG_KEY = 'auth_logged_in';
+
 // Define interfaces based on Backend Contracts
 export interface Usuario {
     id: number;
@@ -61,10 +64,6 @@ export const useAuthStore = defineStore('auth', {
             // Fallback logic:
             // 1. If permissions explicitly requested, check them.
             // 2. If roles explicitly requested, check them.
-            // 3. Fallback: If permissions check fails (or not requested) but roles match, pass?
-            //    No, the prompt says "fallback a roles si no existen [permisos]".
-            //    Implementation: Check permissions if present. Check roles if present.
-            //    Mode matches user intent.
 
             const hasPermissionsReq = req.permissions && req.permissions.length > 0;
             const hasRolesReq = req.roles && req.roles.length > 0;
@@ -102,6 +101,16 @@ export const useAuthStore = defineStore('auth', {
 
             if (this.hydrationState === 'loaded' && !force) return;
 
+            // Check Local Flag before making ANY request
+            const hasLocalFlag = localStorage.getItem(AUTH_FLAG_KEY) === 'true';
+
+            if (!hasLocalFlag && !force) {
+                this.user = null;
+                this.roles = [];
+                this.hydrationState = 'loaded'; // Considered "loaded" as Guest
+                return;
+            }
+
             this.hydrationState = 'loading';
 
             // Create the promise and cache it
@@ -120,19 +129,17 @@ export const useAuthStore = defineStore('auth', {
                     // Map Roles Objects to Strings
                     const rawRoles = data.roles || [];
                     this.roles = rawRoles.map((r: any) => r.rol_nombre?.toLowerCase() || r);
-                    // ensure lowercase for consistency? 'Admin' or 'admin'?
-                    // Store 'canAccess' checks 'admin' (lowercase).
-                    // DB has 'Admin'.
-                    // Let's normalize to lowercase for logic, but keep display if needed.
-                    // Store check: state.roles.includes('admin')
-                    // So we must map to lower or correct case.
-                    // Let's assume standard is lowercase in store logic.
                     this.roles = this.roles.map(r => r.toLowerCase());
+
+                    // Confirm Flag
+                    localStorage.setItem(AUTH_FLAG_KEY, 'true');
 
                     this.hydrationState = 'loaded';
                 } catch (error) {
                     this.user = null;
                     this.roles = [];
+                    // Clear Flag on error (invalid session)
+                    localStorage.removeItem(AUTH_FLAG_KEY);
                     this.hydrationState = 'loaded'; // Finished but failed (Guest)
                 } finally {
                     fetchPromise = null; // Clear promise when done
@@ -145,6 +152,7 @@ export const useAuthStore = defineStore('auth', {
         async login(credentials: any) {
             // Adjust payload to match backend schema (UsuarioLogin)
             await httpClient.post('/auth/login', credentials);
+            localStorage.setItem(AUTH_FLAG_KEY, 'true');
             await this.fetchUser(true);
         },
 
@@ -158,18 +166,8 @@ export const useAuthStore = defineStore('auth', {
             }
             this.user = null;
             this.roles = [];
+            localStorage.removeItem(AUTH_FLAG_KEY);
             this.hydrationState = 'idle';
-
-            // Note: We don't force window.location.href = '/login' here anymore
-            // because the Router Guard will detect (!isAuthenticated) and redirect to login
-            // on the next navigation or immediately if we are on a protected route.
-            // If we are in the interceptor context, the router might need a push.
-            // However, to keep store pure, we leave redirection to the consumer or router.
-            // But for safety in specific logout clicks, we might want to reload or use router.
-            // Given the constraints, let's allow the caller to handle redirect or simple location reload if needed.
-            // For now, removing the forced reload to avoid loops during auto-logout sequences.
-            // window.location.href = '/login'; 
-
         }
     }
 });

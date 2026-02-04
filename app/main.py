@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from starlette.middleware.cors import CORSMiddleware
 from app.infrastructure.db.engine import create_db_and_tables
 from app.routes import include_all_routes
@@ -10,7 +11,14 @@ init_logger()
 logger = logging.getLogger(__name__)
 
 
-app = FastAPI(title="Billing Backend System")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info(f"Creando base de datos y DB")
+    await create_db_and_tables()
+    yield
+
+app = FastAPI(title="Billing Backend System", lifespan=lifespan)
 
 # Middleware global de errores
 app.add_middleware(ExceptionHandlingMiddleware)
@@ -27,10 +35,7 @@ app.add_middleware(
 )
 
 # Crear tablas al iniciar si no existen
-@app.on_event("startup")
-async def on_startup():
-    logger.info(f"Creando base de datos y DB")
-    await create_db_and_tables()
+
 
 # Registrar todas las rutas
 include_all_routes(app)

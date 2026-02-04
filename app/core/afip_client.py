@@ -87,3 +87,12 @@ def get_padron_client() -> WSPadronClient:
 
 
 
+def reset_afip_clients():
+    """
+    Resets all singleton instances to force reloading certificates and tokens.
+    """
+    global _wsaa_instance, _wsfe_instance, _wspadron_instance
+    _wsaa_instance = None
+    _wsfe_instance = None
+    _wspadron_instance = None
+    logger.info("AFIP Clients reset. Next request will reload capabilities.")

@@ -27,7 +27,8 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
         stmt = (
             select(ClienteSQL)
             .options(
-                joinedload(ClienteSQL.iva)
+                joinedload(ClienteSQL.condicion_iva),
+                joinedload(ClienteSQL.condicion_iibb)
             )
             .where(ClienteSQL.id == cliente_id)
         )
@@ -39,14 +40,13 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
         stmt = (
             select(ClienteSQL)
             .options(
-                joinedload(ClienteSQL.iva)
+                joinedload(ClienteSQL.condicion_iva),
+                joinedload(ClienteSQL.condicion_iibb)
             )
         )
         result = await self.db.execute(stmt)
         clientes_sql = result.scalars().all()
         return [self._to_domain(c) for c in clientes_sql]
-
-    # ... (skipping create/update which don't use joinedload directly but might need mapping checks? No, they use _to_orm)
 
     async def get_deudores(self) -> List[tuple[Cliente, float]]:
         from sqlalchemy import func
@@ -58,7 +58,8 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             .group_by(ClienteSQL.id)
             .having(func.sum(CuentaCorrienteSQL.importe * CuentaCorrienteSQL.signo) > 0)
             .options(
-                joinedload(ClienteSQL.iva)
+                joinedload(ClienteSQL.condicion_iva),
+                joinedload(ClienteSQL.condicion_iibb)
             )
         )
         
@@ -66,43 +67,6 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
         rows = result.all()
         
         return [(self._to_domain(cliente_sql), float(saldo)) for cliente_sql, saldo in rows]
-
-    def _to_domain(self, cliente_sql: ClienteSQL) -> Cliente:
-        from app.domain.entities.condiciontributaria import CondicionTributaria as CondicionTributariaDomain
-        
-        cliente = Cliente(
-            id=cliente_sql.id,
-            nombre=cliente_sql.nombre,
-            apellido=cliente_sql.apellido,
-            razon_social=cliente_sql.razon_social,
-            cuit=cliente_sql.cuit,
-            email=cliente_sql.email,
-            tipo_doc_id=cliente_sql.tipo_doc_id,
-            condicion_iva_id=cliente_sql.iva_id,
-            condicion_iibb_id=getattr(cliente_sql, 'condicion_iibb_id', None),
-            nro_iibb=getattr(cliente_sql, 'nro_iibb', None)
-        )
-
-        if hasattr(cliente_sql, 'iva') and cliente_sql.iva:
-            cliente.condicion_iva = CondicionTributariaDomain(
-                id=cliente_sql.iva.id,
-                nombre=cliente_sql.iva.nombre,
-                descripcion=cliente_sql.iva.descripcion,
-                ambito=cliente_sql.iva.ambito,
-                tipo_impuesto_id=cliente_sql.iva.tipo_impuesto_id
-            )
-            
-        # iibb optional mapping if relation exists (removed active usage since model lacks it)
-        if hasattr(cliente_sql, 'condicion_iibb') and cliente_sql.condicion_iibb:
-            cliente.condicion_iibb = CondicionTributariaDomain(
-                id=cliente_sql.condicion_iibb.id,
-                nombre=cliente_sql.condicion_iibb.nombre,
-                descripcion=cliente_sql.condicion_iibb.descripcion,
-                ambito=cliente_sql.condicion_iibb.ambito,
-                tipo_impuesto_id=cliente_sql.condicion_iibb.tipo_impuesto_id
-            )
-
-        return cliente
 
     async def create(self, cliente: Cliente) -> Cliente:
         try:
@@ -160,7 +124,6 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             return self._to_domain(cliente_sql)
 
         except IntegrityError as e:
-                        
             if hasattr(e.orig, "args"):
                 error_code, msg = e.orig.args
                 msg = msg.lower()
@@ -215,26 +178,6 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al eliminar cliente")
 
-    async def get_deudores(self) -> List[tuple[Cliente, float]]:
-        from sqlalchemy import func
-        from app.infrastructure.db.orm_models import CuentaCorriente as CuentaCorrienteSQL
-        
-        stmt = (
-            select(ClienteSQL, func.sum(CuentaCorrienteSQL.importe * CuentaCorrienteSQL.signo).label("saldo"))
-            .join(CuentaCorrienteSQL, ClienteSQL.id == CuentaCorrienteSQL.cliente_id)
-            .group_by(ClienteSQL.id)
-            .having(func.sum(CuentaCorrienteSQL.importe * CuentaCorrienteSQL.signo) > 0)
-            .options(
-                joinedload(ClienteSQL.condicion_iva),
-                joinedload(ClienteSQL.condicion_iibb)
-            )
-        )
-        
-        result = await self.db.execute(stmt)
-        rows = result.all()
-        
-        return [(self._to_domain(cliente_sql), float(saldo)) for cliente_sql, saldo in rows]
-
     def _to_domain(self, cliente_sql: ClienteSQL) -> Cliente:
         from app.domain.entities.condiciontributaria import CondicionTributaria as CondicionTributariaDomain
         
@@ -246,7 +189,7 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             cuit=cliente_sql.cuit,
             email=cliente_sql.email,
             tipo_doc_id=cliente_sql.tipo_doc_id,
-            condicion_iva_id=cliente_sql.iva_id,
+            condicion_iva_id=cliente_sql.condicion_iva_id,
             condicion_iibb_id=getattr(cliente_sql, 'condicion_iibb_id', None),
             nro_iibb=getattr(cliente_sql, 'nro_iibb', None)
         )
@@ -260,7 +203,6 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
                 tipo_impuesto_id=cliente_sql.condicion_iva.tipo_impuesto_id
             )
             
-        # iibb optional mapping if relation exists
         if hasattr(cliente_sql, 'condicion_iibb') and cliente_sql.condicion_iibb:
             cliente.condicion_iibb = CondicionTributariaDomain(
                 id=cliente_sql.condicion_iibb.id,
@@ -281,7 +223,7 @@ class ClienteRepositoryImpl(ClienteRepositoryInterface):
             cuit=cliente.cuit,
             email=cliente.email,
             tipo_doc_id=cliente.tipo_doc_id,
-            iva_id=cliente.condicion_iva_id,
-            # condicion_iibb_id=cliente.condicion_iibb_id, # Not in DB
-            # nro_iibb=cliente.nro_iibb # Not in DB
+            condicion_iva_id=cliente.condicion_iva_id,
+            condicion_iibb_id=cliente.condicion_iibb_id,
+            nro_iibb=cliente.nro_iibb
         )

@@ -12,7 +12,7 @@ class Cliente(Base):
     apellido: Mapped[str] = mapped_column()
     razon_social: Mapped[Optional[str]] = mapped_column()
     cuit: Mapped[Optional[str]] = mapped_column()
-    email: Mapped[Optional[EmailStr]] = mapped_column()
+    email: Mapped[Optional[str]] = mapped_column()
     tipo_doc_id: Mapped[int] = mapped_column()
     iva_id: Mapped[int] = mapped_column()
     iva: Mapped["Iva"] = relationship()

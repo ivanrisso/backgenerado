@@ -10,6 +10,7 @@ class ComprobanteDTO:
     tipo_doc_id: Optional[int]
     moneda_id: Optional[int]
     punto_venta: Optional[int]
+    numero: Optional[int]
     fecha_emision: Optional[date]
     doc_nro: Optional[str]
     nombre_cliente: Optional[str]
