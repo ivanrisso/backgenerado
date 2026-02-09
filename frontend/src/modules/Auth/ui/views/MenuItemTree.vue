@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { useMenuItems } from '@ui/composables/auth/useMenuItems';
+import { useMenuItems } from '../composables/useMenuItems';
 import MenuItemForm from './MenuItemForm.vue';
-import type { MenuItem } from '../../../domain/entities/MenuItem';
+import type { MenuItem } from '@domain/entities/MenuItem';
 
 const { menuTree, isLoading, error, loadMenuTree, saveMenuItem, deleteMenuItem } = useMenuItems();
 
@@ -23,8 +23,28 @@ const flattenItems = (items: MenuItem[], result: MenuItem[] = []) => {
 
 const flatMenuItems = computed(() => flattenItems(menuTree.value));
 
+const expandedState = ref<Record<number, boolean>>({});
+
+const toggleExpand = (id: number) => {
+    expandedState.value[id] = !expandedState.value[id];
+};
+
+const sortedMenuTree = computed(() => {
+    return [...menuTree.value].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+});
+
+const sortChildren = (children: MenuItem[]) => {
+    return [...children].sort((a, b) => (a.orden || 0) - (b.orden || 0));
+};
+
 onMounted(async () => {
     await loadMenuTree();
+    // Default expand all parents
+    menuTree.value.forEach(item => {
+        if (item.children && item.children.length > 0) {
+            expandedState.value[item.id] = true;
+        }
+    });
 });
 
 const handleNew = (parentId: number | null) => {
@@ -96,10 +116,15 @@ const handleSubmit = async (entity: MenuItem) => {
     <!-- Tree List Area -->
     <div v-if="!isLoading && !error" class="bg-white shadow overflow-hidden sm:rounded-md border border-gray-200">
       <ul class="divide-y divide-gray-200">
-        <li v-for="item in menuTree" :key="item.id" class="px-6 py-4">
+        <li v-for="item in sortedMenuTree" :key="item.id" class="px-6 py-4">
           <div class="flex justify-between items-start">
             <div class="flex flex-col">
               <span class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                <button v-if="item.children && item.children.length > 0" @click="toggleExpand(item.id)" class="mr-1 text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <span v-if="expandedState[item.id]">▼</span>
+                    <span v-else>▶</span>
+                </button>
+                <span class="text-xs text-gray-400 font-mono mr-1">[{{ item.orden }}]</span>
                 {{ item.nombre }}
                 <span v-if="item.roles.length > 0" class="text-xs font-normal text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">🔒 {{ item.roles.length }} roles</span>
               </span>
@@ -120,11 +145,14 @@ const handleSubmit = async (entity: MenuItem) => {
                     
           <!-- Recursive Children (Flattened for simplicitly or nested) -->
           <!-- For deep nesting, a recursive component is better, but doing 1-level deep here as before -->
-          <ul v-if="item.children && item.children.length > 0" class="mt-3 ml-4 border-l-2 border-gray-100 pl-4 space-y-3">
-            <li v-for="child in item.children" :key="child.id">
+          <!-- Recursive Children (Flattened for simplicitly or nested) -->
+          <!-- For deep nesting, a recursive component is better, but doing 1-level deep here as before -->
+          <ul v-if="item.children && item.children.length > 0 && expandedState[item.id]" class="mt-3 ml-4 border-l-2 border-gray-100 pl-4 space-y-3">
+            <li v-for="child in sortChildren(item.children)" :key="child.id">
               <div class="flex justify-between items-start">
                 <div class="flex flex-col">
                   <span class="text-sm font-medium text-gray-800 flex items-center gap-2">
+                    <span class="text-xs text-gray-400 font-mono">[{{ child.orden }}]</span>
                     {{ child.nombre }}
                     <span v-if="child.roles.length > 0" class="text-xs font-normal text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">🔒 {{ child.roles.length }} roles</span>
                   </span>

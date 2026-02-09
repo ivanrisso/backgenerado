@@ -57,6 +57,9 @@ class MenuItemUseCase:
         
         return await self.repo.update(menuitem_id, existing)
 
+    async def get_by_role_ids(self, role_ids: List[int]) -> List[MenuItem]:
+        return await self.repo.get_by_role_ids(role_ids)
+
     async def delete(self, menuitem_id: int) -> None:
         existing = await self.repo.get_by_id(menuitem_id)
         if not existing:

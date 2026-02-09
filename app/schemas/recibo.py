@@ -21,6 +21,7 @@ class ReciboResponse(BaseModel):
     total: float
     saldo: float
     cliente_id: int
+    nombre_cliente: Optional[str] = None
     observaciones: Optional[str]
     # Podríamos agregar detalles de imputaciones aquí si fuera necesario
     

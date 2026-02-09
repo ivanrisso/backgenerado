@@ -19,5 +19,6 @@ export interface ReciboResponse {
     total: number;
     saldo: number;
     cliente_id: number;
+    nombre_cliente?: string;
     observaciones?: string;
 }

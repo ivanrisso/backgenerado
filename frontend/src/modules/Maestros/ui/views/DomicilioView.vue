@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useDomicilios } from '@modules/Maestros/composables/useDomicilios';
+import { useDomicilios } from '@modules/Clientes/composables/useDomicilios';
 import DomicilioForm from './DomicilioForm.vue';
 import PageHeader from '@shared/ui/PageHeader.vue';
 import DataTable from '@shared/ui/DataTable.vue';

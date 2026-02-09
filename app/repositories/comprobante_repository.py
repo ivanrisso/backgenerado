@@ -5,6 +5,7 @@ from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError, DataError, OperationalError
 from sqlalchemy import func
 from typing import Optional, List
+from datetime import date
 
 from app.infrastructure.db.orm_models import Comprobante as ComprobanteSQL, TipoComprobante, ComprobanteDetalle
 from app.domain.entities.comprobante import Comprobante
@@ -29,8 +30,33 @@ class ComprobanteRepositoryImpl(ComprobanteRepositoryInterface):
         comprobante_sql = result.scalar_one_or_none()
         return self._to_domain(comprobante_sql) if comprobante_sql else None
 
-    async def get_all(self) -> List[Comprobante]:
-        result = await self.db.execute(select(ComprobanteSQL))
+    async def get_all(
+        self, 
+        tipo_comprobante_id: Optional[int] = None,
+        cliente_id: Optional[int] = None,
+        fecha_desde: Optional[date] = None,
+        fecha_hasta: Optional[date] = None,
+        limit: int = 100,
+        offset: int = 0
+    ) -> List[Comprobante]:
+        stmt = select(ComprobanteSQL)
+        
+        if tipo_comprobante_id:
+            stmt = stmt.where(ComprobanteSQL.tipo_comprobante_id == tipo_comprobante_id)
+        
+        if cliente_id:
+            stmt = stmt.where(ComprobanteSQL.cliente_id == cliente_id)
+            
+        if fecha_desde:
+            stmt = stmt.where(ComprobanteSQL.fecha_emision >= fecha_desde)
+            
+        if fecha_hasta:
+            stmt = stmt.where(ComprobanteSQL.fecha_emision <= fecha_hasta)
+            
+        stmt = stmt.order_by(ComprobanteSQL.fecha_emision.desc(), ComprobanteSQL.id.desc())
+        stmt = stmt.offset(offset).limit(limit)
+        
+        result = await self.db.execute(stmt)
         return [self._to_domain(c) for c in result.scalars().all()]
 
     async def get_by_cliente(self, cliente_id: int) -> List[Comprobante]:

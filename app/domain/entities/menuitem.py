@@ -10,6 +10,7 @@ class MenuItem:
     nombre: Optional[str] = None
     path: Optional[str] = None
     parent_id: Optional[int] = None
+    orden: int = 0
     roles: List['Rol'] = field(default_factory=list) # Forward ref if needed, or import
 
     

@@ -183,12 +183,29 @@ class MenuItemRepositoryImpl(MenuItemRepositoryInterface):
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al eliminar menuitem")
 
+    async def get_by_role_ids(self, role_ids: List[int]) -> List[MenuItem]:
+        # Avoid circular import issues by importing locally if needed, similar to create
+        from app.infrastructure.db.orm_models import Rol as RolSQL
+        stmt = (
+            select(MenuItemSQL)
+            .join(MenuItemSQL.roles)
+            .where(RolSQL.id.in_(role_ids))
+            .options(selectinload(MenuItemSQL.roles))
+        )
+        result = await self.db.execute(stmt)
+        # Unique because join might duplicate if multiple roles match the same item?
+        # scalars().unique() or just .all() if SQLAlchemy handles it.
+        # usually scalars().all() with join might return duplicates if one item has multiple roles in list.
+        menuitems_sql = result.scalars().unique().all()
+        return [self._to_domain(c) for c in menuitems_sql]
+
     def _to_domain(self, menuitem_sql: MenuItemSQL) -> MenuItem:
         return MenuItem(
             id=menuitem_sql.id,
             nombre=menuitem_sql.nombre,
             path=menuitem_sql.path,
             parent_id=menuitem_sql.parent_id,
+            orden=menuitem_sql.orden,
             roles = [
                 Rol(
                     id=rol.id,
@@ -203,5 +220,6 @@ class MenuItemRepositoryImpl(MenuItemRepositoryInterface):
             id=menuitem.id,
             nombre=menuitem.nombre,
             path=menuitem.path,
-            parent_id=menuitem.parent_id
+            parent_id=menuitem.parent_id,
+            orden=menuitem.orden
         )

@@ -11,6 +11,7 @@ class MenuItem(Base):
     nombre: Mapped[str] = mapped_column()
     path: Mapped[Optional[str]] = mapped_column()
     parent_id: Mapped[Optional[int]] = mapped_column()
-    children: Mapped[List[""MenuItem""]] = relationship(back_populates="menuitem")
+    orden: Mapped[int] = mapped_column(default=0)
+    children: Mapped[List["MenuItem"]] = relationship(back_populates="menuitem")
     parent: Mapped[Optional["MenuItem"]] = mapped_column()
     roles: Mapped[List["Rol"]] = relationship(back_populates="menuitem")

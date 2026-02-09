@@ -31,7 +31,7 @@ axiosClient.interceptors.response.use(
         // Allow the caller to handle 401 (e.g., for init checks)
         // We only clear the local flag.
         if (error.response?.status === 401) {
-            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('auth_logged_in');
         }
         return Promise.reject(error);
     }

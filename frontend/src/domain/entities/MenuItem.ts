@@ -6,6 +6,7 @@ export class MenuItem {
         public readonly nombre: string,
         public readonly path: string | null,
         public readonly parentId: number | null,
+        public readonly orden: number = 0,
         public readonly children: MenuItem[] = [],
         public readonly roles: Rol[] = [] // Public for Vue Proxy compatibility
     ) { }

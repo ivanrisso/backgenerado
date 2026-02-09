@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '../../stores/auth';
-import { menuConfig, type MenuItem } from '../../config/menu';
+import { useUserMenu } from '@/shared/composables/useUserMenu';
 
 const authStore = useAuthStore();
+const { menuTree, loadUserMenu } = useUserMenu();
 const openGroups = ref<string[]>(['facturacion', 'clientes']); // Default open
 
-// Recursive function to filter menu items based on permissions
-const filterItems = (items: MenuItem[]): MenuItem[] => {
+// Load menu on mount
+onMounted(async () => {
+    await loadUserMenu();
+});
+
+// Filter mainly to remove empty groups (backend already filters by permission)
+const filterItems = (items: any[]): any[] => {
     return items
-        .filter(item => {
-            // Check access for the item itself
-            return authStore.canAccess({ 
-                roles: item.roles, 
-                permissions: item.permissions 
-            });
-        })
         .map(item => {
-            // If it has children, filter them too
-            if (item.children) {
+            // If it has children, recurse
+            if (item.children && item.children.length > 0) {
                 return {
                     ...item,
                     children: filterItems(item.children)
@@ -27,15 +26,29 @@ const filterItems = (items: MenuItem[]): MenuItem[] => {
             return item;
         })
         .filter(item => {
-            // Remove groups that ended up empty after filtering children
+            // Remove groups that ended up empty
             if (item.children && item.children.length === 0) {
-                return false;
+                // Determine if it was a group (has children property originally or intention)
+                // For now, if it implies having children but has none, hide it.
+                // Or if it is a folder (no route) and has no children.
+                if (!item.route || item.route === '#') {
+                     return false;
+                }
             }
             return true;
         });
 };
 
-const filteredMenu = computed(() => filterItems(menuConfig));
+const sortItems = (items: any[]): any[] => {
+    return items.slice().sort((a, b) => (a.orden || 0) - (b.orden || 0)).map(item => {
+        if (item.children && item.children.length > 0) {
+            return { ...item, children: sortItems(item.children) };
+        }
+        return item;
+    });
+};
+
+const filteredMenu = computed(() => sortItems(filterItems(menuTree.value)));
 
 const toggleGroup = (id: string) => {
     if (openGroups.value.includes(id)) {

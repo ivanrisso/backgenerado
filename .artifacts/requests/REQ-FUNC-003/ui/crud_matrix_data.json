@@ -1,0 +1,387 @@
+[
+  {
+    "path": "/login",
+    "component": "@modules/Auth/ui/views/LoginView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": true,
+      "api": true,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/403",
+    "component": "@shared/ui/views/ForbiddenView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/",
+    "component": "@modules/Dashboard/ui/views/DashboardView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/usuarios",
+    "component": "@modules/Auth/ui/views/UsuarioList.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/clientes",
+    "component": "@modules/Clientes/ui/views/ClienteList.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": true,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/clientes/deudores",
+    "component": "@modules/Clientes/ui/views/ClienteDeudorList.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/clientes/:clienteId/domicilios/:domicilioId/telefonos",
+    "component": "@modules/Clientes/ui/views/ClienteTelefonosView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/roles",
+    "component": "@modules/Auth/ui/views/RolList.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/menus",
+    "component": "@modules/Auth/ui/views/MenuItemTree.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/monedas",
+    "component": "@modules/Maestros/ui/views/MonedaView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/ivas",
+    "component": "@modules/Maestros/ui/views/IvaView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/conceptos",
+    "component": "@modules/Maestros/ui/views/ConceptoView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/tipos-comprobante",
+    "component": "@modules/Maestros/ui/views/TipoComprobanteView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/tipos-impuesto",
+    "component": "@modules/Maestros/ui/views/TipoImpuestoView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": true,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/paises",
+    "component": "@modules/Maestros/ui/views/PaisView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/provincias",
+    "component": "@modules/Maestros/ui/views/ProvinciaView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/localidades",
+    "component": "@modules/Maestros/ui/views/LocalidadView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/tipodoms",
+    "component": "@modules/Maestros/ui/views/TipoDomView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/tipotels",
+    "component": "@modules/Maestros/ui/views/TipoTelView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/operadores",
+    "component": "@modules/Maestros/ui/views/OperadorView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/domicilios",
+    "component": "@modules/Maestros/ui/views/DomicilioView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/telefonos",
+    "component": "@modules/Maestros/ui/views/TelefonoView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/tipodocs",
+    "component": "@modules/Maestros/ui/views/TipoDocView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/condiciones-tributarias",
+    "component": "@modules/Maestros/ui/views/CondicionTributariaView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/puntos-venta",
+    "component": "@modules/Maestros/ui/views/PuntoVentaList.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/config/afip",
+    "component": "@modules/Maestros/ui/views/AfipConfigView.vue",
+    "type": "CRUD (Single View)",
+    "features": {
+      "table": false,
+      "form": true,
+      "api": true,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/comprobantes/nuevo",
+    "component": "@modules/Facturacion/ui/views/InvoiceCreateView.vue",
+    "type": "Create",
+    "features": {
+      "table": true,
+      "form": true,
+      "api": true,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/comprobantes",
+    "component": "@modules/Facturacion/ui/views/InvoiceListView.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": true,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/recibos",
+    "component": "@modules/Tesoreria/ui/views/ReciboListView.vue",
+    "type": "List",
+    "features": {
+      "table": true,
+      "form": true,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/recibos/nuevo",
+    "component": "@modules/Tesoreria/ui/views/ReciboCreateView.vue",
+    "type": "Create",
+    "features": {
+      "table": true,
+      "form": true,
+      "api": true,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/recibos/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboDetailView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/recibos/imprimir/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboPrintView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/recibos/eliminar/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboDeleteView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": false,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/recibos/modificar/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboModifyView.vue",
+    "type": "Detail",
+    "features": {
+      "table": false,
+      "form": true,
+      "api": false,
+      "useCrud": false
+    }
+  },
+  {
+    "path": "/cuentacorriente",
+    "component": "@modules/Clientes/ui/views/CurrentAccountView.vue",
+    "type": "Detail",
+    "features": {
+      "table": true,
+      "form": true,
+      "api": false,
+      "useCrud": false
+    }
+  }
+]

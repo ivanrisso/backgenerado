@@ -107,6 +107,8 @@ hotfix/HF-XXX/fix_description.md
 ### Output obligatorio
 hotfix/HF-XXX/implementation_plan.md
 
+Si implementation_plan.md ya existe y no cumple reglas de idioma o scope,
+debe ser reemplazado, no editado.
 
 ---
 

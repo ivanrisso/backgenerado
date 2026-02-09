@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import AsyncGenerator, List
-from app.core.dependencies import require_roles
+from app.core.dependencies import require_roles, get_current_user
 
 from app.infrastructure.db.engine import SessionLocal, get_db
 from app.repositories.cliente_repository import ClienteRepositoryImpl
@@ -40,7 +40,7 @@ def get_afip_padron_service(db: AsyncSession = Depends(get_db_session)) -> AfipP
 
 # Rutas
 
-@router.get("/", response_model=List[ClienteResponse], dependencies=[Depends(require_roles("admin"))])
+@router.get("/", response_model=List[ClienteResponse], dependencies=[Depends(get_current_user)])
 async def get_all(service: ClienteService = Depends(get_cliente_service)):
     try:
         return await service.get_all()

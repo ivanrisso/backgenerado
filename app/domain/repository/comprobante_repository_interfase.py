@@ -1,6 +1,7 @@
 # ✅ app/domain/repository/comprobante_repository_interface.py
 from abc import ABC, abstractmethod
 from typing import List, Optional
+from datetime import date
 from app.domain.entities.comprobante import Comprobante
 
 class ComprobanteRepositoryInterface(ABC):
@@ -14,7 +15,15 @@ class ComprobanteRepositoryInterface(ABC):
         pass
 
     @abstractmethod
-    async def get_all(self) -> List[Comprobante]:
+    async def get_all(
+        self, 
+        tipo_comprobante_id: Optional[int] = None,
+        cliente_id: Optional[int] = None,
+        fecha_desde: Optional[date] = None,
+        fecha_hasta: Optional[date] = None,
+        limit: int = 100,
+        offset: int = 0
+    ) -> List[Comprobante]:
         pass
 
     @abstractmethod

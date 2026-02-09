@@ -6,6 +6,7 @@ class MenuItemCreate(BaseModel):
     nombre: str
     path: Optional[str] = None
     parent_id: Optional[int] = None
+    orden: Optional[int] = 0
     role_ids: Optional[list[int]] = None
 
 class MenuItemUpdate(BaseModel):

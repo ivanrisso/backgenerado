@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue';
-import { MenuItem } from '../../../domain/entities/MenuItem';
-import { useRoles } from '../../composables/auth/useRoles';
+import { MenuItem } from '@domain/entities/MenuItem';
+import { useRoles } from '../../composables/useRoles';
 
 const props = defineProps<{
     modelValue: MenuItem | null;
@@ -20,6 +20,7 @@ const form = ref({
     id: 0,
     nombre: '',
     path: '',
+    orden: 0,
     parentId: null as number | null,
     roleIds: [] as number[]
 });
@@ -39,6 +40,7 @@ watch(() => props.modelValue, (newVal) => {
             id: newVal.id,
             nombre: newVal.nombre,
             path: newVal.path || '',
+            orden: newVal.orden || 0,
             parentId: newVal.parentId,
             roleIds: newVal.roles.map(r => r.id)
         };
@@ -47,6 +49,7 @@ watch(() => props.modelValue, (newVal) => {
             id: 0, 
             nombre: '', 
             path: '', 
+            orden: 0,
             parentId: props.parentId || null, 
             roleIds: [] 
         };
@@ -61,6 +64,7 @@ const handleSubmit = () => {
             form.value.nombre,
             form.value.path || null,
             form.value.parentId,
+            form.value.orden,
             [], // Children handled by tree, not form
             selectedRoles
         );
@@ -77,7 +81,7 @@ const handleSubmit = () => {
       {{ modelValue ? 'Editar' : 'Nuevo' }} Item de Menú
     </h3>
     <form class="space-y-4" @submit.prevent="handleSubmit">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block text-sm font-medium text-gray-700">Nombre</label>
           <input v-model="form.nombre" type="text" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
@@ -85,6 +89,10 @@ const handleSubmit = () => {
         <div>
           <label class="block text-sm font-medium text-gray-700">Path (Ruta)</label>
           <input v-model="form.path" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" placeholder="/ejemplo">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Orden</label>
+          <input v-model.number="form.orden" type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border" placeholder="0">
         </div>
       </div>
 

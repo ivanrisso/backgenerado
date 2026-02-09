@@ -1,0 +1,1771 @@
+[
+  {
+    "path": "/api/v1/auth/register",
+    "methods": [
+      "POST"
+    ],
+    "name": "register_user",
+    "tags": [
+      "Autenticaci\u00f3n"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auth/login",
+    "methods": [
+      "POST"
+    ],
+    "name": "login_user",
+    "tags": [
+      "Autenticaci\u00f3n"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auth/refresh",
+    "methods": [
+      "POST"
+    ],
+    "name": "refresh_token",
+    "tags": [
+      "Autenticaci\u00f3n"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auth/logout",
+    "methods": [
+      "POST"
+    ],
+    "name": "logout_user",
+    "tags": [
+      "Autenticaci\u00f3n"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auth/me",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_me",
+    "tags": [
+      "Autenticaci\u00f3n"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auditoriacomprobantes/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "AuditoriaComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auditoriacomprobantes/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "AuditoriaComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auditoriacomprobantes/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "AuditoriaComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auditoriacomprobantes/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "AuditoriaComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/auditoriacomprobantes/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "AuditoriaComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/deudores",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_deudores",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/{id}/sync-afip-taxes",
+    "methods": [
+      "GET"
+    ],
+    "name": "compare_afip_taxes",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/clientes/{id}/sync-afip-taxes",
+    "methods": [
+      "POST"
+    ],
+    "name": "sync_afip_taxes",
+    "tags": [
+      "Cliente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantes/from-voucher",
+    "methods": [
+      "POST"
+    ],
+    "name": "create_from_voucher",
+    "tags": [
+      "Comprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantes/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Comprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantes/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Comprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantes/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Comprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantes/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Comprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantes/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Comprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantedetalles/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "ComprobanteDetalle"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantedetalles/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "ComprobanteDetalle"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantedetalles/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "ComprobanteDetalle"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantedetalles/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "ComprobanteDetalle"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantedetalles/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "ComprobanteDetalle"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobanteimpuestos/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "ComprobanteImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobanteimpuestos/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "ComprobanteImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobanteimpuestos/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "ComprobanteImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobanteimpuestos/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "ComprobanteImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobanteimpuestos/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "ComprobanteImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/conceptos/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Concepto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/conceptos/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Concepto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/conceptos/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Concepto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/conceptos/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Concepto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/conceptos/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Concepto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/cuentacorrientes/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "CuentaCorriente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/cuentacorrientes/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "CuentaCorriente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/cuentacorrientes/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "CuentaCorriente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/cuentacorrientes/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "CuentaCorriente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/cuentacorrientes/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "CuentaCorriente"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/domicilios/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Domicilio"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/domicilios/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Domicilio"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/domicilios/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Domicilio"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/domicilios/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Domicilio"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/domicilios/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Domicilio"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/ivas/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Iva"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/ivas/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Iva"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/ivas/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Iva"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/ivas/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Iva"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/ivas/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Iva"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/localidades/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Localidad"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/localidades/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Localidad"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/localidades/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Localidad"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/localidades/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Localidad"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/localidades/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Localidad"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/menuitems/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "MenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/menuitems/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "MenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/menuitems/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "MenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/menuitems/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "MenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/menuitems/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "MenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/monedas/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Moneda"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/monedas/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Moneda"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/monedas/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Moneda"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/monedas/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Moneda"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/monedas/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Moneda"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/operadors/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Operador"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/operadors/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Operador"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/operadors/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Operador"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/operadors/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Operador"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/operadors/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Operador"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/paises/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Pais"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/paises/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Pais"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/paises/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Pais"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/paises/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Pais"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/paises/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Pais"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/provincias/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Provincia"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/provincias/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Provincia"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/provincias/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Provincia"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/provincias/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Provincia"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/provincias/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Provincia"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rols/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Rol"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rols/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Rol"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rols/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Rol"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rols/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Rol"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rols/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Rol"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolesusuarios/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "RolesUsuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolesusuarios/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "RolesUsuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolesusuarios/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "RolesUsuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolesusuarios/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "RolesUsuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolesusuarios/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "RolesUsuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolmenuitems/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "RolMenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolmenuitems/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "RolMenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolmenuitems/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "RolMenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolmenuitems/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "RolMenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/rolmenuitems/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "RolMenuItem"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/telefonos/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Telefono"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/telefonos/domicilio/{domicilio_id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_domicilio",
+    "tags": [
+      "Telefono"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/telefonos/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Telefono"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/telefonos/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Telefono"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/telefonos/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Telefono"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/telefonos/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Telefono"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipocomprobantes/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "TipoComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipocomprobantes/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "TipoComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipocomprobantes/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "TipoComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipocomprobantes/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "TipoComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipocomprobantes/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "TipoComprobante"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodocs/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "TipoDoc"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodocs/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "TipoDoc"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodocs/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "TipoDoc"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodocs/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "TipoDoc"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodocs/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "TipoDoc"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodoms/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "TipoDom"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodoms/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "TipoDom"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodoms/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "TipoDom"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodoms/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "TipoDom"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipodoms/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "TipoDom"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipoimpuestos/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "TipoImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipoimpuestos/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "TipoImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipoimpuestos/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "TipoImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipoimpuestos/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "TipoImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipoimpuestos/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "TipoImpuesto"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipotels/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "TipoTel"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipotels/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "TipoTel"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipotels/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "TipoTel"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipotels/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "TipoTel"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/tipotels/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "TipoTel"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/usuarios/me/menu",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_my_menu",
+    "tags": [
+      "Usuario"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/usuarios/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Usuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/usuarios/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Usuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/usuarios/{usuario_mail}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_email",
+    "tags": [
+      "Usuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/usuarios/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Usuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/usuarios/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "partial_update",
+    "tags": [
+      "Usuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/usuarios/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Usuario"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/comprobantes/full/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create_comprobante_full",
+    "tags": [
+      "Comprobante Full"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/condiciones-tributarias/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Condiciones Tributarias"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/condiciones-tributarias/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Condiciones Tributarias"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/condiciones-tributarias/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Condiciones Tributarias"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/condiciones-tributarias/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "update",
+    "tags": [
+      "Condiciones Tributarias"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/condiciones-tributarias/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Condiciones Tributarias"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/articulos/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_all",
+    "tags": [
+      "Articulo"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/articulos/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_by_id",
+    "tags": [
+      "Articulo"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/articulos/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create",
+    "tags": [
+      "Articulo"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/articulos/{id}",
+    "methods": [
+      "PATCH"
+    ],
+    "name": "update",
+    "tags": [
+      "Articulo"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/articulos/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete",
+    "tags": [
+      "Articulo"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/recibos/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create_recibo",
+    "tags": [
+      "Recibos"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/recibos/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_recibos",
+    "tags": [
+      "Recibos"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/recibos/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_recibo_by_id",
+    "tags": [
+      "Recibos"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/recibos/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete_recibo",
+    "tags": [
+      "Recibos"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/recibos/{id}",
+    "methods": [
+      "PUT"
+    ],
+    "name": "update_recibo",
+    "tags": [
+      "Recibos"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/config/afip/certs",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_afip_certs_status",
+    "tags": [
+      "Configuracion"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/config/afip/certs",
+    "methods": [
+      "POST"
+    ],
+    "name": "upload_afip_certs",
+    "tags": [
+      "Configuracion"
+    ],
+    "auth_likely": true
+  },
+  {
+    "path": "/api/v1/puntos-venta/",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_puntos_venta",
+    "tags": [
+      "Puntos de Venta"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/puntos-venta/",
+    "methods": [
+      "POST"
+    ],
+    "name": "create_punto_venta",
+    "tags": [
+      "Puntos de Venta"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/puntos-venta/{id}",
+    "methods": [
+      "GET"
+    ],
+    "name": "get_punto_venta",
+    "tags": [
+      "Puntos de Venta"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/puntos-venta/{id}",
+    "methods": [
+      "PUT"
+    ],
+    "name": "update_punto_venta",
+    "tags": [
+      "Puntos de Venta"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/api/v1/puntos-venta/{id}",
+    "methods": [
+      "DELETE"
+    ],
+    "name": "delete_punto_venta",
+    "tags": [
+      "Puntos de Venta"
+    ],
+    "auth_likely": false
+  },
+  {
+    "path": "/ping",
+    "methods": [
+      "GET"
+    ],
+    "name": "ping",
+    "tags": [],
+    "auth_likely": false
+  }
+]

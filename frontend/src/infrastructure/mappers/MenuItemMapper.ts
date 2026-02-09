@@ -13,6 +13,7 @@ export class MenuItemMapper {
             dto.nombre,
             dto.path,
             dto.parent_id,
+            dto.orden || 0,
             children,
             roles
         );
@@ -26,6 +27,7 @@ export class MenuItemMapper {
             nombre: entity.nombre,
             path: entity.path,
             parent_id: entity.parentId,
+            orden: entity.orden,
             role_ids: entity.roles.map(r => r.id)
         };
     }

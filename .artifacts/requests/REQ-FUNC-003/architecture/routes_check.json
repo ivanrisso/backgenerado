@@ -1,0 +1,212 @@
+[
+  {
+    "path": "/login",
+    "component": "@modules/Auth/ui/views/LoginView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Auth/ui/views/LoginView.vue",
+    "exists": true
+  },
+  {
+    "path": "/403",
+    "component": "@shared/ui/views/ForbiddenView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/shared/ui/views/ForbiddenView.vue",
+    "exists": true
+  },
+  {
+    "path": "/",
+    "component": "@modules/Dashboard/ui/views/DashboardView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Dashboard/ui/views/DashboardView.vue",
+    "exists": true
+  },
+  {
+    "path": "/usuarios",
+    "component": "@modules/Auth/ui/views/UsuarioList.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Auth/ui/views/UsuarioList.vue",
+    "exists": true
+  },
+  {
+    "path": "/clientes",
+    "component": "@modules/Clientes/ui/views/ClienteList.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Clientes/ui/views/ClienteList.vue",
+    "exists": true
+  },
+  {
+    "path": "/clientes/deudores",
+    "component": "@modules/Clientes/ui/views/ClienteDeudorList.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Clientes/ui/views/ClienteDeudorList.vue",
+    "exists": true
+  },
+  {
+    "path": "/clientes/:clienteId/domicilios/:domicilioId/telefonos",
+    "component": "@modules/Clientes/ui/views/ClienteTelefonosView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Clientes/ui/views/ClienteTelefonosView.vue",
+    "exists": true
+  },
+  {
+    "path": "/roles",
+    "component": "@modules/Auth/ui/views/RolList.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Auth/ui/views/RolList.vue",
+    "exists": true
+  },
+  {
+    "path": "/menus",
+    "component": "@modules/Auth/ui/views/MenuItemTree.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Auth/ui/views/MenuItemTree.vue",
+    "exists": true
+  },
+  {
+    "path": "/monedas",
+    "component": "@modules/Maestros/ui/views/MonedaView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/MonedaView.vue",
+    "exists": true
+  },
+  {
+    "path": "/ivas",
+    "component": "@modules/Maestros/ui/views/IvaView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/IvaView.vue",
+    "exists": true
+  },
+  {
+    "path": "/conceptos",
+    "component": "@modules/Maestros/ui/views/ConceptoView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/ConceptoView.vue",
+    "exists": true
+  },
+  {
+    "path": "/tipos-comprobante",
+    "component": "@modules/Maestros/ui/views/TipoComprobanteView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/TipoComprobanteView.vue",
+    "exists": true
+  },
+  {
+    "path": "/tipos-impuesto",
+    "component": "@modules/Maestros/ui/views/TipoImpuestoView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/TipoImpuestoView.vue",
+    "exists": true
+  },
+  {
+    "path": "/paises",
+    "component": "@modules/Maestros/ui/views/PaisView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/PaisView.vue",
+    "exists": true
+  },
+  {
+    "path": "/provincias",
+    "component": "@modules/Maestros/ui/views/ProvinciaView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/ProvinciaView.vue",
+    "exists": true
+  },
+  {
+    "path": "/localidades",
+    "component": "@modules/Maestros/ui/views/LocalidadView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/LocalidadView.vue",
+    "exists": true
+  },
+  {
+    "path": "/tipodoms",
+    "component": "@modules/Maestros/ui/views/TipoDomView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/TipoDomView.vue",
+    "exists": true
+  },
+  {
+    "path": "/tipotels",
+    "component": "@modules/Maestros/ui/views/TipoTelView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/TipoTelView.vue",
+    "exists": true
+  },
+  {
+    "path": "/operadores",
+    "component": "@modules/Maestros/ui/views/OperadorView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/OperadorView.vue",
+    "exists": true
+  },
+  {
+    "path": "/domicilios",
+    "component": "@modules/Maestros/ui/views/DomicilioView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/DomicilioView.vue",
+    "exists": true
+  },
+  {
+    "path": "/telefonos",
+    "component": "@modules/Maestros/ui/views/TelefonoView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/TelefonoView.vue",
+    "exists": true
+  },
+  {
+    "path": "/tipodocs",
+    "component": "@modules/Maestros/ui/views/TipoDocView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/TipoDocView.vue",
+    "exists": true
+  },
+  {
+    "path": "/condiciones-tributarias",
+    "component": "@modules/Maestros/ui/views/CondicionTributariaView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/CondicionTributariaView.vue",
+    "exists": true
+  },
+  {
+    "path": "/puntos-venta",
+    "component": "@modules/Maestros/ui/views/PuntoVentaList.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/PuntoVentaList.vue",
+    "exists": true
+  },
+  {
+    "path": "/config/afip",
+    "component": "@modules/Maestros/ui/views/AfipConfigView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Maestros/ui/views/AfipConfigView.vue",
+    "exists": true
+  },
+  {
+    "path": "/comprobantes/nuevo",
+    "component": "@modules/Facturacion/ui/views/InvoiceCreateView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Facturacion/ui/views/InvoiceCreateView.vue",
+    "exists": true
+  },
+  {
+    "path": "/comprobantes",
+    "component": "@modules/Facturacion/ui/views/InvoiceListView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Facturacion/ui/views/InvoiceListView.vue",
+    "exists": true
+  },
+  {
+    "path": "/recibos",
+    "component": "@modules/Tesoreria/ui/views/ReciboListView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Tesoreria/ui/views/ReciboListView.vue",
+    "exists": true
+  },
+  {
+    "path": "/recibos/nuevo",
+    "component": "@modules/Tesoreria/ui/views/ReciboCreateView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Tesoreria/ui/views/ReciboCreateView.vue",
+    "exists": true
+  },
+  {
+    "path": "/recibos/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboDetailView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Tesoreria/ui/views/ReciboDetailView.vue",
+    "exists": true
+  },
+  {
+    "path": "/recibos/imprimir/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboPrintView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Tesoreria/ui/views/ReciboPrintView.vue",
+    "exists": true
+  },
+  {
+    "path": "/recibos/eliminar/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboDeleteView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Tesoreria/ui/views/ReciboDeleteView.vue",
+    "exists": true
+  },
+  {
+    "path": "/recibos/modificar/:id",
+    "component": "@modules/Tesoreria/ui/views/ReciboModifyView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Tesoreria/ui/views/ReciboModifyView.vue",
+    "exists": true
+  },
+  {
+    "path": "/cuentacorriente",
+    "component": "@modules/Clientes/ui/views/CurrentAccountView.vue",
+    "resolvedPath": "/home/irisso/proyectos/facturacion/frontend/src/modules/Clientes/ui/views/CurrentAccountView.vue",
+    "exists": true
+  }
+]

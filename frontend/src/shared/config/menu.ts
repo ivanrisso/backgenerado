@@ -41,10 +41,16 @@ export const menuConfig: MenuItem[] = [
         icon: 'currency-dollar',
         children: [
             {
+                id: 'recibos-list',
+                label: 'Recibos',
+                route: '/recibos',
+                roles: ['admin', 'cobranzas', 'operador']
+            },
+            {
                 id: 'nuevo-recibo',
                 label: 'Nuevo Recibo',
                 route: '/recibos/nuevo',
-                roles: ['admin', 'cobranzas']
+                roles: ['admin', 'cobranzas', 'operador']
             }
         ]
     },
@@ -57,7 +63,8 @@ export const menuConfig: MenuItem[] = [
                 id: 'lista-clientes',
                 label: 'Directorio',
                 route: '/clientes',
-                permissions: ['cliente.read']
+                permissions: ['cliente.read'],
+                roles: ['admin', 'operador']
             },
             {
                 id: 'cuenta-corriente',

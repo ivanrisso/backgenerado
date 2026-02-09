@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/usuarios",
+    "issue": "List view without explicit API usage or useCrud"
+  },
+  {
+    "path": "/clientes/deudores",
+    "issue": "List view without explicit API usage or useCrud"
+  },
+  {
+    "path": "/roles",
+    "issue": "List view without explicit API usage or useCrud"
+  },
+  {
+    "path": "/menus",
+    "issue": "List view without explicit API usage or useCrud"
+  },
+  {
+    "path": "/puntos-venta",
+    "issue": "List view without explicit API usage or useCrud"
+  },
+  {
+    "path": "/comprobantes",
+    "issue": "List view without explicit API usage or useCrud"
+  },
+  {
+    "path": "/recibos",
+    "issue": "List view without explicit API usage or useCrud"
+  }
+]

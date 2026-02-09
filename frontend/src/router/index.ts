@@ -23,7 +23,8 @@ const router = createRouter({
             children: [
                 {
                     path: '',
-                    redirect: '/usuarios'
+                    name: 'dashboard',
+                    component: () => import('@modules/Dashboard/ui/views/DashboardView.vue')
                 },
                 {
                     path: '/usuarios',
@@ -81,7 +82,12 @@ const router = createRouter({
                 { path: '/comprobantes', name: 'comprobantes', component: () => import('@modules/Facturacion/ui/views/InvoiceListView.vue') },
 
                 // Tesorería
+                { path: '/recibos', name: 'recibos', component: () => import('@modules/Tesoreria/ui/views/ReciboListView.vue') },
                 { path: '/recibos/nuevo', name: 'recibo-nuevo', component: () => import('@modules/Tesoreria/ui/views/ReciboCreateView.vue') },
+                { path: '/recibos/:id', name: 'recibo-detalle', component: () => import('@modules/Tesoreria/ui/views/ReciboDetailView.vue') },
+                { path: '/recibos/imprimir/:id', name: 'recibo-imprimir', component: () => import('@modules/Tesoreria/ui/views/ReciboPrintView.vue') },
+                { path: '/recibos/eliminar/:id', name: 'recibo-eliminar', component: () => import('@modules/Tesoreria/ui/views/ReciboDeleteView.vue') },
+                { path: '/recibos/modificar/:id', name: 'recibo-modificar', component: () => import('@modules/Tesoreria/ui/views/ReciboModifyView.vue') },
 
                 // Cliente - Cuenta Corriente
                 { path: '/cuentacorriente', name: 'cuentacorriente', component: () => import('@modules/Clientes/ui/views/CurrentAccountView.vue') },

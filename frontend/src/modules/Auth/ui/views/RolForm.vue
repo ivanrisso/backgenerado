@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { Rol } from '../../../domain/entities/Rol';
+import { Rol } from '@domain/entities/Rol';
 
 const props = defineProps<{
     modelValue: Rol | null;

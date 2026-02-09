@@ -1,5 +1,5 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Integer, Boolean, Float, Date, DateTime, Text, Numeric, JSON, Table, Column
+from sqlalchemy import ForeignKey, String, Integer, Boolean, Float, Date, DateTime, Text, Numeric, JSON, Table, Column, UniqueConstraint
 from typing import Optional, List
 from decimal import Decimal
 from datetime import date, datetime
@@ -60,6 +60,7 @@ class MenuItem(Base):
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     path: Mapped[Optional[str]] = mapped_column(String(200))
     parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("menuitem.id"))
+    orden: Mapped[int] = mapped_column(default=0)
 
     parent: Mapped[Optional["MenuItem"]] = relationship(back_populates="children", remote_side="MenuItem.id")
     children: Mapped[List["MenuItem"]] = relationship(back_populates="parent")
@@ -323,8 +324,12 @@ class Comprobante(Base):
     moneda_id: Mapped[int] = mapped_column(ForeignKey("moneda.id"), nullable=False)
 
     punto_venta: Mapped[int] = mapped_column(nullable=False)
-    numero: Mapped[int] = mapped_column(nullable=False, unique=True)
+    numero: Mapped[int] = mapped_column(nullable=False) # unique=True removed
     fecha_emision: Mapped[date] = mapped_column(nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("tipo_comprobante_id", "punto_venta", "numero", name="uq_comprobante_numero"),
+    )
 
     doc_nro: Mapped[str] = mapped_column(String(20), nullable=False)
     nombre_cliente: Mapped[str] = mapped_column(String(100), nullable=False)

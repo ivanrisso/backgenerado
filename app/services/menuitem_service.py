@@ -62,6 +62,15 @@ class MenuItemService:
         except Exception:
             raise ErrorDeRepositorio("Error inesperado al actualizar menuitem")
 
+    async def get_by_role_ids(self, role_ids: List[int]) -> List[MenuItemResponse]:
+        try:
+            menuitems = await self.use_case.get_by_role_ids(role_ids)
+            return [self.to_response(c) for c in menuitems]
+        except BaseDeDatosNoDisponible as e:
+            raise e
+        except Exception:
+            raise ErrorDeRepositorio("Error inesperado al obtener menu por roles")
+
     async def delete(self, id: int) -> None:
         try:
             await self.use_case.delete(id)

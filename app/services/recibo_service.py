@@ -140,3 +140,74 @@ class ReciboService:
         await self.comprobante_repo.update(recibo_creado.id, recibo_creado, commit=True) # Commit FINAL
 
         return ReciboResponse.model_validate(recibo_creado)
+
+    async def get_all(
+        self,
+        cliente_id: Optional[int] = None,
+        fecha_desde: Optional[date] = None,
+        fecha_hasta: Optional[date] = None,
+        limit: int = 100,
+        offset: int = 0
+    ) -> List[ReciboResponse]:
+        # 1. Resolver ID de Tipo Comprobante "Recibo"
+        tipos = await self.tipo_comprobante_repo.get_all()
+        # Buscamos todos los que parezcan recibos para filtrar inclusive
+        # Pero repository get_all suele aceptar un solo ID o tendría que actualizarlo para lista.
+        # Por simplicidad y consistencia con create, buscaremos el principal 'RC', 'REC'.
+        # Si hubiera varios (Recibo A, Recibo B), el repo necesita ajuste o iteramos.
+        # Asumiremos el principal por ahora o el primero que encuentre.
+        tipo_recibo = next((t for t in tipos if t.codigo in ["RC", "REC", "RECIBO"]), None)
+        
+        if not tipo_recibo:
+            return []
+
+        comprobantes = await self.comprobante_repo.get_all(
+            tipo_comprobante_id=tipo_recibo.id,
+            cliente_id=cliente_id,
+            fecha_desde=fecha_desde,
+            fecha_hasta=fecha_hasta,
+            limit=limit,
+            offset=offset
+        )
+        
+        return [ReciboResponse.model_validate(c) for c in comprobantes]
+
+    async def get_by_id(self, id: int) -> ReciboResponse:
+        comprobante = await self.comprobante_repo.get_by_id(id)
+        if not comprobante:
+            raise ComprobanteNoEncontrado(id)
+            
+        # Validar que sea Recibo
+        tipos = await self.tipo_comprobante_repo.get_all()
+        tipo_recibo = next((t for t in tipos if t.codigo in ["RC", "REC", "RECIBO"]), None)
+        
+        if tipo_recibo and comprobante.tipo_comprobante_id != tipo_recibo.id:
+            # Si no es recibo, actuamos como si no existiera para este servicio
+             raise ComprobanteNoEncontrado(id)
+             
+        return ReciboResponse.model_validate(comprobante)
+
+    async def delete_recibo(self, id: int) -> None:
+        comprobante = await self.comprobante_repo.get_by_id(id)
+        if not comprobante:
+            raise ComprobanteNoEncontrado(id)
+            
+        # TODO: Validar que sea Recibo
+        # TODO: Validar que no tenga imputaciones o revertirlas (MVP: Asumimos sin imputaciones o DB cascade/error)
+        
+        # Eliminación física por simplicidad del MVP solicitado "Baja"
+        await self.comprobante_repo.delete(id, commit=True)
+
+    async def update_recibo(self, id: int, data: dict) -> ReciboResponse:
+        comprobante = await self.comprobante_repo.get_by_id(id)
+        if not comprobante:
+            raise ComprobanteNoEncontrado(id)
+            
+        # Actualizar campos permitidos
+        if "observaciones" in data:
+            comprobante.observaciones = data["observaciones"]
+        if "fecha_emision" in data:
+            comprobante.fecha_emision = data["fecha_emision"]
+            
+        await self.comprobante_repo.update(id, comprobante, commit=True)
+        return ReciboResponse.model_validate(comprobante)
